@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Albert_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,7 +7,7 @@ import MotionProvider from "@/components/MotionProvider";
 import FluidBackground from "@/components/FluidBackground";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-bricolage", display: "swap" });
-const body = Albert_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-albert", display: "swap" });
+const body = Outfit({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-outfit", display: "swap" });
 
 export const viewport: Viewport = {
   themeColor: "#F2F7FF",
