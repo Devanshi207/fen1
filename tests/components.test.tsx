@@ -1,10 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import JourneyTimeline from "@/components/JourneyTimeline";
 import CountUp from "@/components/CountUp";
 import { ROADMAP_STAGES } from "@/data/roadmap";
+import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
 
 describe("Navbar", () => {
   it("shows the main pages and no Products entry", () => {
@@ -13,6 +15,21 @@ describe("Navbar", () => {
     const labels = [...nav.querySelectorAll("a")].map((a) => a.textContent?.trim());
     expect(labels).toEqual(expect.arrayContaining(["HOME", "ABOUT", "TRAINING", "CONTACT US"]));
     expect(labels.some((l) => /product/i.test(l ?? ""))).toBe(false);
+  });
+});
+
+describe("Navbar on phones", () => {
+  it("opens a menu that lists every solution", async () => {
+    const user = userEvent.setup();
+    render(<Navbar />);
+    // The menu button is the only button in the header before the menu opens.
+    await user.click(screen.getAllByRole("button")[0]);
+    const menu = document.querySelector("div.fixed") as HTMLElement;
+    expect(menu).toBeTruthy();
+    expect(within(menu).getAllByRole("link").length).toBeGreaterThanOrEqual(INDUSTRY_SOLUTIONS.length);
+    for (const s of INDUSTRY_SOLUTIONS) {
+      expect(menu.querySelector(`a[href="/solutions#${s.id}"]`)).not.toBeNull();
+    }
   });
 });
 

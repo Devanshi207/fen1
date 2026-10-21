@@ -177,7 +177,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right Action CTAs */}
-          <div className="hidden sm:flex items-center gap-2.5">
+          <div className="hidden sm:flex sm:ml-auto lg:ml-0 items-center gap-2.5">
             <Link
               href="/request-demo"
               className="px-4 py-2 rounded-full bg-[#1B4FD6] text-[#0B1530] text-xs font-medium tracking-wide transition-all duration-300 hover:bg-[#BFD3F0] shadow-xs flex items-center gap-1.5"
@@ -190,7 +190,7 @@ export default function Navbar() {
           {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden p-2 rounded-lg bg-[#E3EEFC] border border-[#D0DCF0] text-[#0B1530] hover:bg-[#FFFFFF]"
+            className="lg:hidden ml-3 p-2 rounded-lg bg-[#E3EEFC] border border-[#D0DCF0] text-[#0B1530] hover:bg-[#FFFFFF]"
             aria-label="Toggle Navigation"
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -234,16 +234,15 @@ export default function Navbar() {
                   SOLUTIONS VERTICALS
                 </span>
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <Link href="/solutions#windows-doors" className="p-2 bg-[#FFFFFF] border border-[#D0DCF0] rounded-md text-[#0B1530]">
-                    Windows & Doors
-                  </Link>
-                  <Link href="/solutions#glass" className="p-2 bg-[#FFFFFF] border border-[#D0DCF0] rounded-md text-[#0B1530]">
-                    Glass & IGUs
-                  </Link>
-                  
-                  <Link href="/solutions#dealers" className="p-2 bg-[#FFFFFF] border border-[#D0DCF0] rounded-md text-[#0B1530]">
-                    Dealers & Installers
-                  </Link>
+                  {SOLUTIONS_ITEMS.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="p-2.5 bg-[#FFFFFF] border border-[#D0DCF0] rounded-md text-[#0B1530]"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>

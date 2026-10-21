@@ -74,6 +74,13 @@ tests/            Vitest + Testing Library
   glass surfaces, reveal animations and the hero photo crossfade.
 - `FluidBackground` is a WebGL fluid simulation behind the page. It needs WebGL2 float render targets and quietly
   disables itself when they are not available.
+- Responsive: phones, tablets and desktops share one layout system. The full navigation appears from 1024px; below that
+  a menu button opens a full-screen menu. From 1700px the root font size steps up (everything is rem-based), so 1080p,
+  1440p and 4K screens scale instead of showing a small column. `viewport-fit=cover` plus safe-area padding keeps
+  content clear of iPhone notches, and touch devices get 44px hit areas.
+- `FluidBackground` tests whether the GPU can render half-float textures rather than checking extension names, so it
+  runs on iPhones and most Android devices. Phones get a lighter simulation; without WebGL2 a CSS blob animation takes
+  over (`html.no-fluid`).
 - `MotionProvider` adds scroll-reveal and route-change transitions. `prefers-reduced-motion` keeps fades but drops
   movement.
 - Fonts (Bricolage Grotesque for headings, Outfit for text) load through `next/font`; the weight scale is set in one block at the end of `globals.css`.

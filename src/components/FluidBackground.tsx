@@ -124,15 +124,51 @@ export default function FluidBackground() {
     if (!canvas) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const gl = canvas.getContext("webgl2", { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false });
-    if (!gl || !gl.getExtension("EXT_color_buffer_float")) {
+    // Phones and tablets get a lighter simulation; the effect is soft, so lower resolution is not visible.
+    const small = Math.min(window.innerWidth, window.innerHeight) < 700;
+
+    const fallBack = () => {
       canvas.style.display = "none";
+      document.documentElement.classList.add("no-fluid");
+    };
+
+    const gl = canvas.getContext("webgl2", { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false });
+    if (!gl) {
+      fallBack();
+      return;
+    }
+    // Float render targets come from one of two extensions; iPhones and many Android GPUs only expose the half-float one.
+    gl.getExtension("EXT_color_buffer_float");
+    gl.getExtension("EXT_color_buffer_half_float");
+
+    // Ask the GPU instead of trusting extension names: can we really render into a half-float texture?
+    const canRenderHalfFloat = () => {
+      const tex = gl.createTexture();
+      const fbo = gl.createFramebuffer();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, 4, 4, 0, gl.RGBA, gl.HALF_FLOAT, null);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+      const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.deleteFramebuffer(fbo);
+      gl.deleteTexture(tex);
+      return ok;
+    };
+    if (!canRenderHalfFloat()) {
+      fallBack();
       return;
     }
 
-    const SIM = 128;
-    const DYE = 640;
-    const cfg = { densityDissipation: reduce ? 3.2 : 2.1, velocityDissipation: 0.22, pressure: 0.8, iterations: 18, curl: 24, radius: 0.2, force: reduce ? 1400 : 2600 };
+    const onContextLost = (e: Event) => {
+      e.preventDefault();
+      fallBack();
+    };
+    canvas.addEventListener("webglcontextlost", onContextLost);
+
+    const SIM = small ? 96 : 128;
+    const DYE = small ? 384 : 640;
+    const cfg = { densityDissipation: reduce ? 3.2 : 2.1, velocityDissipation: 0.22, pressure: 0.8, iterations: small ? 12 : 18, curl: 24, radius: 0.2, force: reduce ? 1400 : 2600 };
 
     const compile = (type: number, src: string) => {
       const s = gl.createShader(type)!;
@@ -223,7 +259,7 @@ export default function FluidBackground() {
     };
 
     const resize = (force = false) => {
-      const scale = 0.6;
+      const scale = small ? 0.5 : 0.6;
       const w = Math.max(2, Math.floor(window.innerWidth * scale));
       const h = Math.max(2, Math.floor(window.innerHeight * scale));
       if (force || canvas.width !== w || canvas.height !== h) {
@@ -270,6 +306,7 @@ export default function FluidBackground() {
     const onPointer = (e: PointerEvent) => move(e.clientX, e.clientY);
     const onTouch = (e: TouchEvent) => { const t = e.touches[0]; if (t) move(t.clientX, t.clientY); };
     const onLeave = () => { lastX = -1; };
+    const onTouchStart = () => { lastX = -1; };
 
     let lastScrollY = window.scrollY;
     const burst = (dy: number, strength: number) => {
@@ -294,6 +331,7 @@ export default function FluidBackground() {
     };
 
     window.addEventListener("pointermove", onPointer, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouch, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: true });
@@ -396,7 +434,9 @@ export default function FluidBackground() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onPointer);
+      window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouch);
+      canvas.removeEventListener("webglcontextlost", onContextLost);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("resize", onResize);

@@ -428,7 +428,7 @@ export const FEN1_MODULES: FEN1Module[] = [
       "PAYMENT RECEIPT",
       "AUDITED LEDGER",
     ],
-    connectedModules: ["CRM", "ESTIMATION", "PURCHASE MANAGEMENT", "PROJECT MANAGEMENT", "HR & ATTENDANCE"],
+    connectedModules: ["CRM", "ESTIMATION", "PURCHASE MANAGEMENT", "PROJECT MANAGEMENT", "HRMS"],
     dataFlow: "Automatically calculates exact project margins by aggregating material costs, saw scrap, machine hours, and site labor.",
     sampleKpis: [
       { label: "Gross Margin Visibility", value: "Real-Time", detail: "SAMPLE DATA" },
@@ -440,7 +440,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     id: "hr",
     number: "14",
     slug: "hr",
-    name: "HR & ATTENDANCE",
+    name: "HRMS",
     category: "FINANCE & PEOPLE",
     headline: "MANAGE THE PEOPLE BEHIND EVERY PROJECT.",
     description:
@@ -484,7 +484,7 @@ export const FEN1_MODULES: FEN1Module[] = [
       "Manager Approval Inbox",
     ],
     workflow: ["CLOCK IN", "VIEW ASSIGNED TASKS", "EXECUTE CHECKLIST", "LOG SITE CLAIM", "REQUEST LEAVE", "DOWNLOAD PAYSLIP"],
-    connectedModules: ["HR & ATTENDANCE", "TASK MANAGEMENT", "PROJECT MANAGEMENT"],
+    connectedModules: ["HRMS", "TASK MANAGEMENT", "PROJECT MANAGEMENT"],
     dataFlow: "Feeds site attendance and task completion data straight to supervisors in real time.",
     sampleKpis: [
       { label: "Mobile App Adoption", value: "98.5%", detail: "SAMPLE DATA" },

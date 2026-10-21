@@ -58,6 +58,20 @@ describe("modules", () => {
   });
 });
 
+describe("HRMS module", () => {
+  it("is named HRMS and nothing still calls it HR & Attendance", () => {
+    expect(FEN1_MODULES.some((m) => m.name === "HRMS")).toBe(true);
+    expect(JSON.stringify(FEN1_MODULES)).not.toMatch(/HR & ATTENDANCE/i);
+  });
+
+  it("is referenced by the modules it connects to using the new name", () => {
+    const hrms = FEN1_MODULES.find((m) => m.name === "HRMS");
+    expect(hrms).toBeDefined();
+    const referrers = FEN1_MODULES.filter((m) => m.connectedModules.includes("HRMS"));
+    expect(referrers.length).toBeGreaterThan(0);
+  });
+});
+
 describe("industry solutions", () => {
   it("has unique ids and sequential numbering", () => {
     expect(new Set(INDUSTRY_SOLUTIONS.map((s) => s.id)).size).toBe(INDUSTRY_SOLUTIONS.length);

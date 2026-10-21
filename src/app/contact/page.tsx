@@ -27,7 +27,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F2F7FF] text-[#0B1530] font-sans pt-12 pb-24">
+    <div className="w-full min-h-dvh bg-[#F2F7FF] text-[#0B1530] font-sans pt-12 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Col: Contact Overview */}
