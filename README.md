@@ -76,7 +76,7 @@ tests/            Vitest + Testing Library
   disables itself when they are not available.
 - `MotionProvider` adds scroll-reveal and route-change transitions. `prefers-reduced-motion` keeps fades but drops
   movement.
-- Fonts (Urbanist, DM Sans) load through `next/font`.
+- Fonts (Bricolage Grotesque for headings, Albert Sans for text) load through `next/font`; the weight scale is set in one block at the end of `globals.css`.
 - Photos are hot-linked from Unsplash (see `images.remotePatterns` in `next.config.ts`).
 
 ### Gotchas worth knowing

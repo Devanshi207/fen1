@@ -2,9 +2,9 @@
 
 @layer base {
   :root {
-    --font-sans: var(--font-dm-sans), "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-mono: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
-    --font-display: var(--font-urbanist), "Urbanist", system-ui, sans-serif;
+    --font-sans: var(--font-albert), "Albert Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: var(--font-albert), "Albert Sans", system-ui, sans-serif;
+    --font-display: var(--font-bricolage), "Bricolage Grotesque", system-ui, sans-serif;
     --bg-base: #F2F7FF;
     --bg-surface: #E3EEFC;
     --bg-card: #FFFFFF;
@@ -485,3 +485,17 @@ header [class~="bg-[#FFFFFF]"]::after { display: none; }
     radial-gradient(60% 80% at 80% 40%, transparent, rgba(242, 247, 255, 0.35));
 }
 @media (prefers-reduced-motion: reduce) { .hero-slide { animation-duration: 40s; } }
+
+/* ===== Bold type scale: one place sets the weight of every page ===== */
+body { font-weight: 500; }
+h1, h2, h3, h4 { font-weight: 700 !important; }
+h1[class], h2[class], .font-display[class] { font-weight: 800 !important; letter-spacing: -0.025em; }
+h3[class], h4[class] { font-weight: 700 !important; }
+h1, h2 { letter-spacing: -0.025em; }
+.font-light, .font-normal { font-weight: 500 !important; }
+.font-medium { font-weight: 600 !important; }
+.font-semibold { font-weight: 700 !important; }
+.font-bold { font-weight: 800 !important; }
+
+/* Reveal animations park cards off to the side before they animate in; never let that create a horizontal scrollbar. */
+#page { overflow-x: clip; }

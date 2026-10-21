@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Urbanist, DM_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Albert_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
 import FluidBackground from "@/components/FluidBackground";
 
-const urbanist = Urbanist({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800"], variable: "--font-urbanist", display: "swap" });
-const dmSans = DM_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-dm-sans", display: "swap" });
+const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-bricolage", display: "swap" });
+const body = Albert_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-albert", display: "swap" });
 
 export const viewport: Viewport = {
   themeColor: "#F2F7FF",
@@ -47,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`h-full antialiased ${urbanist.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`h-full antialiased ${display.variable} ${body.variable}`}>
       <body className="min-h-full flex flex-col font-sans bg-[#F2F7FF] text-[#0B1530] selection:bg-[#5CC8FF] selection:text-[#FFFFFF]">
         <FluidBackground />
         <Navbar />
