@@ -234,10 +234,10 @@ export default function FluidBackground() {
     };
     resize(true);
 
-    const use = (p: Prog) => gl.useProgram(p.prog);
+    const bindProgram = (p: Prog) => gl.useProgram(p.prog);
 
     const splat = (x: number, y: number, dx: number, dy: number, color: [number, number, number]) => {
-      use(P.splat);
+      bindProgram(P.splat);
       gl.uniform1i(P.splat.u.uTarget, velocity.read.attach(0));
       gl.uniform1f(P.splat.u.aspectRatio, canvas.width / canvas.height);
       gl.uniform2f(P.splat.u.point, x, y);
@@ -311,12 +311,12 @@ export default function FluidBackground() {
     // ---- simulation step ----
     const step = (dt: number) => {
       gl.disable(gl.BLEND);
-      use(P.curl);
+      bindProgram(P.curl);
       gl.uniform2f(P.curl.u.texelSize, velocity.read.tx, velocity.read.ty);
       gl.uniform1i(P.curl.u.uVelocity, velocity.read.attach(0));
       blit(curl);
 
-      use(P.vorticity);
+      bindProgram(P.vorticity);
       gl.uniform2f(P.vorticity.u.texelSize, velocity.read.tx, velocity.read.ty);
       gl.uniform1i(P.vorticity.u.uVelocity, velocity.read.attach(0));
       gl.uniform1i(P.vorticity.u.uCurl, curl.attach(1));
@@ -324,17 +324,17 @@ export default function FluidBackground() {
       gl.uniform1f(P.vorticity.u.dt, dt);
       blit(velocity.write); velocity.swap();
 
-      use(P.divergence);
+      bindProgram(P.divergence);
       gl.uniform2f(P.divergence.u.texelSize, velocity.read.tx, velocity.read.ty);
       gl.uniform1i(P.divergence.u.uVelocity, velocity.read.attach(0));
       blit(divergence);
 
-      use(P.clear);
+      bindProgram(P.clear);
       gl.uniform1i(P.clear.u.uTexture, pressure.read.attach(0));
       gl.uniform1f(P.clear.u.value, cfg.pressure);
       blit(pressure.write); pressure.swap();
 
-      use(P.pressure);
+      bindProgram(P.pressure);
       gl.uniform2f(P.pressure.u.texelSize, velocity.read.tx, velocity.read.ty);
       gl.uniform1i(P.pressure.u.uDivergence, divergence.attach(0));
       for (let i = 0; i < cfg.iterations; i++) {
@@ -342,13 +342,13 @@ export default function FluidBackground() {
         blit(pressure.write); pressure.swap();
       }
 
-      use(P.grad);
+      bindProgram(P.grad);
       gl.uniform2f(P.grad.u.texelSize, velocity.read.tx, velocity.read.ty);
       gl.uniform1i(P.grad.u.uPressure, pressure.read.attach(0));
       gl.uniform1i(P.grad.u.uVelocity, velocity.read.attach(1));
       blit(velocity.write); velocity.swap();
 
-      use(P.advection);
+      bindProgram(P.advection);
       gl.uniform2f(P.advection.u.texelSize, velocity.read.tx, velocity.read.ty);
       gl.uniform1i(P.advection.u.uVelocity, velocity.read.attach(0));
       gl.uniform1i(P.advection.u.uSource, velocity.read.attach(0));
@@ -367,7 +367,7 @@ export default function FluidBackground() {
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
       gl.clear(gl.COLOR_BUFFER_BIT);
-      use(P.display);
+      bindProgram(P.display);
       gl.uniform1i(P.display.u.uTexture, dye.read.attach(0));
       blit(null);
     };

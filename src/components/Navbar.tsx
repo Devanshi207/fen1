@@ -4,31 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Menu,
-  X,
-  ArrowRight,
-  ChevronDown,
-  Layers,
-  Calculator,
-  Scan,
-  Compass,
-  Building2,
-  ShoppingCart,
-  Boxes,
-  Factory,
-  Wrench,
-  ShieldCheck,
-  Truck,
-  CreditCard,
-  Users,
-  UserCheck,
-  Settings,
-  BarChart3,
-  CheckSquare,
-  Building,
-  Store,
-} from "lucide-react";
+import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -61,10 +37,13 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
+  // Close menus when the route changes (adjusting state during render, as React recommends)
+  const [lastPath, setLastPath] = useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
     setMobileOpen(false);
     setActiveDropdown(null);
-  }, [pathname]);
+  }
 
   return (
     <>

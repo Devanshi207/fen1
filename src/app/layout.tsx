@@ -1,9 +1,13 @@
 import type { Metadata, Viewport } from "next";
+import { Urbanist, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
 import FluidBackground from "@/components/FluidBackground";
+
+const urbanist = Urbanist({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800"], variable: "--font-urbanist", display: "swap" });
+const dmSans = DM_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-dm-sans", display: "swap" });
 
 export const viewport: Viewport = {
   themeColor: "#F2F7FF",
@@ -13,7 +17,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "FEN1 - The Operating System for Glass, Aluminium & Windows",
+  title: {
+    default: "FEN1 - The Operating System for Glass, Aluminium & Windows",
+    template: "%s | FEN1",
+  },
   description:
     "From estimation to installation, FEN1 connects sales, engineering, procurement, production, projects, people, finance and analytics in one integrated ERP platform.",
   keywords: [
@@ -40,15 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`h-full antialiased ${urbanist.variable} ${dmSans.variable}`}>
       <body className="min-h-full flex flex-col font-sans bg-[#F2F7FF] text-[#0B1530] selection:bg-[#5CC8FF] selection:text-[#FFFFFF]">
         <FluidBackground />
         <Navbar />
