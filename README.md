@@ -24,6 +24,14 @@ npm run dev        # http://localhost:3000
 
 Requires Node 20.19+ (22 recommended).
 
+### Trying it on a phone or tablet
+
+Run `npm run dev`, then open the **Network** address it prints (for example `http://192.168.0.109:3000`) on a device
+on the same Wi-Fi. `allowedDevOrigins` in `next.config.ts` allows private-network addresses; without it Next.js blocks
+its own scripts for any host but `localhost`, and the page loads with no JavaScript (no fluid background, no
+scroll-driven roadmap). If the page opens but looks "dead", that is the first thing to check. Allow the port in the
+Windows firewall if the device cannot reach it at all.
+
 ## Configuration
 
 Copy `.env.example` to `.env.local` and set:
