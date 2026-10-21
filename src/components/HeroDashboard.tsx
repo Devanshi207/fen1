@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Calculator, Layers, Factory, Truck, BarChart3, Users, TrendingUp } from "lucide-react";
-import { MODULES } from "@/lib/data";
+import { Calculator, Layers, Factory, Truck, BarChart3, Users, CheckCircle2 } from "lucide-react";
+import { FEN1_MODULES } from "@/data/modules";
 
 const RAIL = [
   { id: "crm", Icon: Layers },
@@ -16,6 +16,8 @@ const RAIL = [
 
 const BARS = [38, 62, 48, 80, 58, 92, 70, 86, 64, 98];
 
+const EVENTS = ["Quotation sent", "Stock inward checked", "Cutting list sent to saw"];
+
 export default function HeroDashboard() {
   const wrap = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(1);
@@ -26,7 +28,7 @@ export default function HeroDashboard() {
     return () => window.clearInterval(t);
   }, []);
 
-  const mod = MODULES.find((m) => m.id === RAIL[active].id) ?? MODULES[0];
+  const mod = FEN1_MODULES.find((m) => m.id === RAIL[active].id) ?? FEN1_MODULES[0];
 
   const onMove = (e: React.PointerEvent) => {
     const el = wrap.current;
@@ -46,26 +48,21 @@ export default function HeroDashboard() {
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       className="hero-dash relative mx-auto w-full max-w-[620px] py-8 lg:py-10"
+      role="img"
+      aria-label="Illustration of the FEN1 operations cockpit with sample data"
     >
-      {/* floating KPI chips */}
+      {/* floating workflow events */}
       <div className="hero-chip chip-a absolute -left-2 sm:-left-8 -top-3 z-20 rounded-2xl px-4 py-3 flex items-center gap-3">
-        <span className="grid place-items-center w-9 h-9 rounded-xl bg-[#1B4FD6]">
-          <TrendingUp className="w-4 h-4" />
-        </span>
-        <span>
-          <span className="block text-[10px] uppercase tracking-wider text-[#4A5B7A] font-semibold">Tender win rate</span>
-          <span className="block text-lg font-semibold text-[#0B1530] leading-tight">41.2%</span>
-        </span>
+        <CheckCircle2 className="w-5 h-5 text-[#1B4FD6]" />
+        <span className="text-sm font-semibold text-[#0B1530]">{EVENTS[0]}</span>
       </div>
-      <div className="hero-chip chip-b absolute -right-2 sm:-right-6 bottom-24 z-20 rounded-2xl px-4 py-3">
-        <span className="block text-[10px] uppercase tracking-wider text-[#4A5B7A] font-semibold">Factory OEE</span>
-        <span className="block text-lg font-semibold text-[#0B1530] leading-tight">92.4%</span>
-        <span className="block h-1.5 w-28 rounded-full bg-[#D0DCF0] mt-2 overflow-hidden">
-          <span className="block h-full w-[92%] rounded-full bg-[#3B82F6] chip-fill" />
-        </span>
+      <div className="hero-chip chip-b absolute -right-2 sm:-right-6 bottom-24 z-20 rounded-2xl px-4 py-3 flex items-center gap-3">
+        <CheckCircle2 className="w-5 h-5 text-[#1B4FD6]" />
+        <span className="text-sm font-semibold text-[#0B1530]">{EVENTS[1]}</span>
       </div>
-      <div className="hero-chip chip-c absolute left-4 sm:left-10 -bottom-1 z-20 rounded-2xl px-4 py-3 flex items-center gap-2.5">
-        <span className="text-xs font-semibold text-[#0B1530]">3 saws running, 0 faults</span>
+      <div className="hero-chip chip-c absolute left-4 sm:left-10 -bottom-1 z-20 rounded-2xl px-4 py-3 flex items-center gap-3">
+        <CheckCircle2 className="w-5 h-5 text-[#1B4FD6]" />
+        <span className="text-sm font-semibold text-[#0B1530]">{EVENTS[2]}</span>
       </div>
 
       {/* app window */}
@@ -75,6 +72,7 @@ export default function HeroDashboard() {
           <span className="w-2.5 h-2.5 rounded-full bg-[#D0DCF0]" />
           <span className="w-2.5 h-2.5 rounded-full bg-[#D0DCF0]" />
           <span className="ml-3 text-[11px] font-semibold text-[#4A5B7A] tracking-wide">FEN1 Operations cockpit</span>
+          <span className="ml-auto text-[10px] uppercase tracking-wider font-semibold text-[#7686A6]">Sample data</span>
         </div>
         <div className="flex">
           <div className="flex flex-col gap-2 p-3 border-r border-[#D0DCF0]/70">
@@ -82,7 +80,8 @@ export default function HeroDashboard() {
               <button
                 key={id}
                 onClick={() => setActive(i)}
-                aria-label={id}
+                aria-label={FEN1_MODULES.find((m) => m.id === id)?.name ?? id}
+                aria-pressed={i === active}
                 className={`relative grid place-items-center w-10 h-10 rounded-xl transition-colors ${
                   i === active ? "text-[#1B4FD6]" : "text-[#7686A6] hover:text-[#0B1530]"
                 }`}
@@ -107,24 +106,21 @@ export default function HeroDashboard() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.35 }}
               >
-                <div className="text-[10px] uppercase tracking-widest font-semibold text-[#1B4FD6]">
-                  {mod.category.replace("-", " ")}
-                </div>
-                <div className="font-display text-xl sm:text-2xl text-[#0B1530] mt-1 leading-tight">{mod.name}</div>
+                <div className="text-[10px] uppercase tracking-widest font-semibold text-[#1B4FD6]">{mod.category}</div>
+                <div className="text-lg sm:text-xl font-semibold text-[#0B1530] mt-1 leading-tight">{mod.name}</div>
                 <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mt-5">
-                  {mod.kpis.slice(0, 3).map((k) => (
+                  {mod.sampleKpis.slice(0, 3).map((k) => (
                     <div key={k.label} className="rounded-2xl bg-white/70 border border-white px-3 py-3">
                       <div className="text-[9px] sm:text-[10px] uppercase tracking-wider text-[#4A5B7A] font-semibold leading-snug line-clamp-2 min-h-[2.2em]">
                         {k.label}
                       </div>
                       <div className="text-sm sm:text-base font-semibold text-[#0B1530] mt-1.5">{k.value}</div>
-                      <div className="text-[10px] text-[#2563EB] font-semibold mt-0.5 truncate">{k.change}</div>
                     </div>
                   ))}
                 </div>
               </motion.div>
             </AnimatePresence>
-            <div className="mt-5 flex items-end gap-1.5 h-24">
+            <div className="mt-5 flex items-end gap-1.5 h-24" aria-hidden="true">
               {BARS.map((h, i) => (
                 <span
                   key={i}
@@ -134,7 +130,7 @@ export default function HeroDashboard() {
               ))}
             </div>
             <div className="mt-4 flex flex-wrap gap-1.5">
-              {mod.workflowStages.slice(0, 4).map((s) => (
+              {mod.workflow.slice(0, 4).map((s) => (
                 <span
                   key={s}
                   className="px-2.5 py-1 rounded-full bg-white/70 border border-white text-[10px] font-semibold text-[#4A5B7A]"

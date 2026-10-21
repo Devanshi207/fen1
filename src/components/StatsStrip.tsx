@@ -1,14 +1,18 @@
 "use client";
 
 import CountUp from "@/components/CountUp";
-import { INDUSTRIAL_STAGES } from "@/lib/data";
 import { FEN1_MODULES } from "@/data/modules";
+import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
+import { ROADMAP_STAGES } from "@/data/roadmap";
+
+// Every figure is derived from the data the site renders, so it can never drift from the content.
+const GROUPS = new Set(FEN1_MODULES.map((m) => m.category)).size;
 
 const STATS = [
   { to: FEN1_MODULES.length, label: "Connected modules", note: "Sales to site, one database" },
-  { to: INDUSTRIAL_STAGES.length, label: "Lifecycle stages", note: "Enquiry to handover" },
-  { to: 3.4, decimals: 1, prefix: "< ", suffix: "%", label: "Extrusion scrap", note: "With 1D linear nesting" },
-  { to: 94.2, decimals: 1, suffix: "%", label: "Off-cut recovery", note: "Bar-level stock tracking" },
+  { to: ROADMAP_STAGES.length, label: "Roadmap stages", note: "Enquiry to handover" },
+  { to: INDUSTRY_SOLUTIONS.length, label: "Industry solutions", note: "Glass, aluminium and windows" },
+  { to: GROUPS, label: "Module groups", note: "Business to analytics" },
 ];
 
 export default function StatsStrip() {
@@ -19,7 +23,7 @@ export default function StatsStrip() {
           {STATS.map((s, i) => (
             <div key={s.label} data-reveal="up" data-delay={i * 90} className="px-6 py-8 sm:px-8 sm:py-10 text-center lg:text-left">
               <div className="font-display text-4xl sm:text-5xl text-[#0B1530] tracking-tight">
-                <CountUp to={s.to} decimals={s.decimals} prefix={s.prefix} suffix={s.suffix} />
+                <CountUp to={s.to} />
               </div>
               <div className="mt-3 text-sm font-semibold text-[#0B1530]">{s.label}</div>
               <div className="mt-1 text-xs text-[#4A5B7A]">{s.note}</div>

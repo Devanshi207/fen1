@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { INDUSTRIAL_STAGES } from "@/lib/data";
+import { ROADMAP_STAGES } from "@/data/roadmap";
 
 export default function JourneyTimeline() {
   const box = useRef<HTMLDivElement>(null);
@@ -47,7 +47,7 @@ export default function JourneyTimeline() {
             FROM FIRST ENQUIRY TO FINAL HANDOVER.
           </h2>
           <p data-reveal="up" data-delay="160" className="text-sm sm:text-base text-[#4A5B7A] leading-relaxed">
-            {INDUSTRIAL_STAGES.length} connected stages. Each one hands clean data to the next.
+            {ROADMAP_STAGES.length} connected stages. Each one hands clean data to the next.
           </p>
         </div>
 
@@ -59,7 +59,7 @@ export default function JourneyTimeline() {
             <span className="journey-fill" />
           </div>
           <ol className="space-y-8 lg:space-y-12">
-            {INDUSTRIAL_STAGES.map((s, i) => {
+            {ROADMAP_STAGES.map((s, i) => {
               const left = i % 2 === 0;
               return (
                 <li key={s.step} className="relative grid lg:grid-cols-2 lg:gap-24 pl-14 lg:pl-0">

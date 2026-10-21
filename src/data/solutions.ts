@@ -100,7 +100,7 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     workflow: [
       "JOB ENQUIRY",
       "PARAMETRIC ESTIMATE",
-      "MATERIAL INDENT",
+      "MATERIAL REQUISITION",
       "JOB CARD ISSUE",
       "SAWING & TAPPING",
       "WELDING & COATING",
