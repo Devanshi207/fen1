@@ -2,9 +2,11 @@
 
 import React, { useState } from "react";
 import { Send, CheckCircle2, Mail } from "lucide-react";
+import { submitEnquiry, type SubmitState } from "@/lib/submitEnquiry";
 
 export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<SubmitState>("idle");
+  const submitted = status === "sent";
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -17,9 +19,11 @@ export default function ContactPage() {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setStatus("sending");
+    const ok = await submitEnquiry("contact", formData);
+    setStatus(ok ? "sent" : "error");
   };
 
   return (
@@ -37,16 +41,18 @@ export default function ContactPage() {
               </p>
             </div>
 
-            {/* Information Cards */}
-            <div className="space-y-3 font-mono text-xs">
-              <div className="p-4 bg-[#FFFFFF] border border-[#D0DCF0] rounded-xl flex items-center gap-3 shadow-xs">
-                <Mail className="w-4 h-4 text-[#1B4FD6]" />
-                <div>
-                  <span className="text-[10px] text-[#4A5B7A] uppercase block">Direct Technical Inquiries</span>
-                  <span className="text-xs text-[#0B1530] font-semibold">solutions@fen1.io</span>
+            {/* Direct email, shown only when one is configured (NEXT_PUBLIC_CONTACT_EMAIL) */}
+            {process.env.NEXT_PUBLIC_CONTACT_EMAIL && (
+              <div className="space-y-3 font-mono text-xs">
+                <div className="p-4 bg-[#FFFFFF] border border-[#D0DCF0] rounded-xl flex items-center gap-3 shadow-xs">
+                  <Mail className="w-4 h-4 text-[#1B4FD6]" />
+                  <div>
+                    <span className="text-[10px] text-[#4A5B7A] uppercase block">Email</span>
+                    <span className="text-xs text-[#0B1530] font-semibold">{process.env.NEXT_PUBLIC_CONTACT_EMAIL}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Right Col: Consultation Form */}
@@ -63,7 +69,7 @@ export default function ContactPage() {
                   Our team will review your inquiry and get in touch with you shortly.
                 </p>
                 <button
-                  onClick={() => setSubmitted(false)}
+                  onClick={() => setStatus("idle")}
                   className="mt-4 px-6 py-2.5 bg-[#E3EEFC] text-[#0B1530] text-xs font-mono rounded-full hover:bg-[#C9DCF5] transition-colors"
                 >
                   Submit Another Inquiry
@@ -185,9 +191,15 @@ export default function ContactPage() {
                     className="w-full p-2.5 rounded-lg bg-[#E3EEFC] border border-[#D0DCF0] text-xs text-[#0B1530] focus:border-[#3B82F6] outline-none font-sans"
                   />
                 </div>
+                {status === "error" && (
+                  <p role="alert" className="rounded-lg bg-[#FBEAE8] border border-[#E8B9B4] text-[#A85E55] text-xs font-sans px-4 py-3">
+                    Your message could not be sent. Please try again in a moment.
+                  </p>
+                )}
 
                 <button
                   type="submit"
+                  disabled={status === "sending"}
                   className="w-full py-3.5 bg-[#1B4FD6] text-[#0B1530] font-semibold uppercase text-xs rounded-full hover:bg-[#BFD3F0] transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer mt-2 font-sans tracking-wider"
                 >
                   <Send className="w-4 h-4 text-[#1B4FD6]" />
