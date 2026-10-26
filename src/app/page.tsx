@@ -8,9 +8,6 @@ import HeroDashboard from "@/components/HeroDashboard";
 import StatsStrip from "@/components/StatsStrip";
 import JourneyTimeline from "@/components/JourneyTimeline";
 import HeroBackdrop from "@/components/HeroBackdrop";
-import AudienceCards from "@/components/AudienceCards";
-import QuotationSpotlight from "@/components/QuotationSpotlight";
-import FaqSection from "@/components/FaqSection";
 
 export default function HomePage() {
   return (
@@ -50,11 +47,8 @@ export default function HomePage() {
       </section>
 
       <StatsStrip />
-      <AudienceCards />
-      <QuotationSpotlight />
       <JourneyTimeline />
       <PhotoShowcase />
-      <FaqSection />
       <FinalCtaSection />
     </div>
   );

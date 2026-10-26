@@ -45,7 +45,7 @@ Copy `.env.example` to `.env.local` and set:
 
 | Route           | Purpose                                                           |
 | --------------- | ----------------------------------------------------------------- |
-| `/`             | Hero, key figures, who it is for, quotation spotlight, roadmap, photo gallery, FAQ |
+| `/`             | Hero, key figures, enquiry-to-handover roadmap, photo gallery     |
 | `/solutions`    | Industry solutions and the full module directory (search, groups) |
 | `/about`        | What FEN1 is and the problems it removes                          |
 | `/training`     | Role-based training tracks                                        |
@@ -61,7 +61,6 @@ All site copy that repeats lives in `src/data/`, so pages never hard-code lists:
 - `modules.ts`: the modules shown on Solutions and in the home hero demo
 - `solutions.ts`: the industry solutions
 - `roadmap.ts`: the 13 roadmap stages on the home page, in display order
-- `faq.ts`: the home page questions; answers only restate what the modules, solutions and roadmap already say
 
 The figures in the home "key figures" strip are computed from these files, so they cannot drift from the content.
 The dashboard in the home hero is an illustration and is labelled "Sample data".
