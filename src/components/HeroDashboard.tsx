@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Calculator, Layers, Factory, Truck, BarChart3, Users, CheckCircle2 } from "lucide-react";
+import { Calculator, Layers, Factory, Truck, BarChart3, Users } from "lucide-react";
 import { FEN1_MODULES } from "@/data/modules";
 
 const RAIL = [
@@ -15,8 +15,6 @@ const RAIL = [
 ] as const;
 
 const BARS = [38, 62, 48, 80, 58, 92, 70, 86, 64, 98];
-
-const EVENTS = ["Quotation sent", "Stock inward checked", "Cutting list sent to saw"];
 
 export default function HeroDashboard() {
   const wrap = useRef<HTMLDivElement>(null);
@@ -51,20 +49,6 @@ export default function HeroDashboard() {
       role="img"
       aria-label="Illustration of the FEN1 operations cockpit with sample data"
     >
-      {/* floating workflow events */}
-      <div className="hero-chip chip-a absolute -left-2 sm:-left-8 -top-3 z-20 rounded-2xl px-4 py-3 flex items-center gap-3">
-        <CheckCircle2 className="w-5 h-5 text-[#1B4FD6]" />
-        <span className="text-sm font-semibold text-[#0B1530]">{EVENTS[0]}</span>
-      </div>
-      <div className="hero-chip chip-b absolute -right-2 sm:-right-6 bottom-24 z-20 rounded-2xl px-4 py-3 flex items-center gap-3">
-        <CheckCircle2 className="w-5 h-5 text-[#1B4FD6]" />
-        <span className="text-sm font-semibold text-[#0B1530]">{EVENTS[1]}</span>
-      </div>
-      <div className="hero-chip chip-c absolute left-4 sm:left-10 -bottom-1 z-20 rounded-2xl px-4 py-3 flex items-center gap-3">
-        <CheckCircle2 className="w-5 h-5 text-[#1B4FD6]" />
-        <span className="text-sm font-semibold text-[#0B1530]">{EVENTS[2]}</span>
-      </div>
-
       {/* app window */}
       <div className="hero-window relative rounded-[28px] overflow-hidden">
         <div className="flex items-center gap-2 px-5 py-3.5 border-b border-[#D0DCF0]/70">
