@@ -228,12 +228,17 @@ a[class~="bg-[#FFFFFF]"]:hover, button[class~="bg-[#FFFFFF]"]:hover, [class~="gr
   transition:
     opacity 0.9s var(--ease) var(--d, 0ms),
     translate 0.9s var(--ease) var(--d, 0ms),
+    scale 0.9s var(--ease) var(--d, 0ms),
     transform 0.4s var(--ease),
     box-shadow 0.4s var(--ease),
     background-color 0.4s var(--ease),
     border-color 0.4s var(--ease);
 }
 .reveal.in { opacity: 1; translate: none; }
+
+/* Staggered grids: cards also grow slightly as they arrive, and alternate columns travel further so a row looks offset */
+.grid > .reveal:not(.in) { scale: 0.96; }
+.reveal.reveal-alt:not(.in) { translate: 0 60px; }
 
 /* Route change */
 @keyframes page-in {
@@ -343,23 +348,22 @@ header [class~="bg-[#FFFFFF]"]::after { display: none; }
 }
 
 /* ===== Photo showcase ===== */
-.photo-card {
-  clip-path: inset(10% 6% 10% 6% round 28px);
-  opacity: 0;
+.photo-card { box-shadow: 0 30px 60px -34px rgba(11, 27, 80, 0.55); }
+.photo-card.reveal {
   transition:
-    clip-path 1.1s var(--ease) calc(var(--i, 0) * 120ms),
-    opacity 0.9s var(--ease) calc(var(--i, 0) * 120ms),
+    opacity 0.9s var(--ease) var(--d, 0ms),
+    translate 0.9s var(--ease) var(--d, 0ms),
+    scale 0.9s var(--ease) var(--d, 0ms),
+    clip-path 1.1s var(--ease) var(--d, 0ms),
     box-shadow 0.5s var(--ease);
-  box-shadow: 0 30px 60px -34px rgba(11, 27, 80, 0.55);
 }
-.photo-showcase.in .photo-card {
-  clip-path: inset(0% 0% 0% 0% round 28px);
-  opacity: 1;
-}
+.photo-card.reveal:not(.in) { clip-path: inset(10% 6% 10% 6% round 28px); }
+.photo-card.reveal.in { clip-path: inset(0% 0% 0% 0% round 28px); }
 .photo-card:hover { box-shadow: 0 40px 80px -30px rgba(11, 27, 80, 0.65); }
 .photo-inner {
-  transform: translate3d(calc(var(--px, 0) * -16px), calc(var(--py, 0) * -16px), 0);
-  transition: transform 0.6s var(--ease);
+  /* pointer parallax (--px/--py) plus scroll drift (--sy, set per photo by MotionProvider) */
+  transform: translate3d(calc(var(--px, 0) * -16px), calc(var(--py, 0) * -16px + var(--sy, 0px)), 0);
+  transition: transform 0.35s var(--ease);
 }
 .photo-inner img { transition: transform 1.4s var(--ease), filter 0.6s; filter: saturate(1.05); }
 .photo-card:hover .photo-inner img { transform: scale(1.07); filter: saturate(1.15); }

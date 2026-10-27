@@ -44,6 +44,9 @@ const PHOTOS = [
   },
 ];
 
+// Alternating drift speeds make the photo columns move against each other as you scroll.
+const SPEEDS = [0.06, -0.05, -0.07, 0.05];
+
 export default function PhotoShowcase() {
   const wrap = useRef<HTMLDivElement>(null);
 
@@ -87,9 +90,9 @@ export default function PhotoShowcase() {
             <figure
               key={p.title}
               className={`photo-card group relative overflow-hidden rounded-[28px] ${p.cls}`}
-              style={{ ["--i" as string]: i }}
+              data-speed={SPEEDS[i % SPEEDS.length]}
             >
-              <div className="photo-inner absolute -inset-5">
+              <div className="photo-inner absolute -inset-12">
                 <Image
                   src={p.src}
                   alt={p.alt}

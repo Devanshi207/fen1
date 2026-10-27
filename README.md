@@ -89,8 +89,11 @@ tests/            Vitest + Testing Library
 - `FluidBackground` tests whether the GPU can render half-float textures rather than checking extension names, so it
   runs on iPhones and most Android devices. Phones get a lighter simulation; without WebGL2 a CSS blob animation takes
   over (`html.no-fluid`).
-- `MotionProvider` adds scroll-reveal and route-change transitions. `prefers-reduced-motion` keeps fades but drops
-  movement.
+- `MotionProvider` drives the staggered scroll: the top-most element of each group (a card, a heading, a paragraph, a
+  list item, a pill button) reveals in order, with the delay worked out from the layout at the moment it appears, so a
+  grid cascades left to right row by row, alternate columns travel further, and the gallery photos drift at different
+  speeds (`data-speed`). The delay maths lives in `src/lib/stagger.ts`. `prefers-reduced-motion` keeps fades but drops
+  movement and drift.
 - Fonts (Bricolage Grotesque for headings, Outfit for text) load through `next/font`; the weight scale is set in one block at the end of `globals.css`.
 - Photos are hot-linked from Unsplash (see `images.remotePatterns` in `next.config.ts`).
 
