@@ -576,7 +576,6 @@ a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disable
 }
 .mod-tile[data-active="true"] { transform: translateY(-4px); border-color: #1b4fd6; box-shadow: 0 18px 34px -18px rgba(27, 79, 214, 0.6); }
 .mod-tile[data-active="true"]::before { transform: none; }
-.mod-tile[data-dim="true"] { opacity: 0.55; }
 .mod-tile-num { font-size: 0.72rem; font-weight: 700; color: var(--accent); transition: color 0.3s; }
 .mod-tile-icon { width: 0.95rem; height: 0.95rem; color: var(--muted); transition: color 0.3s, transform 0.5s var(--ease); }
 .mod-tile-title { grid-column: 1 / -1; align-self: end; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.2; color: var(--ink); transition: color 0.3s; }
