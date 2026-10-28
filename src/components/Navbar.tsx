@@ -4,12 +4,12 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { name: "HOME", href: "/" },
-  { name: "SOLUTIONS", href: "/solutions", type: "solutions" },
+  { name: "SOLUTIONS", href: "/solutions" },
   { name: "ABOUT", href: "/about" },
   { name: "TRAINING", href: "/training" },
   { name: "CONTACT US", href: "/contact" },
@@ -25,7 +25,6 @@ const SOLUTIONS_ITEMS = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   const pathname = usePathname();
@@ -59,7 +58,6 @@ export default function Navbar() {
   if (lastPath !== pathname) {
     setLastPath(pathname);
     setMobileOpen(false);
-    setActiveDropdown(null);
   }
 
   return (
@@ -88,134 +86,8 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Architectural Center Navigation */}
-          <nav
-            className="hidden lg:flex items-center gap-1 bg-[#E3EEFC] px-3 py-1.5 rounded-full border border-[#D0DCF0] shadow-xs"
-            onMouseLeave={() => setHovered(null)}
-          >
-            {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
-
-              // Solutions Dropdown
-              if (link.type === "solutions") {
-                const isOpen = activeDropdown === "solutions";
-                return (
-                  <div
-                    key={link.name}
-                    className="relative"
-                    onMouseEnter={() => {
-                      setActiveDropdown("solutions");
-                      setHovered(link.name);
-                    }}
-                    onMouseLeave={() => setActiveDropdown(null)}
-                  >
-                    <Link
-                      href={link.href}
-                      onClick={() => setActiveDropdown(null)}
-                      className={cn(
-                        "relative px-3.5 py-1 text-xs font-medium tracking-wide transition-all rounded-full flex items-center gap-1 cursor-pointer",
-                        isActive || isOpen
-                          ? "text-[#0B1530] bg-[#FFFFFF] shadow-xs border border-[#D0DCF0]"
-                          : "text-[#4A5B7A] hover:text-[#0B1530]"
-                      )}
-                    >
-                      {hovered === link.name && !isActive && (
-                      <motion.span
-                        layoutId="navHover"
-                        className="absolute inset-0 rounded-full bg-[#FFFFFF]/70 -z-10"
-                        transition={{ type: "spring", stiffness: 500, damping: 36 }}
-                      />
-                    )}
-<span>{link.name}</span>
-                      <ChevronDown className={cn("w-3 h-3 transition-transform duration-200", isOpen && "rotate-180")} />
-                    </Link>
-
-                    {/* Solutions Dropdown Menu */}
-                    <AnimatePresence>
-                      {isOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 6 }}
-                          transition={{ duration: 0.18 }}
-                          className="absolute top-full left-0 mt-3 w-[460px] bg-[#FFFFFF] border border-[#D0DCF0] rounded-2xl shadow-xl p-5 z-50 grid grid-cols-2 gap-3 text-left font-sans"
-                        >
-                          <div className="col-span-2 pb-2 border-b border-[#D0DCF0] flex items-center justify-between text-[10px] text-[#1B4FD6] uppercase font-semibold">
-                            <span>INDUSTRY SPECIALIZATIONS</span>
-                            <span className="text-[#4A5B7A]">5 VERTICALS</span>
-                          </div>
-
-                          {SOLUTIONS_ITEMS.map((sol) => (
-                            <Link
-                              key={sol.num}
-                              href={sol.href}
-                              onClick={() => setActiveDropdown(null)}
-                              className="group block p-2.5 rounded-xl hover:bg-[#E3EEFC] transition-colors border border-transparent hover:border-[#D0DCF0]"
-                            >
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-[10px] text-[#1B4FD6] font-semibold">{sol.num}</span>
-                                <span className="text-xs font-semibold text-[#0B1530] group-hover:text-[#1B4FD6] transition-colors font-sans">
-                                  {sol.name}
-                                </span>
-                              </div>
-                              <p className="text-[11px] text-[#4A5B7A] font-sans leading-tight mt-1">
-                                {sol.desc}
-                              </p>
-                            </Link>
-                          ))}
-
-                          <div className="col-span-2 pt-2 border-t border-[#D0DCF0] flex items-center justify-between text-xs font-sans">
-                            <Link
-                              href="/solutions"
-                              onClick={() => setActiveDropdown(null)}
-                              className="text-[#0B1530] hover:text-[#1B4FD6] flex items-center gap-1 transition-colors font-semibold"
-                            >
-                              <span>View All Solutions Overview</span>
-                              <ArrowRight className="w-3.5 h-3.5" />
-                            </Link>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              }
-
-              // Standard Link
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onMouseEnter={() => setHovered(link.name)}
-                  className={cn(
-                    "px-3.5 py-1 text-xs font-medium tracking-wide transition-all rounded-full relative",
-                    isActive
-                      ? "text-[#0B1530]"
-                      : "text-[#4A5B7A] hover:text-[#0B1530]"
-                  )}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="navPill"
-                      className="absolute inset-0 bg-[#FFFFFF] rounded-full -z-10 shadow-xs border border-[#D0DCF0]"
-                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    />
-                  )}
-                  {hovered === link.name && !isActive && (
-                      <motion.span
-                        layoutId="navHover"
-                        className="absolute inset-0 rounded-full bg-[#FFFFFF]/70 -z-10"
-                        transition={{ type: "spring", stiffness: 500, damping: 36 }}
-                      />
-                    )}
-{link.name}
-                </Link>
-              );
-            })}
-          </nav>
-
           {/* Right Action CTAs */}
-          <div className="hidden sm:flex sm:ml-auto lg:ml-0 items-center gap-2.5">
+          <div className="hidden sm:flex ml-auto items-center gap-2.5">
             <Link
               href="/request-demo"
               className="px-4 py-2 rounded-full bg-[#1B4FD6] text-[#0B1530] text-xs font-medium tracking-wide transition-all duration-300 hover:bg-[#BFD3F0] shadow-xs flex items-center gap-1.5"
@@ -228,7 +100,7 @@ export default function Navbar() {
           {/* Menu button: three lines that fold into a cross */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="menu-toggle ml-3 flex items-center gap-2.5 pl-3.5 pr-3 py-2 rounded-full bg-[#E3EEFC] border border-[#D0DCF0] text-[#0B1530] hover:bg-[#FFFFFF] transition-colors"
+            className="menu-toggle ml-auto sm:ml-3 flex items-center gap-2.5 pl-3.5 pr-3 py-2 rounded-full bg-[#E3EEFC] border border-[#D0DCF0] text-[#0B1530] hover:bg-[#FFFFFF] transition-colors"
             aria-label="Toggle Navigation"
             aria-expanded={mobileOpen}
             data-open={mobileOpen}
@@ -241,11 +113,6 @@ export default function Navbar() {
             </span>
           </button>
         </div>
-        <span
-          aria-hidden="true"
-          className="absolute left-0 bottom-0 h-[2px] w-full origin-left bg-gradient-to-r from-[#5CC8FF] to-[#1B4FD6]"
-          style={{ transform: "scaleX(var(--read, 0))" }}
-        />
       </header>
 
       {/* Full-screen menu */}
@@ -258,7 +125,7 @@ export default function Navbar() {
             transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
             className="fixed inset-0 z-40 bg-[#F2F7FF] pt-24 px-6 sm:px-10 pb-8 overflow-y-auto flex flex-col justify-between font-sans"
           >
-            <div className="max-w-6xl w-full mx-auto grid lg:grid-cols-[1.4fr_1fr] gap-10 lg:gap-16">
+            <nav aria-label="Main" className="max-w-6xl w-full mx-auto grid lg:grid-cols-[1.4fr_1fr] gap-10 lg:gap-16">
               <ul className="menu-links" onMouseLeave={() => setHovered(null)}>
                 {NAV_LINKS.map((link, i) => (
                   <motion.li
@@ -275,7 +142,7 @@ export default function Navbar() {
                       className="flex items-baseline gap-4 py-1.5 sm:py-2.5 border-b border-[#D0DCF0] group"
                     >
                       <span className="text-xs font-semibold text-[#1B4FD6] tabular-nums">0{i + 1}</span>
-                      <span className="menu-link-text text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0B1530]">
+                      <span data-current={pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href))} className="menu-link-text text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0B1530]">
                         {link.name}
                       </span>
                       <ArrowRight className="ml-auto self-center w-6 h-6 text-[#1B4FD6] -translate-x-3 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
@@ -307,7 +174,7 @@ export default function Navbar() {
                   ))}
                 </div>
               </motion.div>
-            </div>
+            </nav>
 
             <div className="max-w-6xl w-full mx-auto pt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between">
               <p className="text-xs text-[#4A5B7A]">Press Esc to close</p>

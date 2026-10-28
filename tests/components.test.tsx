@@ -7,10 +7,11 @@ import CountUp from "@/components/CountUp";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
 
 describe("Navbar", () => {
-  it("shows the main pages and no Products entry", () => {
+  it("shows the main pages and no Products entry once the menu is open", async () => {
     render(<Navbar />);
-    const nav = screen.getAllByRole("navigation")[0];
-    const labels = [...nav.querySelectorAll("a")].map((a) => a.textContent?.trim());
+    await userEvent.setup().click(screen.getAllByRole("button")[0]);
+    const nav = screen.getByRole("navigation", { name: "Main" });
+    const labels = [...nav.querySelectorAll("a")].map((a) => a.textContent?.trim().replace(/^\d+/, ""));
     expect(labels).toEqual(expect.arrayContaining(["HOME", "ABOUT", "TRAINING", "CONTACT US"]));
     expect(labels.some((l) => /product/i.test(l ?? ""))).toBe(false);
   });
