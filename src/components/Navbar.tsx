@@ -15,14 +15,6 @@ const NAV_LINKS = [
   { name: "CONTACT US", href: "/contact" },
 ];
 
-const SOLUTIONS_ITEMS = [
-  { num: "01", name: "Aluminium Windows & Doors", href: "/solutions#windows-doors", desc: "1D linear saw nesting & dealer pricing" },
-  { num: "02", name: "Glass Processing & IGUs", href: "/solutions#glass", desc: "2D sheet optimization & A-frame stillages" },
-  { num: "03", name: "Aluminium Fabrication", href: "/solutions#fabrication", desc: "Off-cut recovery vault (>90% reuse)" },
-  { num: "04", name: "Glazing Contractors", href: "/solutions#contractors", desc: "Site survey audit & subcontractor snags" },
-  { num: "05", name: "Dealer Networks", href: "/solutions#dealers", desc: "Instant retail quotes & factory order sync" },
-];
-
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -125,9 +117,9 @@ export default function Navbar() {
             animate={{ clipPath: "circle(150% at calc(100% - 3rem) 2.5rem)" }}
             exit={{ clipPath: "circle(0% at calc(100% - 3rem) 2.5rem)" }}
             transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 bg-[#F2F7FF] pt-24 px-6 sm:px-10 pb-8 overflow-y-auto flex flex-col justify-between font-sans"
+            className="fixed inset-0 z-40 bg-[#F2F7FF] pt-24 px-6 sm:px-10 pb-8 overflow-y-auto flex flex-col justify-center font-sans"
           >
-            <nav aria-label="Main" className="max-w-6xl w-full mx-auto grid lg:grid-cols-[1.4fr_1fr] gap-10 lg:gap-16">
+            <nav aria-label="Main" className="max-w-3xl w-full mx-auto">
               <ul className="menu-links" onMouseLeave={() => setHovered(null)}>
                 {NAV_LINKS.map((link, i) => (
                   <motion.li
@@ -153,40 +145,8 @@ export default function Navbar() {
                 ))}
               </ul>
 
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="space-y-4 lg:pt-3"
-              >
-                <span className="text-[11px] uppercase text-[#4A5B7A] tracking-widest font-bold block">Solutions</span>
-                <div className="grid gap-2">
-                  {SOLUTIONS_ITEMS.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="group flex items-start gap-3 p-3 bg-[#FFFFFF] border border-[#D0DCF0] rounded-xl hover:border-[#1B4FD6] transition-colors"
-                    >
-                      <span className="text-[11px] font-semibold text-[#1B4FD6] pt-0.5">{item.num}</span>
-                      <span>
-                        <span className="block text-sm font-semibold text-[#0B1530]">{item.name}</span>
-                        <span className="block text-xs text-[#4A5B7A] mt-0.5">{item.desc}</span>
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </motion.div>
             </nav>
 
-            <div className="max-w-6xl w-full mx-auto pt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between">
-              <p className="text-xs text-[#4A5B7A]">Press Esc to close</p>
-              <Link
-                href="/request-demo"
-                className="px-8 py-3 bg-[#1B4FD6] text-white font-bold text-xs uppercase tracking-wider text-center rounded-full"
-              >
-                REQUEST A DEMO →
-              </Link>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

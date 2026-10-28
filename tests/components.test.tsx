@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CountUp from "@/components/CountUp";
-import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
 
 describe("Navbar", () => {
   it("shows the main pages and no Products entry once the menu is open", async () => {
@@ -17,18 +16,16 @@ describe("Navbar", () => {
   });
 });
 
-describe("Navbar on phones", () => {
-  it("opens a menu that lists every solution", async () => {
+describe("Navbar menu", () => {
+  it("opens a menu of the five pages and closes on Escape", async () => {
     const user = userEvent.setup();
     render(<Navbar />);
-    // The menu button is the only button in the header before the menu opens.
     await user.click(screen.getAllByRole("button")[0]);
     const menu = document.querySelector("div.fixed") as HTMLElement;
     expect(menu).toBeTruthy();
-    expect(within(menu).getAllByRole("link").length).toBeGreaterThanOrEqual(INDUSTRY_SOLUTIONS.length);
-    for (const s of INDUSTRY_SOLUTIONS) {
-      expect(menu.querySelector(`a[href="/solutions#${s.id}"]`)).not.toBeNull();
-    }
+    expect(within(menu).getAllByRole("link")).toHaveLength(5);
+    await user.keyboard("{Escape}");
+    expect(screen.getAllByRole("button")[0]).toHaveAttribute("aria-expanded", "false");
   });
 });
 
