@@ -32,6 +32,10 @@
 
   body {
     background-color: var(--bg);
+    background-image:
+      radial-gradient(1100px 600px at 50% -10%, rgba(59, 130, 246, 0.14), transparent 60%),
+      radial-gradient(800px 500px at 100% 40%, rgba(125, 211, 252, 0.10), transparent 60%);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: var(--font-sans);
     font-weight: 500;
@@ -83,22 +87,51 @@ nextjs-portal, #nextjs-dev-tools, [data-nextjs-dev-tools], [data-nextjs-toast], 
 .rounded-xl { border-radius: 14px; }
 .rounded-2xl { border-radius: 20px; }
 
+/* Sky-blue light behind the page (static): this is what gives the blue its brightness */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 32% at 12% 18%, rgba(92, 200, 255, 0.38), transparent 70%),
+    radial-gradient(34% 30% at 88% 12%, rgba(150, 180, 230, 0.45), transparent 70%),
+    radial-gradient(40% 36% at 78% 78%, rgba(125, 211, 252, 0.22), transparent 70%),
+    radial-gradient(34% 30% at 8% 88%, rgba(205, 222, 250, 0.55), transparent 70%);
+  filter: blur(30px);
+}
+
+/* Sections on the page colour let that light through; tinted bands stay softly blue */
+[class~="bg-[#F2F7FF]"]:not(body):not(header):not(.fixed) { background-color: transparent !important; }
+[class~="bg-[#E3EEFC]"] { background-color: rgba(227, 238, 252, 0.55) !important; }
+
+/* White cards: solid, with blue-tinted shadows */
 [class~="bg-[#FFFFFF]"] {
-  box-shadow: 0 1px 2px rgba(11, 27, 80, 0.05), 0 10px 28px -18px rgba(11, 27, 80, 0.18);
+  box-shadow: 0 1px 2px rgba(11, 27, 80, 0.08), 0 22px 48px -26px rgba(11, 27, 80, 0.32);
   transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
 }
 a[class~="bg-[#FFFFFF]"]:hover, button[class~="bg-[#FFFFFF]"]:hover, [class~="group"][class~="bg-[#FFFFFF]"]:hover {
   transform: translateY(-2px);
-  box-shadow: 0 1px 2px rgba(11, 27, 80, 0.06), 0 18px 36px -18px rgba(11, 27, 80, 0.28);
+  box-shadow: 0 1px 2px rgba(11, 27, 80, 0.1), 0 30px 60px -26px rgba(11, 27, 80, 0.42);
 }
 
-/* Solid accent buttons and chips */
-[class~="bg-[#1B4FD6]"] { color: #fff !important; }
+/* Primary buttons and chips: the bright sky-to-cobalt gradient */
+[class~="bg-[#1B4FD6]"] {
+  background-image: linear-gradient(135deg, #5CC8FF 0%, #2F6BF0 45%, #102F9E 100%);
+  color: #fff !important;
+  box-shadow: 0 6px 24px -8px rgba(27, 79, 214, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
 [class~="bg-[#1B4FD6]"] * { color: inherit; }
-[class~="bg-[#1B4FD6]"]:hover { background-color: var(--accent-strong); }
+[class~="bg-[#1B4FD6]"]:hover { filter: brightness(1.08); }
 
-/* Call-to-action band */
-.cta-light { background: var(--surface); border-top: 1px solid var(--line); }
+/* Call-to-action band: pale to sky blue */
+.cta-light {
+  background:
+    radial-gradient(60% 90% at 15% 0%, rgba(255, 255, 255, 0.85), transparent 65%),
+    linear-gradient(135deg, #E6F0FF 0%, #C3DAFB 55%, #9CC3F7 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+}
 
 /* ===================================================================
    Motion: reveals, micro-interactions, page transitions
@@ -166,7 +199,7 @@ a:hover > svg:last-child, button:hover > svg:last-child { transform: translateX(
 /* ===================================================================
    Header
    =================================================================== */
-header { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); box-shadow: 0 1px 0 var(--line); }
+header { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); box-shadow: 0 10px 30px -22px rgba(11, 27, 80, 0.35); }
 footer { padding-bottom: env(safe-area-inset-bottom); }
 
 /* ===================================================================
