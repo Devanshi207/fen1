@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { submitEnquiry, type SubmitState } from "@/lib/submitEnquiry";
 import KineticHeading from "@/components/KineticHeading";
-import { ChoiceField, TextAreaField, TextField } from "@/components/Field";
+import { Blank, Pick, TextAreaField } from "@/components/Field";
 import { GALLERY } from "@/data/gallery";
 
 const BUSINESS_TYPES = [
@@ -76,30 +76,33 @@ export default function RequestDemoPage() {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Request a demo</h1>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <h1 className="text-xs font-bold uppercase tracking-widest text-[#1B4FD6]">Request a demo</h1>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-                <TextField label="Full name" required value={formData.name} onChange={set("name")} />
-                <TextField label="Company" required value={formData.company} onChange={set("company")} />
-                <TextField label="Work email" type="email" required value={formData.email} onChange={set("email")} />
-                <TextField label="Phone / mobile" type="tel" required value={formData.phone} onChange={set("phone")} />
-              </div>
+              {/* The form reads as a sentence the visitor completes */}
+              <p className="sentence text-xl sm:text-2xl leading-[2.3] sm:leading-[2.2] font-semibold text-[#0B1530]">
+                Hello, I&apos;m{" "}
+                <Blank label="Full name" placeholder="your name" required value={formData.name} onChange={set("name")} wide />{" "}
+                from <Blank label="Company" placeholder="your company" required value={formData.company} onChange={set("company")} wide />. We are a{" "}
+                <Pick
+                  label="Business type"
+                  options={BUSINESS_TYPES}
+                  value={formData.businessType}
+                  onChange={set("businessType")}
+                  otherLabel="Describe your business"
+                />{" "}
+                business{" "}
+                <span className="text-[#7686A6]">
+                  using <Blank label="Current software" placeholder="current software" value={formData.currentSystem} onChange={set("currentSystem")} /> today
+                </span>
+                . I would like to see{" "}
+                <Blank label="Modules you want to see" placeholder="which modules" value={formData.interestedModules} onChange={set("interestedModules")} wide />{" "}
+                in a demo. You can reach me at{" "}
+                <Blank label="Work email" type="email" placeholder="email" required value={formData.email} onChange={set("email")} wide /> or on{" "}
+                <Blank label="Phone / mobile" type="tel" placeholder="phone" required value={formData.phone} onChange={set("phone")} />.
+              </p>
 
-              <ChoiceField
-                label="Business type"
-                options={BUSINESS_TYPES}
-                value={formData.businessType}
-                otherLabel="Describe your business"
-                onChange={set("businessType")}
-              />
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-                <TextField label="Current software" value={formData.currentSystem} onChange={set("currentSystem")} />
-                <TextField label="Modules you want to see" value={formData.interestedModules} onChange={set("interestedModules")} />
-              </div>
-
-              <TextAreaField label="Anything specific you want to see?" rows={2} value={formData.message} onChange={set("message")} />
+              <TextAreaField label="Anything specific you want to see? (optional)" rows={2} value={formData.message} onChange={set("message")} />
 
               {status === "error" && (
                 <p role="alert" className="rounded-lg bg-[#FBEAE8] border border-[#E8B9B4] text-[#A85E55] text-sm px-4 py-3">
