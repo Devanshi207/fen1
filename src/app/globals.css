@@ -570,6 +570,40 @@ a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disable
 .mod-tile[data-active="true"] .mod-tile-icon { transform: rotate(-12deg) scale(1.2); }
 @media (prefers-reduced-motion: reduce) { .mod-tile, .mod-tile::before, .mod-tile-icon { transition: none; } }
 
+/* ---- Alternative shapes for review (?shape=hex | card | tab | rows) ---- */
+/* Hexagon */
+.mod-grid[data-shape="hex"] { gap: 0.4rem; }
+.mod-grid[data-shape="hex"] .mod-tile { width: clamp(6.6rem, 11vw, 8.2rem); aspect-ratio: 0.9; border: 0; border-radius: 0; background: #cdd9ef; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); padding: 0.9rem 0.5rem; }
+.mod-grid[data-shape="hex"] .mod-tile::after { content: ""; position: absolute; inset: 1px; z-index: -2; background: #fff; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+.mod-grid[data-shape="hex"] .mod-tile[data-active="true"] { box-shadow: none; transform: scale(1.06); background: #1b4fd6; }
+
+/* Tall card */
+.mod-grid[data-shape="card"] { justify-content: flex-start; gap: 0.8rem; }
+.mod-grid[data-shape="card"] .mod-tile { width: clamp(7.2rem, 12vw, 9rem); aspect-ratio: 3 / 4; border-radius: 0.6rem; align-items: flex-start; justify-content: space-between; text-align: left; padding: 0.8rem; }
+.mod-grid[data-shape="card"] .mod-tile-icon { order: 0; width: 1.4rem; height: 1.4rem; }
+.mod-grid[data-shape="card"] .mod-tile-num { order: 1; font-size: 1.5rem; line-height: 1; letter-spacing: 0; margin-top: auto; opacity: 0.35; }
+.mod-grid[data-shape="card"] .mod-tile-title { order: 2; font-size: 0.74rem; }
+.mod-grid[data-shape="card"] .mod-tile[data-active="true"] { transform: translateY(-6px); }
+
+/* Folder tab */
+.mod-grid[data-shape="tab"] { justify-content: flex-start; gap: 0.8rem; }
+.mod-grid[data-shape="tab"] .mod-tile { width: clamp(9rem, 15vw, 11rem); aspect-ratio: 1.45; border: 0; border-radius: 0; background: #cdd9ef; clip-path: polygon(0 0, 55% 0, 62% 16%, 100% 16%, 100% 100%, 0 100%); align-items: flex-start; justify-content: flex-end; text-align: left; padding: 0.7rem 0.8rem; }
+.mod-grid[data-shape="tab"] .mod-tile::after { content: ""; position: absolute; inset: 1px; z-index: -2; background: #fff; clip-path: polygon(0 0, 55% 0, 62% 16%, 100% 16%, 100% 100%, 0 100%); }
+.mod-grid[data-shape="tab"] .mod-tile-icon { position: absolute; top: 0.45rem; right: 0.6rem; }
+.mod-grid[data-shape="tab"] .mod-tile-num { position: absolute; top: 0.4rem; left: 0.8rem; }
+.mod-grid[data-shape="tab"] .mod-tile[data-active="true"] { box-shadow: none; transform: translateY(-4px); background: #1b4fd6; }
+
+/* Plain rows, no boxes */
+.mod-grid[data-shape="rows"] { display: grid; grid-template-columns: 1fr; gap: 0; max-width: 46rem; }
+@media (min-width: 900px) { .mod-grid[data-shape="rows"] { grid-template-columns: 1fr 1fr; column-gap: 3rem; max-width: none; } }
+.mod-grid[data-shape="rows"] .mod-tile { width: auto; aspect-ratio: auto; border-radius: 0; border: 0; border-bottom: 1px solid #cdd9ef; background: transparent; flex-direction: row; justify-content: flex-start; gap: 1rem; padding: 0.85rem 0.25rem; text-align: left; overflow: visible; }
+.mod-grid[data-shape="rows"] .mod-tile::before { inset: auto 0 -1px 0; height: 2px; transform: scaleX(0); transform-origin: left; background: #1b4fd6; }
+.mod-grid[data-shape="rows"] .mod-tile-num { order: 0; min-width: 1.6rem; font-size: 0.75rem; }
+.mod-grid[data-shape="rows"] .mod-tile-title { order: 1; font-size: 0.95rem; flex: 1; }
+.mod-grid[data-shape="rows"] .mod-tile-icon { order: 2; }
+.mod-grid[data-shape="rows"] .mod-tile[data-active="true"] { transform: translateX(8px); box-shadow: none; }
+.mod-grid[data-shape="rows"] .mod-tile[data-active="true"] .mod-tile-title, .mod-grid[data-shape="rows"] .mod-tile[data-active="true"] .mod-tile-num, .mod-grid[data-shape="rows"] .mod-tile[data-active="true"] .mod-tile-icon { color: #1b4fd6; }
+
 /* Hero photo frame: four project photos take turns (5s each, 20s loop) */
 .hero-frame { position: relative; margin: 0; aspect-ratio: 5 / 4; width: 100%; max-height: 70svh; border-radius: 1.25rem; overflow: hidden; background: #cfe0f7; box-shadow: 0 30px 60px -32px rgba(11, 27, 80, 0.55); }
 .hero-frame-slide { position: absolute; inset: 0; opacity: 0; animation: hero-frame-cycle 20s linear infinite both; }
