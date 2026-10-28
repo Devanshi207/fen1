@@ -4,8 +4,8 @@ import { useId, useState } from "react";
 import type React from "react";
 
 /**
- * Form fields shared by the contact and demo forms: a plain line with the label sitting on it, which lifts out of the
- * way once there is something to read. No boxes, no filled backgrounds.
+ * Fields shared by the contact and demo forms. The forms read as a sentence the visitor completes (`Blank`, `Pick`),
+ * followed by one open text area whose label sits on the line and lifts away once there is something to read.
  */
 const LINE =
   "peer block w-full bg-transparent border-0 border-b border-[#B0C0DD] px-0 pt-6 pb-2 text-base text-[#0B1530] outline-none transition-colors focus:border-[#1B4FD6] focus:border-b-2";
@@ -17,18 +17,6 @@ interface BaseProps {
   value: string;
   onChange: (value: string) => void;
   required?: boolean;
-}
-
-export function TextField({ label, value, onChange, required, type = "text" }: BaseProps & { type?: string }) {
-  const id = useId();
-  return (
-    <div className="relative">
-      <input id={id} type={type} required={required} value={value} placeholder=" " onChange={(e) => onChange(e.target.value)} className={LINE} />
-      <label htmlFor={id} className={LABEL}>
-        {label}
-      </label>
-    </div>
-  );
 }
 
 export function TextAreaField({ label, value, onChange, required, rows = 3 }: BaseProps & { rows?: number }) {
@@ -44,60 +32,6 @@ export function TextAreaField({ label, value, onChange, required, rows = 3 }: Ba
 }
 
 const OTHER = "Other (type your own)";
-
-/**
- * A choice list that also accepts a typed answer: pick "Other" and a text line appears. `value` is always the final
- * answer (the picked option, or whatever was typed), so the caller never needs to know which it was.
- */
-export function ChoiceField({
-  label,
-  options,
-  value,
-  onChange,
-  otherLabel = "Please specify",
-  allowOther = true,
-}: {
-  label: string;
-  options: string[];
-  value: string;
-  onChange: (value: string) => void;
-  otherLabel?: string;
-  allowOther?: boolean;
-}) {
-  const id = useId();
-  const [typing, setTyping] = useState(allowOther && !options.includes(value) && value !== "");
-
-  return (
-    <div className="space-y-2">
-      <div className="relative">
-        <select
-          id={id}
-          value={typing ? OTHER : value}
-          onChange={(e) => {
-            if (e.target.value === OTHER) {
-              setTyping(true);
-              onChange("");
-            } else {
-              setTyping(false);
-              onChange(e.target.value);
-            }
-          }}
-          className={`${LINE} appearance-none pr-6 cursor-pointer`}
-        >
-          {options.map((o) => (
-            <option key={o}>{o}</option>
-          ))}
-          {allowOther && <option>{OTHER}</option>}
-        </select>
-        <label htmlFor={id} className="pointer-events-none absolute left-0 top-2 text-[0.8rem] font-semibold text-[#4A5B7A]">
-          {label}
-        </label>
-        <span aria-hidden="true" className="pointer-events-none absolute right-1 bottom-3.5 h-2 w-2 rotate-45 border-b-2 border-r-2 border-[#4A5B7A]" />
-      </div>
-      {typing && <TextField label={otherLabel} value={value} onChange={onChange} required />}
-    </div>
-  );
-}
 
 /* Inline fields for the sentence-style form: they sit in the line of text and grow with what is typed. */
 const BLANK =
@@ -132,13 +66,15 @@ export function Pick({
   options,
   value,
   onChange,
-  otherLabel,
+  otherLabel = "Please specify",
+  allowOther = true,
 }: {
   label: string;
   options: string[];
   value: string;
   onChange: (value: string) => void;
-  otherLabel: string;
+  otherLabel?: string;
+  allowOther?: boolean;
 }) {
   const [typing, setTyping] = useState(false);
   if (typing) {
@@ -174,7 +110,7 @@ export function Pick({
       {options.map((o) => (
         <option key={o}>{o}</option>
       ))}
-      <option>{OTHER}</option>
+      {allowOther && <option>{OTHER}</option>}
     </select>
   );
 }

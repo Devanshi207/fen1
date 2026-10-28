@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Send, CheckCircle2, Mail } from "lucide-react";
 import { submitEnquiry, type SubmitState } from "@/lib/submitEnquiry";
-import { ChoiceField, TextAreaField, TextField } from "@/components/Field";
+import { Blank, Pick, TextAreaField } from "@/components/Field";
 
 const INDUSTRIES = [
   "Aluminium Window & Door Manufacturer",
@@ -28,6 +28,8 @@ export default function ContactPage() {
     interestedModules: "",
     message: "",
   });
+
+  const set = (key: keyof typeof formData) => (v: string) => setFormData((f) => ({ ...f, [key]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,36 +84,24 @@ export default function ContactPage() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-7">
+              <form onSubmit={handleSubmit} className="space-y-8">
                 <h1 className="text-xs font-bold uppercase tracking-widest text-[#1B4FD6]">Contact us</h1>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-7">
-                  <TextField label="Full name" required value={formData.name} onChange={(v) => setFormData({ ...formData, name: v })} />
-                  <TextField label="Company name" required value={formData.company} onChange={(v) => setFormData({ ...formData, company: v })} />
-                  <TextField label="Work email" type="email" required value={formData.email} onChange={(v) => setFormData({ ...formData, email: v })} />
-                  <TextField label="Phone / mobile" type="tel" required value={formData.phone} onChange={(v) => setFormData({ ...formData, phone: v })} />
-                </div>
+                {/* The form reads as a sentence the visitor completes */}
+                <p className="sentence text-xl sm:text-2xl leading-[2.3] sm:leading-[2.2] font-semibold text-[#0B1530]">
+                  Hi FEN1 team, I&apos;m <Blank label="Full name" placeholder="your name" required value={formData.name} onChange={set("name")} wide /> at{" "}
+                  <Blank label="Company name" placeholder="your company" required value={formData.company} onChange={set("company")} wide />. We are a{" "}
+                  <Pick label="Industry segment" options={INDUSTRIES} value={formData.industry} onChange={set("industry")} otherLabel="Describe your business" /> with{" "}
+                  <Pick label="Company size" options={SIZES} allowOther={false} value={formData.companySize} onChange={set("companySize")} />
+                  <span className="text-[#7686A6]">
+                    , working in <Blank label="Current ERP / software" placeholder="current software" value={formData.currentSoftware} onChange={set("currentSoftware")} /> today
+                  </span>
+                  . We are looking at <Blank label="Modules you are interested in" placeholder="which modules" value={formData.interestedModules} onChange={set("interestedModules")} wide />.
+                  Write to me at <Blank label="Work email" type="email" placeholder="email" required value={formData.email} onChange={set("email")} wide /> or call{" "}
+                  <Blank label="Phone / mobile" type="tel" placeholder="phone" required value={formData.phone} onChange={set("phone")} />.
+                </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-7">
-                  <ChoiceField
-                    label="Industry segment"
-                    options={INDUSTRIES}
-                    value={formData.industry}
-                    otherLabel="Describe your business"
-                    onChange={(v) => setFormData({ ...formData, industry: v })}
-                  />
-                  <ChoiceField
-                    label="Company size"
-                    options={SIZES}
-                    allowOther={false}
-                    value={formData.companySize}
-                    onChange={(v) => setFormData({ ...formData, companySize: v })}
-                  />
-                  <TextField label="Current ERP / software" value={formData.currentSoftware} onChange={(v) => setFormData({ ...formData, currentSoftware: v })} />
-                  <TextField label="Modules you are interested in" value={formData.interestedModules} onChange={(v) => setFormData({ ...formData, interestedModules: v })} />
-                </div>
-
-                <TextAreaField label="Project requirements / goals" value={formData.message} onChange={(v) => setFormData({ ...formData, message: v })} />
+                <TextAreaField label="Project requirements / goals (optional)" rows={3} value={formData.message} onChange={set("message")} />
 
                 {status === "error" && (
                   <p role="alert" className="rounded-lg bg-[#FBEAE8] border border-[#E8B9B4] text-[#A85E55] text-sm px-4 py-3">
