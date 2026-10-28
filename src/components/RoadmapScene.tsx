@@ -68,7 +68,7 @@ export default function RoadmapScene() {
       data-no-reveal
       data-reduce={reduce || undefined}
       className="roadmap"
-      style={{ ["--n" as string]: n, ["--h" as string]: 196 + active * 2.3 }}
+      style={{ ["--n" as string]: n }}
     >
       <div className="roadmap-stage">
         <div className="roadmap-top">

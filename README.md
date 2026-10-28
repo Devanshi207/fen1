@@ -28,8 +28,8 @@ Requires Node 20.19+ (22 recommended).
 
 Run `npm run dev`, then open the **Network** address it prints (for example `http://192.168.0.109:3000`) on a device
 on the same Wi-Fi. `allowedDevOrigins` in `next.config.ts` allows private-network addresses; without it Next.js blocks
-its own scripts for any host but `localhost`, and the page loads with no JavaScript (no fluid background, no
-scroll-driven roadmap). If the page opens but looks "dead", that is the first thing to check. Allow the port in the
+its own scripts for any host but `localhost`, and the page loads with no JavaScript (no scroll-driven
+roadmap, no counters). If the page opens but looks "dead", that is the first thing to check. Allow the port in the
 Windows firewall if the device cannot reach it at all.
 
 ## Configuration
@@ -78,10 +78,9 @@ tests/            Vitest + Testing Library
 
 ## Design and motion
 
-- Light "glass" theme. Colours are hex values used through Tailwind arbitrary classes; `globals.css` holds the
-  glass surfaces, reveal animations and the hero photo crossfade.
-- `FluidBackground` is a WebGL fluid simulation behind the page. It needs WebGL2 float render targets and quietly
-  disables itself when they are not available.
+- Flat, clean light theme: a cool white page, graphite-navy text, one blue accent, solid white cards with hairline borders and soft shadows.
+  Colours are hex values used through Tailwind arbitrary classes plus the tokens at the top of `globals.css`.
+  `scripts/palette.py` swaps the whole palette (blue or petrol teal) in one command.
 - Navigation is one full-screen menu on every screen size: an OPEN MENU / CLOSE MENU button in the header wipes a blue
   panel in from the right, then the five pages and their rules draw in one after another (`Navbar.tsx`). It locks page
   scroll, closes on Escape or a route change, keeps keyboard focus inside, and keeps the wipe and fades (but drops the
@@ -89,9 +88,6 @@ tests/            Vitest + Testing Library
 - Responsive: phones, tablets and desktops share one layout system. From 1700px the root font size steps up (everything is rem-based), so 1080p,
   1440p and 4K screens scale instead of showing a small column. `viewport-fit=cover` plus safe-area padding keeps
   content clear of iPhone notches, and touch devices get 44px hit areas.
-- `FluidBackground` tests whether the GPU can render half-float textures rather than checking extension names, so it
-  runs on iPhones and most Android devices. Phones get a lighter simulation; without WebGL2 a CSS blob animation takes
-  over (`html.no-fluid`).
 - The home page is built as scroll "chapters" (`[data-chapter]`), in the spirit of Webflow showcase sites:
   - `KineticHeading` splits headlines into letters that rise into place (server-rendered, plain text kept for screen readers).
   - `RoadmapScene` pins the screen and swaps the 13 stages as you scroll (progress dots, giant outlined step number).
@@ -114,7 +110,7 @@ tests/            Vitest + Testing Library
 - A parent with `backdrop-filter`, `filter` or `transform` becomes the containing block for `position: fixed`
   children, which breaks full-screen overlays. `globals.css` has a `:has(.fixed.inset-0)` rule that clears them
   while an overlay is open. Keep large page wrappers free of those properties.
-- Do not set `position` or `overflow` from a global glass selector; it breaks absolutely positioned dropdowns.
+- Do not set `position` or `overflow` from a broad global selector; it breaks absolutely positioned dropdowns.
 
 ## Tests
 

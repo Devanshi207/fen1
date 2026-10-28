@@ -17,7 +17,7 @@ const STATS = [
 
 export default function StatsStrip() {
   return (
-    <section id="figures" data-chapter="Figures" data-snap className="figures">
+    <section id="figures" data-chapter="Figures" className="figures">
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
         <p className="figures-eyebrow" data-reveal="up">
           At a glance

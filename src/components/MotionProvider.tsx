@@ -104,16 +104,6 @@ export default function MotionProvider() {
     window.addEventListener("pointermove", onMagnet, { passive: true });
     document.documentElement.addEventListener("mouseleave", release);
 
-    // Card spotlight follows the pointer
-    const onSpot = (e: PointerEvent) => {
-      const card = (e.target as HTMLElement | null)?.closest<HTMLElement>('[class~="bg-[#FFFFFF]"], .stats-bar');
-      if (!card) return;
-      const r = card.getBoundingClientRect();
-      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
-      card.style.setProperty("--my", `${e.clientY - r.top}px`);
-    };
-    window.addEventListener("pointermove", onSpot, { passive: true });
-
     scan();
     check();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -132,8 +122,7 @@ export default function MotionProvider() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      window.removeEventListener("pointermove", onSpot);
-      window.clearInterval(tick);
+        window.clearInterval(tick);
       window.removeEventListener("pointermove", onMagnet);
       document.documentElement.removeEventListener("mouseleave", release);
       release();

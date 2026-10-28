@@ -4,7 +4,6 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
-import FluidBackground from "@/components/FluidBackground";
 import CursorFollower from "@/components/CursorFollower";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-bricolage", display: "swap" });
@@ -51,7 +50,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`h-full antialiased ${display.variable} ${body.variable}`}>
       <body className="min-h-full flex flex-col font-sans bg-[#F2F7FF] text-[#0B1530] selection:bg-[#5CC8FF] selection:text-[#FFFFFF]">
-        <FluidBackground />
         <Navbar />
         <main id="page" className="flex-1 w-full pt-16 sm:pt-20">{children}</main>
         <Footer />

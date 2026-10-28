@@ -30,7 +30,6 @@ export default function RequestDemoPage() {
     <div className="w-full bg-[#F2F7FF] text-[#0B1530] font-sans">
       {/* Header */}
       <section className="pt-20 pb-16 border-b border-[#D0DCF0] bg-[#F2F7FF] relative">
-        <div className="absolute inset-0 bg-cad-grid opacity-30 pointer-events-none" />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 relative z-10">
           <span className="text-xs font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
             LIVE DEMONSTRATION
