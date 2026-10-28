@@ -16,7 +16,7 @@ export default function HomePage() {
   return (
     <div className="snap-page w-full flex flex-col bg-[#F2F7FF] text-[#0B1530] font-sans">
       <ChapterRail />
-      <section id="intro" data-chapter="Intro" data-snap className="relative overflow-hidden flex items-center min-h-svh pt-28 pb-16 lg:pt-24">
+      <section id="intro" data-chapter="Intro" data-snap className="relative overflow-hidden flex items-center min-h-[80svh] pt-28 pb-8 lg:pt-24">
         <HeroBackdrop />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid lg:grid-cols-12 gap-14 lg:gap-8 items-center">
           <div className="lg:col-span-6 space-y-7 text-center lg:text-left">

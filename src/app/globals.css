@@ -467,7 +467,7 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 /* ===================================================================
    Home chapters: figures, word band, statement finale, rail, snapping
    =================================================================== */
-.figures { padding-block: clamp(5rem, 9vw, 8rem); }
+.figures { padding-block: clamp(2.5rem, 5vw, 4rem); }
 .figures-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #1b4fd6; margin-bottom: clamp(1.5rem, 4vw, 3rem); }
 .figures-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 3rem); }
 @media (min-width: 900px) { .figures-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
