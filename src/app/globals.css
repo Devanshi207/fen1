@@ -542,5 +542,8 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 .menu-links > li { transition: opacity 0.3s, filter 0.3s; }
 .menu-links > li[data-dim="true"] { opacity: 0.3; }
 .menu-links a:hover .menu-link-text { color: var(--accent); transform: translateX(10px); }
-.menu-link-text { transition: color 0.3s, transform 0.45s var(--ease); display: inline-block; }
+.menu-link-text { font-family: var(--font-menu), var(--font-display); transition: color 0.3s, transform 0.45s var(--ease); display: inline-block; }
 .menu-link-text[data-current="true"] { color: var(--accent); }
+
+/* The side timeline and cursor furniture stay out of the way while the menu is open */
+[data-menu="open"] .chapter-rail { display: none; }

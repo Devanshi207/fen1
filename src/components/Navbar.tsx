@@ -47,9 +47,11 @@ export default function Navbar() {
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    document.documentElement.dataset.menu = "open";
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      delete document.documentElement.dataset.menu;
     };
   }, [mobileOpen]);
 
@@ -139,10 +141,10 @@ export default function Navbar() {
                       href={link.href}
                       onMouseEnter={() => setHovered(link.name)}
                       onFocus={() => setHovered(link.name)}
-                      className="flex items-baseline gap-4 py-1.5 sm:py-2.5 border-b border-[#D0DCF0] group"
+                      className="flex items-baseline gap-4 py-2 sm:py-3 border-b border-[#D0DCF0] group"
                     >
                       <span className="text-xs font-semibold text-[#1B4FD6] tabular-nums">0{i + 1}</span>
-                      <span data-current={pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href))} className="menu-link-text text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0B1530]">
+                      <span data-current={pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href))} className="menu-link-text text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#0B1530]">
                         {link.name}
                       </span>
                       <ArrowRight className="ml-auto self-center w-6 h-6 text-[#1B4FD6] -translate-x-3 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
