@@ -93,10 +93,10 @@ tests/            Vitest + Testing Library
   - `RoadmapScene` pins the screen and swaps the 13 stages as you scroll (progress dots, giant outlined step number).
   - `ProjectSlabs` stacks full-screen photos that start tilted, straighten, fill their outlined titles and recede when covered.
   - `WordBand` slides two rows of giant outlined words against each other; `ScrollWords` lights the closing statement word by word.
-  - `ChapterRail` is the dot timeline on the right edge; `CursorFollower` adds a trailing ring (fine pointers only);
+  - `ChapterRail` is the dot timeline on the right edge;
     pill buttons lean toward the mouse. On desktop the intro, figures and finale snap into place (`scroll-snap-type: y proximity`).
   - The scroll maths for each lives in `src/lib/` (`roadmap`, `slabs`, `scrollwords`, `chapters`, `magnet`, `stagger`) and is unit-tested.
-  - With reduced motion the scenes stay (so nothing is lost) but drop the large movement: stages cross-fade, photos do not tilt, the cursor ring and magnetic pull are off.
+  - With reduced motion the scenes stay (so nothing is lost) but drop the large movement: stages cross-fade, photos do not tilt, the magnetic pull is off.
 - `MotionProvider` drives the staggered scroll: the top-most element of each group (a card, a heading, a paragraph, a
   list item, a pill button) reveals in order, with the delay worked out from the layout at the moment it appears, so a
   grid cascades left to right row by row, alternate columns travel further, and the gallery photos drift at different

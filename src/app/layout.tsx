@@ -4,7 +4,6 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
-import CursorFollower from "@/components/CursorFollower";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-bricolage", display: "swap" });
 const outline = Anton({ subsets: ["latin"], weight: "400", variable: "--font-outline", display: "swap" });
@@ -55,7 +54,6 @@ export default function RootLayout({
         <main id="page" className="flex-1 w-full pt-16 sm:pt-20">{children}</main>
         <Footer />
         <MotionProvider />
-        <CursorFollower />
       </body>
     </html>
   );

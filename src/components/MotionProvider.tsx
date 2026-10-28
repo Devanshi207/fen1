@@ -40,7 +40,9 @@ export default function MotionProvider() {
     const check = () => {
       const limit = window.innerHeight * 0.94;
       pending.forEach((el) => {
-        if (el.getBoundingClientRect().top < limit) {
+        // Ignore the start offset of staggered columns, or a card that begins lower would wait for extra scrolling.
+        const offset = el.classList.contains("reveal-alt") && !el.classList.contains("in") ? 60 : 0;
+        if (el.getBoundingClientRect().top - offset < limit) {
           // Work out the delay from the layout as it is right now (columns change with window width).
           if (el.dataset.delay === undefined && el.parentElement) {
             const columns = columnCount(getComputedStyle(el.parentElement).gridTemplateColumns);

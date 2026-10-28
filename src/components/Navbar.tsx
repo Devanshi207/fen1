@@ -27,13 +27,17 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      document.documentElement.style.setProperty("--read", max > 0 ? String(Math.min(1, window.scrollY / max)) : "0");
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -72,7 +76,10 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Architectural Center Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 bg-[#E3EEFC] px-3 py-1.5 rounded-full border border-[#D0DCF0] shadow-xs">
+          <nav
+            className="hidden lg:flex items-center gap-1 bg-[#E3EEFC] px-3 py-1.5 rounded-full border border-[#D0DCF0] shadow-xs"
+            onMouseLeave={() => setHovered(null)}
+          >
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
 
@@ -83,20 +90,30 @@ export default function Navbar() {
                   <div
                     key={link.name}
                     className="relative"
-                    onMouseEnter={() => setActiveDropdown("solutions")}
+                    onMouseEnter={() => {
+                      setActiveDropdown("solutions");
+                      setHovered(link.name);
+                    }}
                     onMouseLeave={() => setActiveDropdown(null)}
                   >
                     <Link
                       href={link.href}
                       onClick={() => setActiveDropdown(null)}
                       className={cn(
-                        "px-3.5 py-1 text-xs font-medium tracking-wide transition-all rounded-full flex items-center gap-1 cursor-pointer",
+                        "relative px-3.5 py-1 text-xs font-medium tracking-wide transition-all rounded-full flex items-center gap-1 cursor-pointer",
                         isActive || isOpen
                           ? "text-[#0B1530] bg-[#FFFFFF] shadow-xs border border-[#D0DCF0]"
                           : "text-[#4A5B7A] hover:text-[#0B1530]"
                       )}
                     >
-                      <span>{link.name}</span>
+                      {hovered === link.name && !isActive && (
+                      <motion.span
+                        layoutId="navHover"
+                        className="absolute inset-0 rounded-full bg-[#FFFFFF]/70 -z-10"
+                        transition={{ type: "spring", stiffness: 500, damping: 36 }}
+                      />
+                    )}
+<span>{link.name}</span>
                       <ChevronDown className={cn("w-3 h-3 transition-transform duration-200", isOpen && "rotate-180")} />
                     </Link>
 
@@ -156,6 +173,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
+                  onMouseEnter={() => setHovered(link.name)}
                   className={cn(
                     "px-3.5 py-1 text-xs font-medium tracking-wide transition-all rounded-full relative",
                     isActive
@@ -170,7 +188,14 @@ export default function Navbar() {
                       transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     />
                   )}
-                  {link.name}
+                  {hovered === link.name && !isActive && (
+                      <motion.span
+                        layoutId="navHover"
+                        className="absolute inset-0 rounded-full bg-[#FFFFFF]/70 -z-10"
+                        transition={{ type: "spring", stiffness: 500, damping: 36 }}
+                      />
+                    )}
+{link.name}
                 </Link>
               );
             })}
@@ -196,6 +221,11 @@ export default function Navbar() {
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
+        <span
+          aria-hidden="true"
+          className="absolute left-0 bottom-0 h-[2px] w-full origin-left bg-gradient-to-r from-[#5CC8FF] to-[#1B4FD6]"
+          style={{ transform: "scaleX(var(--read, 0))" }}
+        />
       </header>
 
       {/* Fullscreen Mobile Architectural Menu Drawer */}

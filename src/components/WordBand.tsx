@@ -5,7 +5,8 @@ import { useEffect, useRef } from "react";
 const WORDS = ["Glass", "Aluminium", "Windows"];
 
 /**
- * Two rows of giant outlined words that slide in opposite directions as the page scrolls.
+ * Two horizontally scrollable rows of giant outlined words. They slide in opposite directions as the page scrolls,
+ * and can also be swiped, dragged or scrolled sideways by hand.
  * Decorative only: hidden from assistive technology, and still when reduced motion is requested.
  */
 export default function WordBand() {
@@ -19,17 +20,36 @@ export default function WordBand() {
       raf = 0;
       const r = el.getBoundingClientRect();
       // 0 when the band enters at the bottom of the screen, rising as it travels up
-      el.style.setProperty("--bx", `${((window.innerHeight - r.top) * 0.45).toFixed(1)}px`);
+      const travel = (window.innerHeight - r.top) * 0.45;
+      el.querySelectorAll<HTMLElement>(".wordband-row").forEach((row, i) => {
+        const max = row.scrollWidth - row.clientWidth;
+        row.scrollLeft = i === 1 ? Math.max(0, max - travel) : Math.min(max, travel);
+      });
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
+    let drag: { row: HTMLElement; x: number; left: number } | null = null;
+    const down = (e: PointerEvent) => {
+      const row = (e.target as HTMLElement).closest<HTMLElement>(".wordband-row");
+      if (row && e.pointerType === "mouse") drag = { row, x: e.clientX, left: row.scrollLeft };
+    };
+    const move = (e: PointerEvent) => {
+      if (drag) drag.row.scrollLeft = drag.left - (e.clientX - drag.x);
+    };
+    const up = () => (drag = null);
+    el.addEventListener("pointerdown", down);
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      el.removeEventListener("pointerdown", down);
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
       cancelAnimationFrame(raf);
     };
   }, []);

@@ -464,7 +464,7 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 .slabs[data-reduce] .slab-fill { clip-path: none; }
 
 /* ===================================================================
-   Home chapters: figures, word band, statement finale, rail, cursor, snapping
+   Home chapters: figures, word band, statement finale, rail, snapping
    =================================================================== */
 .figures { padding-block: clamp(5rem, 9vw, 8rem); }
 .figures-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #1b4fd6; margin-bottom: clamp(1.5rem, 4vw, 3rem); }
@@ -481,9 +481,10 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 .figure-label { margin-top: 0.9rem; font-size: clamp(0.95rem, 1.4vw, 1.25rem); font-weight: 700; color: #0b1530; }
 .figure-note { margin-top: 0.2rem; font-size: clamp(0.8rem, 1.1vw, 0.95rem); color: #4a5b7a; }
 
-.wordband { overflow: hidden; display: grid; gap: 0.25rem; padding-block: clamp(1.5rem, 4vw, 3rem); --bx: 0px; user-select: none; }
-.wordband-row { display: flex; width: max-content; will-change: transform; transform: translate3d(calc(-8% - var(--bx)), 0, 0); }
-.wordband-row.is-reverse { transform: translate3d(calc(-45% + var(--bx)), 0, 0); }
+.wordband { display: grid; gap: 0.25rem; padding-block: clamp(1.5rem, 4vw, 3rem); user-select: none; }
+.wordband-row { display: flex; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; cursor: grab; }
+.wordband-row::-webkit-scrollbar { display: none; }
+.wordband-row > * { flex: none; }
 .wordband-item {
   display: inline-flex;
   align-items: center;
@@ -519,17 +520,6 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 .chapter-dot { width: 9px; height: 9px; border-radius: 9999px; border: 1.5px solid #1b4fd6; background: transparent; transition: transform 0.45s var(--ease), background 0.35s, box-shadow 0.35s; }
 .chapter-rail a.is-active .chapter-dot { background: #1b4fd6; transform: scale(1.5); box-shadow: 0 0 0 5px rgba(92, 200, 255, 0.3); }
 @media (max-width: 1023px), (pointer: coarse) { .chapter-rail { display: none; } }
-
-.cursor-ring, .cursor-dot { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 100; opacity: 0; transition: opacity 0.3s; }
-.cursor-ring {
-  width: 40px; height: 40px; margin: -20px 0 0 -20px; border: 1.5px solid rgba(27, 79, 214, 0.75); border-radius: 9999px;
-  transition: opacity 0.3s, width 0.35s var(--ease), height 0.35s var(--ease), margin 0.35s var(--ease), background-color 0.3s;
-}
-.cursor-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 9999px; background: #1b4fd6; }
-.cursor-ring[data-on="true"], .cursor-dot[data-on="true"] { opacity: 1; }
-.cursor-ring[data-hot="true"] { width: 78px; height: 78px; margin: -39px 0 0 -39px; background: rgba(27, 79, 214, 0.12); }
-.cursor-ring[data-down="true"] { width: 28px; height: 28px; margin: -14px 0 0 -14px; }
-@media (pointer: coarse), (hover: none) { .cursor-ring, .cursor-dot { display: none; } }
 
 /* Snap the intro, figures and finale into place on desktop; the pinned scenes keep their own scroll logic */
 @media (pointer: fine) and (min-width: 1024px) {
