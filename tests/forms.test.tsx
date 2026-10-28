@@ -12,7 +12,7 @@ async function fillAndSubmit(submitName: RegExp) {
     const el = box as HTMLInputElement;
     if (el.type === "email") await user.type(el, "asha@raoglazing.com");
     else if (el.type === "tel") await user.type(el, "12345");
-    else if (el.tagName === "INPUT" && el.required) await user.type(el, "Rao");
+    else if (el.tagName === "INPUT" && el.required && !el.value) await user.type(el, "Rao");
   }
   const tel = document.querySelector('input[type="tel"]') as HTMLInputElement | null;
   if (tel && !tel.value) await user.type(tel, "12345");
@@ -49,5 +49,22 @@ describe.each([
     expect(await screen.findByRole("alert")).toHaveTextContent(/could not be sent/i);
     // The form stays on screen so nothing the visitor typed is lost.
     expect(screen.getAllByRole("textbox").length).toBeGreaterThan(0);
+  });
+});
+
+describe("Business type on the demo form", () => {
+  it("lets the visitor type their own when the list has no match", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<RequestDemoPage />);
+
+    expect(screen.queryByLabelText("Describe your business")).not.toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText("Business type"), "Other (type your own)");
+    await user.type(screen.getByLabelText("Describe your business"), "Skylight maker");
+
+    await fillAndSubmit(/request demo/i);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).details.businessType).toBe("Skylight maker");
   });
 });

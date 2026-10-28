@@ -547,3 +547,8 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 
 /* The side timeline and cursor furniture stay out of the way while the menu is open */
 [data-menu="open"] .chapter-rail { display: none; }
+
+/* Header links: an underline draws in on hover and stays on the current page */
+.nav-link { position: relative; padding-block: 0.4rem; }
+.nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease); }
+.nav-link:hover::after, .nav-link[aria-current="page"]::after { transform: scaleX(1); }

@@ -82,8 +82,25 @@ export default function Navbar() {
             </div>
           </Link>
 
+          {/* Page links, one click away on wide screens (the full-screen menu is for smaller ones) */}
+          <nav aria-label="Primary" className="hidden lg:flex items-center gap-8 mx-auto">
+            {NAV_LINKS.map((link) => {
+              const current = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  aria-current={current ? "page" : undefined}
+                  className={cn("nav-link text-xs font-semibold tracking-wider", current ? "text-[#1B4FD6]" : "text-[#4A5B7A] hover:text-[#0B1530]")}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
+          </nav>
+
           {/* Right Action CTAs */}
-          <div className="hidden sm:flex ml-auto items-center gap-2.5">
+          <div className="hidden sm:flex ml-auto lg:ml-0 items-center gap-2.5">
             <Link
               href="/request-demo"
               className="px-4 py-2 rounded-full bg-[#1B4FD6] text-[#0B1530] text-xs font-medium tracking-wide transition-all duration-300 hover:bg-[#BFD3F0] shadow-xs flex items-center gap-1.5"
@@ -96,7 +113,7 @@ export default function Navbar() {
           {/* Menu button: three lines that fold into a cross */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="menu-toggle ml-auto sm:ml-3 flex items-center gap-2.5 pl-3.5 pr-3 py-2 rounded-full bg-[#E3EEFC] border border-[#D0DCF0] text-[#0B1530] hover:bg-[#FFFFFF] transition-colors"
+            className="menu-toggle lg:hidden ml-auto sm:ml-3 flex items-center gap-2.5 pl-3.5 pr-3 py-2 rounded-full bg-[#E3EEFC] border border-[#D0DCF0] text-[#0B1530] hover:bg-[#FFFFFF] transition-colors"
             aria-label="Toggle Navigation"
             aria-expanded={mobileOpen}
             data-open={mobileOpen}
