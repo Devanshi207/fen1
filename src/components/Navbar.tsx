@@ -66,7 +66,7 @@ export default function Navbar() {
             : "bg-[#F2F7FF] py-4 border-b border-[#D0DCF0]"
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 flex items-center justify-between">
           {/* FEN1 Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="relative w-7 h-7 bg-[#1B4FD6] rounded-sm flex items-center justify-center overflow-hidden shadow-xs">
