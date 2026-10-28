@@ -23,14 +23,14 @@ const OTHER = "Other (type your own)";
 
 // Weights are set explicitly (font-[400] / font-[500]) because the site's global scale lifts the named Tailwind weights.
 const BOX =
-  "w-full rounded-lg border border-[#C5D6F0] bg-[#FFFFFF] px-4 py-3 text-[0.95rem] font-[400] leading-6 text-[#0B1530] outline-none transition placeholder:text-[#7686A6] focus:border-[#1B4FD6] focus:ring-4 focus:ring-[#1B4FD6]/15";
-const LABEL = "mb-1.5 block text-[0.85rem] font-[500] text-[#4A5B7A]";
+  "w-full rounded-md border border-[#C5D6F0] bg-[#FFFFFF] px-3 py-1.5 text-[0.85rem] font-[400] leading-5 text-[#0B1530] outline-none transition placeholder:text-[#7686A6] focus:border-[#1B4FD6] focus:ring-4 focus:ring-[#1B4FD6]/15";
+const LABEL = "mb-1 block text-[0.75rem] font-[500] text-[#4A5B7A]";
 
 function Choice({ field, value, set }: { field: FieldSpec; value: string; set: (v: string) => void }) {
   const id = useId();
   const [typing, setTyping] = useState(false);
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <div>
         <label htmlFor={id} className={LABEL}>
           {field.label}
@@ -48,14 +48,14 @@ function Choice({ field, value, set }: { field: FieldSpec; value: string; set: (
                 set(e.target.value);
               }
             }}
-            className={`${BOX} cursor-pointer appearance-none pr-10`}
+            className={`${BOX} cursor-pointer appearance-none pr-8`}
           >
             {(field.options ?? []).map((o) => (
               <option key={o}>{o}</option>
             ))}
             {field.allowOther && <option>{OTHER}</option>}
           </select>
-          <span aria-hidden="true" className="pointer-events-none absolute right-4 top-1/2 h-2 w-2 -translate-y-[70%] rotate-45 border-b-2 border-r-2 border-[#7686A6]" />
+          <span aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-1.5 w-1.5 -translate-y-[70%] rotate-45 border-b-2 border-r-2 border-[#7686A6]" />
         </div>
       </div>
       {typing && (
@@ -82,7 +82,7 @@ function Field({ field, value, onChange }: { field: FieldSpec; value: string; on
         {!field.required && <span className="text-[#7686A6]"> (optional)</span>}
       </label>
       {field.type === "area" ? (
-        <textarea rows={4} {...common} onChange={(e) => onChange(e.target.value)} />
+        <textarea rows={3} {...common} onChange={(e) => onChange(e.target.value)} />
       ) : (
         <input type={field.type ?? "text"} {...common} onChange={(e) => onChange(e.target.value)} />
       )}
@@ -139,9 +139,9 @@ export default function EnquiryForm({
         e.preventDefault();
         send();
       }}
-      className="space-y-6"
+      className="space-y-4"
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
         {fields.map((f) => (
           <div key={f.key} className={f.half ? "" : "sm:col-span-2"}>
             {f.type === "choice" ? (
@@ -162,7 +162,7 @@ export default function EnquiryForm({
       <button
         type="submit"
         disabled={status === "sending"}
-        className="w-full sm:w-auto px-10 py-4 bg-[#1B4FD6] text-white font-semibold uppercase text-xs tracking-wider rounded-full flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+        className="w-full sm:w-auto px-8 py-2.5 bg-[#1B4FD6] text-white font-semibold uppercase text-[0.7rem] tracking-wider rounded-full flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
       >
         <span>{status === "sending" ? "Sending..." : submitLabel}</span>
         <ArrowRight className="w-4 h-4" />

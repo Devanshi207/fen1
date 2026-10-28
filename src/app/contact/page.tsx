@@ -67,8 +67,8 @@ export default function ContactPage() {
           </div>
 
           {/* Right Col: Consultation Form */}
-          <div className="lg:col-span-7 space-y-6">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Contact us</h1>
+          <div className="lg:col-span-7 space-y-4 max-w-xl">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Contact us</h1>
             <EnquiryForm
               kind="contact"
               fields={FIELDS}
