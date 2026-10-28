@@ -1,53 +1,135 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
+import { AnimatePresence, MotionConfig, motion, useReducedMotion, type Variants } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { name: "HOME", href: "/" },
-  { name: "SOLUTIONS", href: "/solutions", type: "solutions" },
+  { name: "SOLUTIONS", href: "/solutions" },
   { name: "ABOUT", href: "/about" },
   { name: "TRAINING", href: "/training" },
   { name: "CONTACT US", href: "/contact" },
 ];
 
 const SOLUTIONS_ITEMS = [
-  { num: "01", name: "Aluminium Windows & Doors", href: "/solutions#windows-doors", desc: "1D linear saw nesting & dealer pricing" },
-  { num: "02", name: "Glass Processing & IGUs", href: "/solutions#glass", desc: "2D sheet optimization & A-frame stillages" },
-  { num: "03", name: "Aluminium Fabrication", href: "/solutions#fabrication", desc: "Off-cut recovery vault (>90% reuse)" },
-  { num: "04", name: "Glazing Contractors", href: "/solutions#contractors", desc: "Site survey audit & subcontractor snags" },
-  { num: "05", name: "Dealer Networks", href: "/solutions#dealers", desc: "Instant retail quotes & factory order sync" },
+  { name: "Aluminium Windows & Doors", href: "/solutions#windows-doors" },
+  { name: "Glass Processing & IGUs", href: "/solutions#glass" },
+  { name: "Aluminium Fabrication", href: "/solutions#fabrication" },
+  { name: "Glazing Contractors", href: "/solutions#contractors" },
+  { name: "Dealer Networks", href: "/solutions#dealers" },
 ];
+
+// Fast start, slow finish: the panel wipes across and the lines draw in with the same curve.
+const EASE = [0.77, 0, 0.18, 1] as const;
+
+const ROW_STEP = 0.09;
+const ROWS_START = 0.35;
+
+const list: Variants = {
+  hidden: {},
+  show: { transition: { delayChildren: ROWS_START, staggerChildren: ROW_STEP } },
+  exit: { transition: { staggerChildren: 0.04, staggerDirection: -1 } },
+};
+
+// People who prefer reduced motion keep the wipe, the fades and the drawn lines, but nothing slides vertically.
+const rowVariants = (travel: number): Variants => ({
+  hidden: { opacity: 0, y: travel },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
+  exit: { opacity: 0, y: -travel / 2, transition: { duration: 0.25 } },
+});
+
+const rule: Variants = {
+  hidden: { scaleX: 0 },
+  show: { scaleX: 1, transition: { duration: 0.9, ease: EASE } },
+  exit: { scaleX: 0, transition: { duration: 0.3 } },
+};
+
+// The block under the list arrives after the last menu row.
+const tailVariants = (travel: number): Variants => ({
+  hidden: { opacity: 0, y: travel },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: EASE, delay: ROWS_START + NAV_LINKS.length * ROW_STEP + 0.1 },
+  },
+  exit: { opacity: 0, transition: { duration: 0.2 } },
+});
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const reduce = useReducedMotion();
+  const row = rowVariants(reduce ? 0 : 28);
+  const tail = tailVariants(reduce ? 0 : 20);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menus when the route changes (adjusting state during render, as React recommends)
+  // Close the menu when the route changes (adjusting state during render, as React recommends)
   const [lastPath, setLastPath] = useState(pathname);
   if (lastPath !== pathname) {
     setLastPath(pathname);
-    setMobileOpen(false);
-    setActiveDropdown(null);
+    setOpen(false);
   }
 
+  const close = useCallback(() => setOpen(false), []);
+
+  // While open: lock page scroll, close on Escape, keep keyboard focus inside the menu, hand focus back on close.
+  useEffect(() => {
+    if (!open) return;
+    const root = document.documentElement;
+    const previousOverflow = root.style.overflow;
+    root.style.overflow = "hidden";
+
+    const toggle = toggleRef.current;
+    const focusTimer = window.setTimeout(() => panelRef.current?.querySelector<HTMLElement>("a")?.focus(), 120);
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        close();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const items = [toggle, ...(panelRef.current?.querySelectorAll<HTMLElement>("a[href]") ?? [])].filter(
+        (el): el is HTMLElement => !!el
+      );
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.removeEventListener("keydown", onKey);
+      root.style.overflow = previousOverflow;
+      toggle?.focus({ preventScroll: true });
+    };
+  }, [open, close]);
+
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+
   return (
-    <>
+    <MotionConfig reducedMotion="never">
       <header
+        data-menu-open={open}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           scrolled
@@ -55,209 +137,153 @@ export default function Navbar() {
             : "bg-[#F2F7FF]/80 backdrop-blur-xs py-4 border-b border-[#D0DCF0]/60"
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
           {/* FEN1 Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative w-7 h-7 bg-[#1B4FD6] rounded-sm flex items-center justify-center overflow-hidden shadow-xs">
-              <div className="w-2.5 h-2.5 border border-[#B8D4FB] rotate-45 transition-transform group-hover:rotate-90 duration-500" />
+          <Link href="/" className="flex items-center gap-2.5 group" onClick={close}>
+            <div
+              className={cn(
+                "relative w-7 h-7 rounded-sm flex items-center justify-center overflow-hidden shadow-xs transition-colors duration-500",
+                open ? "bg-white" : "bg-[#1B4FD6]"
+              )}
+            >
+              <div
+                className={cn(
+                  "w-2.5 h-2.5 border rotate-45 transition-all group-hover:rotate-90 duration-500",
+                  open ? "border-[#1B4FD6]" : "border-[#B8D4FB]"
+                )}
+              />
             </div>
             <div className="flex flex-col">
-              <span className="text-base font-semibold tracking-tight text-[#0B1530] leading-none">
+              <span
+                className={cn(
+                  "text-base font-semibold tracking-tight leading-none transition-colors duration-500",
+                  open ? "text-white" : "text-[#0B1530]"
+                )}
+              >
                 FEN1
               </span>
-              <span className="text-[9px] font-mono uppercase text-[#1B4FD6] tracking-widest mt-0.5">
+              <span
+                className={cn(
+                  "text-[9px] uppercase tracking-widest mt-0.5 transition-colors duration-500",
+                  open ? "text-white/80" : "text-[#1B4FD6]"
+                )}
+              >
                 ERP
               </span>
             </div>
           </Link>
 
-          {/* Desktop Architectural Center Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 bg-[#E3EEFC] px-3 py-1.5 rounded-full border border-[#D0DCF0] shadow-xs">
-            {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
-
-              // Solutions Dropdown
-              if (link.type === "solutions") {
-                const isOpen = activeDropdown === "solutions";
-                return (
-                  <div
-                    key={link.name}
-                    className="relative"
-                    onMouseEnter={() => setActiveDropdown("solutions")}
-                    onMouseLeave={() => setActiveDropdown(null)}
-                  >
-                    <Link
-                      href={link.href}
-                      onClick={() => setActiveDropdown(null)}
-                      className={cn(
-                        "px-3.5 py-1 text-xs font-medium tracking-wide transition-all rounded-full flex items-center gap-1 cursor-pointer",
-                        isActive || isOpen
-                          ? "text-[#0B1530] bg-[#FFFFFF] shadow-xs border border-[#D0DCF0]"
-                          : "text-[#4A5B7A] hover:text-[#0B1530]"
-                      )}
-                    >
-                      <span>{link.name}</span>
-                      <ChevronDown className={cn("w-3 h-3 transition-transform duration-200", isOpen && "rotate-180")} />
-                    </Link>
-
-                    {/* Solutions Dropdown Menu */}
-                    <AnimatePresence>
-                      {isOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 6 }}
-                          transition={{ duration: 0.18 }}
-                          className="absolute top-full left-0 mt-3 w-[460px] bg-[#FFFFFF] border border-[#D0DCF0] rounded-2xl shadow-xl p-5 z-50 grid grid-cols-2 gap-3 text-left font-sans"
-                        >
-                          <div className="col-span-2 pb-2 border-b border-[#D0DCF0] flex items-center justify-between text-[10px] text-[#1B4FD6] uppercase font-semibold">
-                            <span>INDUSTRY SPECIALIZATIONS</span>
-                            <span className="text-[#4A5B7A]">5 VERTICALS</span>
-                          </div>
-
-                          {SOLUTIONS_ITEMS.map((sol) => (
-                            <Link
-                              key={sol.num}
-                              href={sol.href}
-                              onClick={() => setActiveDropdown(null)}
-                              className="group block p-2.5 rounded-xl hover:bg-[#E3EEFC] transition-colors border border-transparent hover:border-[#D0DCF0]"
-                            >
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-[10px] text-[#1B4FD6] font-semibold">{sol.num}</span>
-                                <span className="text-xs font-semibold text-[#0B1530] group-hover:text-[#1B4FD6] transition-colors font-sans">
-                                  {sol.name}
-                                </span>
-                              </div>
-                              <p className="text-[11px] text-[#4A5B7A] font-sans leading-tight mt-1">
-                                {sol.desc}
-                              </p>
-                            </Link>
-                          ))}
-
-                          <div className="col-span-2 pt-2 border-t border-[#D0DCF0] flex items-center justify-between text-xs font-sans">
-                            <Link
-                              href="/solutions"
-                              onClick={() => setActiveDropdown(null)}
-                              className="text-[#0B1530] hover:text-[#1B4FD6] flex items-center gap-1 transition-colors font-semibold"
-                            >
-                              <span>View All Solutions Overview</span>
-                              <ArrowRight className="w-3.5 h-3.5" />
-                            </Link>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              }
-
-              // Standard Link
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={cn(
-                    "px-3.5 py-1 text-xs font-medium tracking-wide transition-all rounded-full relative",
-                    isActive
-                      ? "text-[#0B1530]"
-                      : "text-[#4A5B7A] hover:text-[#0B1530]"
-                  )}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="navPill"
-                      className="absolute inset-0 bg-[#FFFFFF] rounded-full -z-10 shadow-xs border border-[#D0DCF0]"
-                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    />
-                  )}
-                  {link.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right Action CTAs */}
-          <div className="hidden sm:flex sm:ml-auto lg:ml-0 items-center gap-2.5">
+          <div className="flex items-center gap-5 sm:gap-6">
             <Link
               href="/request-demo"
-              className="px-4 py-2 rounded-full bg-[#1B4FD6] text-[#0B1530] text-xs font-medium tracking-wide transition-all duration-300 hover:bg-[#BFD3F0] shadow-xs flex items-center gap-1.5"
+              tabIndex={open ? -1 : 0}
+              className={cn(
+                "hidden sm:flex px-4 py-2 rounded-full bg-[#1B4FD6] text-white text-xs font-medium tracking-wide shadow-xs items-center gap-1.5 transition-opacity duration-300",
+                open && "opacity-0 pointer-events-none"
+              )}
             >
               <span>GET IN TOUCH</span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#1B4FD6]" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
-          </div>
 
-          {/* Mobile Menu Toggle Button */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden ml-3 p-2 rounded-lg bg-[#E3EEFC] border border-[#D0DCF0] text-[#0B1530] hover:bg-[#FFFFFF]"
-            aria-label="Toggle Navigation"
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+            <button
+              ref={toggleRef}
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="site-menu"
+              className={cn(
+                "nav-toggle relative overflow-hidden px-1 py-2.5 text-xs font-bold uppercase tracking-[0.18em] transition-colors duration-500",
+                open ? "text-white" : "text-[#0B1530]"
+              )}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={open ? "close" : "open"}
+                  className="block"
+                  initial={{ y: reduce ? 0 : 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: reduce ? 0 : -10, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {open ? "CLOSE MENU" : "OPEN MENU"}
+                </motion.span>
+              </AnimatePresence>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Fullscreen Mobile Architectural Menu Drawer */}
+      {/* Full-screen menu: the panel wipes in from the right, then rows and their lines draw in one after another */}
       <AnimatePresence>
-        {mobileOpen && (
+        {open && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 bg-[#F2F7FF] pt-24 px-6 pb-8 overflow-y-auto flex flex-col justify-between font-mono"
+            id="site-menu"
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site menu"
+            initial={{ clipPath: "inset(0% 0% 0% 100%)" }}
+            animate={{ clipPath: "inset(0% 0% 0% 0%)", transition: { duration: 0.7, ease: EASE } }}
+            exit={{ clipPath: "inset(0% 0% 0% 100%)", transition: { duration: 0.6, ease: EASE, delay: 0.3 } }}
+            className="fixed top-0 left-0 w-full h-dvh z-40 overflow-y-auto bg-gradient-to-br from-[#1B4FD6] via-[#1741BC] to-[#102F9E] text-white"
           >
-            <div className="space-y-6">
-              <div className="border-b border-[#D0DCF0] pb-4">
-                <span className="text-[10px] font-mono uppercase text-[#1B4FD6] tracking-widest font-bold">
-                  OPERATING SYSTEM NAVIGATION
-                </span>
-                <h3 className="text-xl font-light text-[#0B1530] mt-1 font-sans">FEN1 ERP</h3>
-              </div>
-
-              <div className="space-y-2">
+            <nav aria-label="Main" className="max-w-7xl mx-auto min-h-full px-4 sm:px-6 lg:px-8 pt-24 pb-8 flex flex-col">
+              <motion.ul variants={list} initial="hidden" animate="show" exit="exit" className="ml-auto w-full max-w-xl">
                 {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className="block text-lg font-light text-[#0B1530] hover:text-[#1B4FD6] py-2 border-b border-[#D0DCF0]/60 font-sans"
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </div>
-
-              {/* Quick Mobile Solutions List */}
-              <div className="pt-2">
-                <span className="text-[10px] uppercase text-[#4A5B7A] tracking-wider block mb-2 font-bold">
-                  SOLUTIONS VERTICALS
-                </span>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  {SOLUTIONS_ITEMS.map((item) => (
+                  <motion.li key={link.href} variants={row} className="overflow-hidden">
                     <Link
-                      key={item.href}
-                      href={item.href}
-                      className="p-2.5 bg-[#FFFFFF] border border-[#D0DCF0] rounded-md text-[#0B1530]"
+                      href={link.href}
+                      onClick={close}
+                      aria-current={isActive(link.href) ? "page" : undefined}
+                      className={cn(
+                        "group block py-3 sm:py-4 text-right font-display text-3xl sm:text-4xl uppercase tracking-tight transition-all duration-300 hover:-translate-x-2",
+                        isActive(link.href) ? "text-white" : "text-white/75 hover:text-white"
+                      )}
                     >
-                      {item.name}
+                      {link.name}
                     </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
+                    <motion.span variants={rule} className="block h-px bg-white/70 origin-right" aria-hidden="true" />
+                  </motion.li>
+                ))}
+              </motion.ul>
 
-            <div className="pt-8 border-t border-[#D0DCF0] space-y-2">
-              <Link
-                href="/request-demo"
-                className="w-full py-3 bg-[#1B4FD6] text-[#0B1530] font-bold text-xs uppercase tracking-wider text-center rounded-full block shadow-xs font-sans"
+              <motion.div
+                variants={tail}
+                initial="hidden"
+                animate="show"
+                exit="exit"
+                className="mt-auto pt-10 ml-auto w-full max-w-xl"
               >
-                REQUEST A DEMO →
-              </Link>
-            </div>
+                <span className="block h-px bg-white/70" aria-hidden="true" />
+                <div className="pt-5 flex flex-col items-end gap-4 text-right">
+                  <ul className="flex flex-wrap justify-end gap-x-5 gap-y-2 text-[11px] font-semibold uppercase tracking-widest">
+                    {SOLUTIONS_ITEMS.map((item) => (
+                      <li key={item.href}>
+                        <Link href={item.href} onClick={close} className="text-white/80 hover:text-white transition-colors">
+                          {item.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider leading-relaxed text-white/80">
+                    FEN1 ERP
+                    <br />
+                    The operating system for glass, aluminium &amp; windows.
+                  </p>
+                  <Link
+                    href="/request-demo"
+                    onClick={close}
+                    className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-white hover:gap-3 transition-all"
+                  >
+                    Request a demo <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </motion.div>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </MotionConfig>
   );
 }

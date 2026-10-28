@@ -82,8 +82,11 @@ tests/            Vitest + Testing Library
   glass surfaces, reveal animations and the hero photo crossfade.
 - `FluidBackground` is a WebGL fluid simulation behind the page. It needs WebGL2 float render targets and quietly
   disables itself when they are not available.
-- Responsive: phones, tablets and desktops share one layout system. The full navigation appears from 1024px; below that
-  a menu button opens a full-screen menu. From 1700px the root font size steps up (everything is rem-based), so 1080p,
+- Navigation is one full-screen menu on every screen size: an OPEN MENU / CLOSE MENU button in the header wipes a blue
+  panel in from the right, then the five pages and their rules draw in one after another (`Navbar.tsx`). It locks page
+  scroll, closes on Escape or a route change, keeps keyboard focus inside, and keeps the wipe and fades (but drops the
+  vertical slide) for people who prefer reduced motion.
+- Responsive: phones, tablets and desktops share one layout system. From 1700px the root font size steps up (everything is rem-based), so 1080p,
   1440p and 4K screens scale instead of showing a small column. `viewport-fit=cover` plus safe-area padding keeps
   content clear of iPhone notches, and touch devices get 44px hit areas.
 - `FluidBackground` tests whether the GPU can render half-float textures rather than checking extension names, so it
