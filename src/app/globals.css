@@ -548,36 +548,26 @@ a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 1.1rem 
 a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disabled) { border-radius: 0.25rem 1.1rem 0.25rem 1.1rem !important; }
 
 /* ===================================================================
-   Modules: small tiles that fill with colour from the bottom on hover
+   Modules: capsule chips that flow across the page and fill with colour on hover
    =================================================================== */
-.mod-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
-@media (min-width: 640px) { .mod-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 900px) { .mod-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-@media (min-width: 1200px) { .mod-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.mod-grid { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.7rem; }
 .mod-tile {
   position: relative; isolation: isolate; overflow: hidden; outline: none; cursor: default;
-  display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr; row-gap: 0.5rem;
-  min-height: 5.25rem; padding: 0.7rem 0.8rem;
-  /* A glass pane with one corner cut off. The 1px outline is the element itself showing round a white inset. */
-  background: #cdd9ef; clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
-  transition: transform 0.45s var(--ease), background 0.3s;
-}
-.mod-tile::after {
-  content: ""; position: absolute; inset: 1px; z-index: -2; background: #fff;
-  clip-path: polygon(0 0, calc(100% - 19.3px) 0, 100% 19.3px, 100% 100%, 0 100%);
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 1.1rem 0.5rem 0.5rem; border-radius: 9999px; background: #fff; border: 1px solid #cdd9ef;
+  transition: transform 0.4s var(--ease), border-color 0.3s, box-shadow 0.4s var(--ease);
 }
 .mod-tile::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(160deg, #2f6bf0, #1b4fd6 55%, #102f9e);
-  transform: translateY(101%); transition: transform 0.5s var(--ease);
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: linear-gradient(90deg, #1b4fd6, #2f6bf0);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.45s var(--ease);
 }
-.mod-tile[data-active="true"] { transform: translateY(-4px); background: #1b4fd6; }
+.mod-tile[data-active="true"] { transform: translateY(-3px); border-color: #1b4fd6; box-shadow: 0 14px 26px -14px rgba(27, 79, 214, 0.65); }
 .mod-tile[data-active="true"]::before { transform: none; }
-.mod-tile-num { font-size: 0.72rem; font-weight: 700; color: var(--accent); transition: color 0.3s; }
-.mod-tile-icon { width: 0.95rem; height: 0.95rem; margin-right: 0.5rem; color: var(--muted); transition: color 0.3s, transform 0.5s var(--ease); }
-.mod-tile-title { grid-column: 1 / -1; align-self: end; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.2; color: var(--ink); transition: color 0.3s; }
-.mod-tile-cat { grid-column: 1 / -1; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em; color: var(--subtle); transition: color 0.3s; }
-.mod-tile[data-active="true"] .mod-tile-num, .mod-tile[data-active="true"] .mod-tile-icon, .mod-tile[data-active="true"] .mod-tile-title, .mod-tile[data-active="true"] .mod-tile-cat { color: #fff; }
-.mod-tile[data-active="true"] .mod-tile-cat { color: rgba(255, 255, 255, 0.75); }
+.mod-tile-num { display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 9999px; background: #e3eefc; font-size: 0.68rem; font-weight: 700; color: var(--accent); transition: background 0.3s, color 0.3s; }
+.mod-tile-icon { order: 3; width: 0.95rem; height: 0.95rem; color: var(--muted); transition: color 0.3s, transform 0.5s var(--ease); }
+.mod-tile-title { order: 2; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.2; color: var(--ink); transition: color 0.3s; }
+.mod-tile[data-active="true"] .mod-tile-title, .mod-tile[data-active="true"] .mod-tile-icon { color: #fff; }
+.mod-tile[data-active="true"] .mod-tile-num { background: rgba(255, 255, 255, 0.2); color: #fff; }
 .mod-tile[data-active="true"] .mod-tile-icon { transform: rotate(-12deg) scale(1.25); }
 @media (prefers-reduced-motion: reduce) { .mod-tile, .mod-tile::before, .mod-tile-icon { transition: none; } }
 
