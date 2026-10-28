@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -40,6 +40,19 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Escape closes the menu; the page behind does not scroll while it is open
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMobileOpen(false);
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
 
   // Close menus when the route changes (adjusting state during render, as React recommends)
   const [lastPath, setLastPath] = useState(pathname);
@@ -212,13 +225,20 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile Menu Toggle Button */}
+          {/* Menu button: three lines that fold into a cross */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden ml-3 p-2 rounded-lg bg-[#E3EEFC] border border-[#D0DCF0] text-[#0B1530] hover:bg-[#FFFFFF]"
+            className="menu-toggle ml-3 flex items-center gap-2.5 pl-3.5 pr-3 py-2 rounded-full bg-[#E3EEFC] border border-[#D0DCF0] text-[#0B1530] hover:bg-[#FFFFFF] transition-colors"
             aria-label="Toggle Navigation"
+            aria-expanded={mobileOpen}
+            data-open={mobileOpen}
           >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            <span className="hidden sm:block text-xs font-semibold tracking-wide">{mobileOpen ? "CLOSE" : "MENU"}</span>
+            <span className="menu-lines" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
           </button>
         </div>
         <span
@@ -228,59 +248,72 @@ export default function Navbar() {
         />
       </header>
 
-      {/* Fullscreen Mobile Architectural Menu Drawer */}
+      {/* Full-screen menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 bg-[#F2F7FF] pt-24 px-6 pb-8 overflow-y-auto flex flex-col justify-between font-mono"
+            initial={{ clipPath: "circle(0% at calc(100% - 3rem) 2.5rem)" }}
+            animate={{ clipPath: "circle(150% at calc(100% - 3rem) 2.5rem)" }}
+            exit={{ clipPath: "circle(0% at calc(100% - 3rem) 2.5rem)" }}
+            transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-40 bg-[#F2F7FF] pt-24 px-6 sm:px-10 pb-8 overflow-y-auto flex flex-col justify-between font-sans"
           >
-            <div className="space-y-6">
-              <div className="border-b border-[#D0DCF0] pb-4">
-                <span className="text-[10px] font-mono uppercase text-[#1B4FD6] tracking-widest font-bold">
-                  OPERATING SYSTEM NAVIGATION
-                </span>
-                <h3 className="text-xl font-light text-[#0B1530] mt-1 font-sans">FEN1 ERP</h3>
-              </div>
-
-              <div className="space-y-2">
-                {NAV_LINKS.map((link) => (
-                  <Link
+            <div className="max-w-6xl w-full mx-auto grid lg:grid-cols-[1.4fr_1fr] gap-10 lg:gap-16">
+              <ul className="menu-links" onMouseLeave={() => setHovered(null)}>
+                {NAV_LINKS.map((link, i) => (
+                  <motion.li
                     key={link.name}
-                    href={link.href}
-                    className="block text-lg font-light text-[#0B1530] hover:text-[#1B4FD6] py-2 border-b border-[#D0DCF0]/60 font-sans"
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.25 + i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    data-dim={hovered !== null && hovered !== link.name}
                   >
-                    {link.name}
-                  </Link>
+                    <Link
+                      href={link.href}
+                      onMouseEnter={() => setHovered(link.name)}
+                      onFocus={() => setHovered(link.name)}
+                      className="flex items-baseline gap-4 py-1.5 sm:py-2.5 border-b border-[#D0DCF0] group"
+                    >
+                      <span className="text-xs font-semibold text-[#1B4FD6] tabular-nums">0{i + 1}</span>
+                      <span className="menu-link-text text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#0B1530]">
+                        {link.name}
+                      </span>
+                      <ArrowRight className="ml-auto self-center w-6 h-6 text-[#1B4FD6] -translate-x-3 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
+                    </Link>
+                  </motion.li>
                 ))}
-              </div>
+              </ul>
 
-              {/* Quick Mobile Solutions List */}
-              <div className="pt-2">
-                <span className="text-[10px] uppercase text-[#4A5B7A] tracking-wider block mb-2 font-bold">
-                  SOLUTIONS VERTICALS
-                </span>
-                <div className="grid grid-cols-2 gap-2 text-xs">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="space-y-4 lg:pt-3"
+              >
+                <span className="text-[11px] uppercase text-[#4A5B7A] tracking-widest font-bold block">Solutions</span>
+                <div className="grid gap-2">
                   {SOLUTIONS_ITEMS.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="p-2.5 bg-[#FFFFFF] border border-[#D0DCF0] rounded-md text-[#0B1530]"
+                      className="group flex items-start gap-3 p-3 bg-[#FFFFFF] border border-[#D0DCF0] rounded-xl hover:border-[#1B4FD6] transition-colors"
                     >
-                      {item.name}
+                      <span className="text-[11px] font-semibold text-[#1B4FD6] pt-0.5">{item.num}</span>
+                      <span>
+                        <span className="block text-sm font-semibold text-[#0B1530]">{item.name}</span>
+                        <span className="block text-xs text-[#4A5B7A] mt-0.5">{item.desc}</span>
+                      </span>
                     </Link>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </div>
 
-            <div className="pt-8 border-t border-[#D0DCF0] space-y-2">
+            <div className="max-w-6xl w-full mx-auto pt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between">
+              <p className="text-xs text-[#4A5B7A]">Press Esc to close</p>
               <Link
                 href="/request-demo"
-                className="w-full py-3 bg-[#1B4FD6] text-[#0B1530] font-bold text-xs uppercase tracking-wider text-center rounded-full block shadow-xs font-sans"
+                className="px-8 py-3 bg-[#1B4FD6] text-white font-bold text-xs uppercase tracking-wider text-center rounded-full"
               >
                 REQUEST A DEMO →
               </Link>
