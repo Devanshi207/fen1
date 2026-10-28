@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Outfit } from "next/font/google";
+import { Anton, Bricolage_Grotesque, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,6 +7,7 @@ import MotionProvider from "@/components/MotionProvider";
 import CursorFollower from "@/components/CursorFollower";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-bricolage", display: "swap" });
+const outline = Anton({ subsets: ["latin"], weight: "400", variable: "--font-outline", display: "swap" });
 const body = Outfit({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-outfit", display: "swap" });
 
 export const viewport: Viewport = {
@@ -48,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`h-full antialiased ${display.variable} ${body.variable}`}>
+    <html lang="en" className={`h-full antialiased ${display.variable} ${body.variable} ${outline.variable}`}>
       <body className="min-h-full flex flex-col font-sans bg-[#F2F7FF] text-[#0B1530] selection:bg-[#5CC8FF] selection:text-[#FFFFFF]">
         <Navbar />
         <main id="page" className="flex-1 w-full pt-16 sm:pt-20">{children}</main>
