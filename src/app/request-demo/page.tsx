@@ -13,14 +13,14 @@ const BUSINESS_TYPES = [
 ];
 
 const FIELDS: FieldSpec[] = [
-  { key: "name", label: "Full name", ask: "What is your name?", required: true, half: true },
-  { key: "company", label: "Company", ask: "Which company are you with?", required: true, half: true },
-  { key: "email", label: "Work email", ask: "What is your work email?", type: "email", required: true, half: true },
-  { key: "phone", label: "Phone / mobile", ask: "And a phone number?", type: "tel", required: true, half: true },
-  { key: "businessType", label: "Business type", ask: "What kind of business is it?", type: "choice", options: BUSINESS_TYPES, allowOther: true, otherLabel: "Describe your business" },
-  { key: "currentSystem", label: "Current software", ask: "What software do you use today?", half: true },
-  { key: "interestedModules", label: "Modules you want to see", ask: "Which modules would you like to see?", half: true },
-  { key: "message", label: "Anything specific you want to see?", ask: "Anything specific you want to see?", type: "area" },
+  { key: "name", label: "Full name", required: true, half: true },
+  { key: "company", label: "Company", required: true, half: true },
+  { key: "email", label: "Work email", type: "email", required: true, half: true },
+  { key: "phone", label: "Phone / mobile", type: "tel", required: true, half: true },
+  { key: "businessType", label: "Business type", type: "choice", options: BUSINESS_TYPES, allowOther: true, otherLabel: "Describe your business" },
+  { key: "currentSystem", label: "Current software", half: true },
+  { key: "interestedModules", label: "Modules you want to see", half: true },
+  { key: "message", label: "Anything specific you want to see?", type: "area" },
 ];
 
 const INITIAL = { name: "", company: "", email: "", phone: "", businessType: BUSINESS_TYPES[0], currentSystem: "", interestedModules: "", message: "" };

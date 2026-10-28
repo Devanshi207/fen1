@@ -13,15 +13,15 @@ const INDUSTRIES = [
 const SIZES = ["Under 20 Employees", "20-50 Employees", "50-200 Employees", "200-500 Employees", "500+ Enterprise"];
 
 const FIELDS: FieldSpec[] = [
-  { key: "name", label: "Full name", ask: "What is your name?", required: true, half: true },
-  { key: "company", label: "Company name", ask: "Which company are you with?", required: true, half: true },
-  { key: "email", label: "Work email", ask: "What is your work email?", type: "email", required: true, half: true },
-  { key: "phone", label: "Phone / mobile", ask: "And a phone number?", type: "tel", required: true, half: true },
-  { key: "industry", label: "Industry segment", ask: "Which industry are you in?", type: "choice", options: INDUSTRIES, allowOther: true, otherLabel: "Describe your business", half: true },
-  { key: "companySize", label: "Company size", ask: "How big is the company?", type: "choice", options: SIZES, half: true },
-  { key: "currentSoftware", label: "Current ERP / software", ask: "What software do you use today?", half: true },
-  { key: "interestedModules", label: "Modules you are interested in", ask: "Which modules interest you?", half: true },
-  { key: "message", label: "Project requirements / goals", ask: "Tell us about your project or goals", type: "area" },
+  { key: "name", label: "Full name", required: true, half: true },
+  { key: "company", label: "Company name", required: true, half: true },
+  { key: "email", label: "Work email", type: "email", required: true, half: true },
+  { key: "phone", label: "Phone / mobile", type: "tel", required: true, half: true },
+  { key: "industry", label: "Industry segment", type: "choice", options: INDUSTRIES, allowOther: true, otherLabel: "Describe your business", half: true },
+  { key: "companySize", label: "Company size", type: "choice", options: SIZES, half: true },
+  { key: "currentSoftware", label: "Current ERP / software", half: true },
+  { key: "interestedModules", label: "Modules you are interested in", half: true },
+  { key: "message", label: "Project requirements / goals", type: "area" },
 ];
 
 const INITIAL = {
