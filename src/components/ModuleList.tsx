@@ -10,10 +10,6 @@ import type { FEN1Module } from "@/data/modules";
 export default function ModuleList({ modules, icons }: { modules: FEN1Module[]; icons: Record<string, React.ComponentType<{ className?: string }>> }) {
   const [active, setActive] = useState<string | null>(null);
 
-  if (modules.length === 0) {
-    return <p className="py-16 text-center text-[#4A5B7A]">No modules match.</p>;
-  }
-
   return (
     <ul className="mod-grid" onMouseLeave={() => setActive(null)}>
       {modules.map((m) => {
@@ -32,7 +28,6 @@ export default function ModuleList({ modules, icons }: { modules: FEN1Module[]; 
             <span className="mod-tile-num">{m.number}</span>
             {Icon && <Icon className="mod-tile-icon" />}
             <h3 className="mod-tile-title">{m.name}</h3>
-            <span className="mod-tile-cat">{m.category}</span>
           </li>
         );
       })}

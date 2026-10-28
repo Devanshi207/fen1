@@ -560,13 +560,14 @@ a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disable
 /* ===================================================================
    Modules: small tiles that fill with colour from the bottom on hover
    =================================================================== */
-.mod-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-@media (min-width: 768px) { .mod-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; } }
-@media (min-width: 1100px) { .mod-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.mod-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+@media (min-width: 640px) { .mod-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .mod-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1200px) { .mod-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 .mod-tile {
   position: relative; isolation: isolate; overflow: hidden; outline: none; cursor: default;
-  display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr auto; row-gap: 0.9rem;
-  min-height: 7.5rem; padding: 1rem 1.1rem; border-radius: 0.9rem; background: #fff; border: 1px solid var(--line);
+  display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr; row-gap: 0.5rem;
+  min-height: 5.25rem; padding: 0.7rem 0.8rem; border-radius: 0.7rem; background: #fff; border: 1px solid var(--line);
   transition: transform 0.45s var(--ease), opacity 0.35s, border-color 0.3s, box-shadow 0.45s var(--ease);
 }
 .mod-tile::before {
@@ -577,8 +578,8 @@ a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disable
 .mod-tile[data-active="true"]::before { transform: none; }
 .mod-tile[data-dim="true"] { opacity: 0.55; }
 .mod-tile-num { font-size: 0.72rem; font-weight: 700; color: var(--accent); transition: color 0.3s; }
-.mod-tile-icon { width: 1.1rem; height: 1.1rem; color: var(--muted); transition: color 0.3s, transform 0.5s var(--ease); }
-.mod-tile-title { grid-column: 1 / -1; align-self: end; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.2; color: var(--ink); transition: color 0.3s; }
+.mod-tile-icon { width: 0.95rem; height: 0.95rem; color: var(--muted); transition: color 0.3s, transform 0.5s var(--ease); }
+.mod-tile-title { grid-column: 1 / -1; align-self: end; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.2; color: var(--ink); transition: color 0.3s; }
 .mod-tile-cat { grid-column: 1 / -1; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em; color: var(--subtle); transition: color 0.3s; }
 .mod-tile[data-active="true"] .mod-tile-num, .mod-tile[data-active="true"] .mod-tile-icon, .mod-tile[data-active="true"] .mod-tile-title, .mod-tile[data-active="true"] .mod-tile-cat { color: #fff; }
 .mod-tile[data-active="true"] .mod-tile-cat { color: rgba(255, 255, 255, 0.75); }

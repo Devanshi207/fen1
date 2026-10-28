@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
 import { FEN1_MODULES } from "@/data/modules";
 import {
@@ -22,13 +22,10 @@ import {
   UserCheck,
   Settings,
   BarChart3,
-  Search,
 } from "lucide-react";
 import FinalCtaSection from "@/components/FinalCtaSection";
 import KineticHeading from "@/components/KineticHeading";
 import ModuleList from "@/components/ModuleList";
-
-const CATEGORIES = ["ALL MODULES", "BUSINESS", "OPERATIONS", "SUPPLY CHAIN", "FINANCE & PEOPLE", "ANALYTICS", "SYSTEM"];
 
 const ICONS_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   "task-management": CheckSquare,
@@ -51,16 +48,6 @@ const ICONS_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export default function SolutionsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("ALL MODULES");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const q = searchQuery.toLowerCase();
-  const filteredModules = FEN1_MODULES.filter((mod) => {
-    const matchesCat = selectedCategory === "ALL MODULES" || mod.category === selectedCategory;
-    const matchesSearch = mod.name.toLowerCase().includes(q) || mod.category.toLowerCase().includes(q);
-    return matchesCat && matchesSearch;
-  });
-
   return (
     <div className="w-full bg-[#F2F7FF] text-[#0B1530] font-sans">
       {/* Header */}
@@ -120,40 +107,15 @@ export default function SolutionsPage() {
 
       {/* Modules (previously the Products page) */}
       <section id="modules" className="scroll-mt-20">
-        <div className="py-8 bg-[#E3EEFC] border-y border-[#D0DCF0] sticky top-16 z-30 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
-            <div className="flex flex-wrap items-center gap-1.5 overflow-x-auto w-full md:w-auto">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-full border transition-all cursor-pointer text-xs ${
-                    selectedCategory === cat
-                      ? "bg-[#1B4FD6] text-[#0B1530] border-[#3B82F6] shadow-xs font-semibold"
-                      : "bg-[#FFFFFF] text-[#0B1530] border-[#D0DCF0] hover:border-[#B8D4FB]"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            <div className="relative w-full md:w-64">
-              <Search className="w-3.5 h-3.5 text-[#4A5B7A] absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search"
-                className="w-full pl-8 pr-3 py-1.5 rounded-full bg-[#FFFFFF] border border-[#D0DCF0] text-xs text-[#0B1530] placeholder:text-[#4A5B7A] outline-none focus:border-[#3B82F6]"
-              />
-            </div>
+        <div className="pt-16 pb-2 border-t border-[#D0DCF0]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-[#1B4FD6]">Modules</h2>
           </div>
         </div>
 
-        <div className="py-16">
+        <div className="pt-6 pb-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <ModuleList modules={filteredModules} icons={ICONS_MAP} />
+            <ModuleList modules={FEN1_MODULES} icons={ICONS_MAP} />
           </div>
         </div>
       </section>
