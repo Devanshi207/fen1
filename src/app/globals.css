@@ -556,3 +556,36 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 /* Buttons and links styled as buttons: a leaf shape (two long corners, two sharp ones) that swaps its corners on hover */
 a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 1.1rem 0.25rem 1.1rem 0.25rem !important; }
 a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disabled) { border-radius: 0.25rem 1.1rem 0.25rem 1.1rem !important; }
+
+/* ===================================================================
+   Modules: a typographic list whose active row lights up and fills
+   =================================================================== */
+.mod-list { list-style: none; margin: 0; padding: 0; }
+.mod-row {
+  position: relative; display: flex; align-items: center; gap: clamp(0.75rem, 2vw, 1.75rem);
+  padding: clamp(0.7rem, 1.6vw, 1.15rem) 1rem; border-bottom: 1px solid var(--line);
+  outline: none; cursor: default; overflow: hidden; isolation: isolate;
+  opacity: 0.4; transition: opacity 0.4s var(--ease), padding-left 0.5s var(--ease);
+}
+.mod-row::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #1b4fd6, #2f6bf0 60%, #5cc8ff);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.55s var(--ease);
+}
+.mod-row[data-active="true"] { opacity: 1; padding-left: clamp(1.5rem, 4vw, 3rem); }
+.mod-row[data-active="true"]::before { transform: scaleX(1); }
+.mod-num { font-size: 0.8rem; font-weight: 700; color: var(--accent); min-width: 1.75rem; transition: color 0.3s; }
+.mod-title { font-size: clamp(1.15rem, 2.6vw, 2.1rem); font-weight: 800; letter-spacing: -0.01em; color: var(--ink); line-height: 1.1; transition: color 0.3s, transform 0.5s var(--ease); }
+.mod-icon { width: 1.25rem; height: 1.25rem; margin-left: auto; color: var(--accent); opacity: 0; transform: translateX(-12px); transition: opacity 0.4s, transform 0.5s var(--ease), color 0.3s; }
+.mod-cat { display: none; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; color: var(--muted); transition: color 0.3s; }
+@media (min-width: 640px) { .mod-cat { display: block; min-width: 9.5rem; text-align: right; } }
+.mod-row[data-active="true"] .mod-num, .mod-row[data-active="true"] .mod-title, .mod-row[data-active="true"] .mod-icon, .mod-row[data-active="true"] .mod-cat { color: #fff; }
+.mod-row[data-active="true"] .mod-icon { opacity: 1; transform: none; }
+.mod-row[data-active="true"] .mod-title { transform: translateX(6px); }
+
+.mod-side { display: none; position: sticky; top: 13rem; }
+@media (min-width: 1024px) { .mod-side { display: flex; flex-direction: column; gap: 0.25rem; } }
+.mod-side-num { font-family: var(--font-display); font-weight: 800; font-size: 5.5rem; line-height: 1; color: var(--accent); animation: mod-pop 0.45s var(--ease) both; }
+.mod-side-total { font-size: 0.85rem; font-weight: 700; color: var(--subtle); }
+.mod-side-cat { margin-top: 0.75rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; color: var(--muted); }
+@keyframes mod-pop { from { opacity: 0; transform: translateY(14px); } }
+@media (prefers-reduced-motion: reduce) { .mod-row, .mod-row::before, .mod-title, .mod-icon { transition: none; } .mod-side-num { animation: none; } }

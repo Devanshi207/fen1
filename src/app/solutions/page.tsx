@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import FinalCtaSection from "@/components/FinalCtaSection";
 import KineticHeading from "@/components/KineticHeading";
+import ModuleList from "@/components/ModuleList";
 
 const CATEGORIES = ["ALL MODULES", "BUSINESS", "OPERATIONS", "SUPPLY CHAIN", "FINANCE & PEOPLE", "ANALYTICS", "SYSTEM"];
 
@@ -56,10 +57,7 @@ export default function SolutionsPage() {
   const q = searchQuery.toLowerCase();
   const filteredModules = FEN1_MODULES.filter((mod) => {
     const matchesCat = selectedCategory === "ALL MODULES" || mod.category === selectedCategory;
-    const matchesSearch =
-      mod.name.toLowerCase().includes(q) ||
-      mod.headline.toLowerCase().includes(q) ||
-      mod.description.toLowerCase().includes(q);
+    const matchesSearch = mod.name.toLowerCase().includes(q) || mod.category.toLowerCase().includes(q);
     return matchesCat && matchesSearch;
   });
 
@@ -155,48 +153,7 @@ export default function SolutionsPage() {
 
         <div className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredModules.map((mod) => {
-                const Icon = ICONS_MAP[mod.id] || Calculator;
-                return (
-                  <div
-                    key={mod.id}
-                    className="p-7 rounded-2xl bg-[#FFFFFF] border border-[#D0DCF0] hover:border-[#3B82F6] transition-all flex flex-col justify-between space-y-5 shadow-xs group"
-                  >
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[#1B4FD6] font-semibold">{mod.number}</span>
-                          <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-[#E3EEFC] text-[#4A5B7A]">{mod.category}</span>
-                        </div>
-                        <div className="w-8 h-8 rounded-lg bg-[#E3EEFC] border border-[#D0DCF0] flex items-center justify-center text-[#0B1530]">
-                          <Icon className="w-4 h-4" />
-                        </div>
-                      </div>
-
-                      <div>
-                        <h3 className="text-xl font-semibold text-[#0B1530] tracking-tight font-sans">{mod.name}</h3>
-                        <span className="text-xs uppercase text-[#1B4FD6] block mt-1 font-semibold tracking-wide font-sans">{mod.headline}</span>
-                      </div>
-
-                      <p className="text-xs text-[#4A5B7A] leading-relaxed font-sans">{mod.description}</p>
-
-                      <div className="space-y-1.5 pt-2 border-t border-[#D0DCF0]/60">
-                        <span className="text-[10px] uppercase text-[#4A5B7A] font-semibold tracking-wider block font-sans">KEY SUBMODULES:</span>
-                        <div className="space-y-1 text-xs text-[#0B1530] font-sans">
-                          {mod.submodules.slice(0, 3).map((sub, sIdx) => (
-                            <div key={sIdx} className="flex items-center gap-1.5">
-                              <CheckCircle2 className="w-3 h-3 text-[#4F7556] shrink-0" />
-                              <span className="truncate">{sub}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <ModuleList modules={filteredModules} icons={ICONS_MAP} />
           </div>
         </div>
       </section>
