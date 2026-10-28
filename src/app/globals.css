@@ -553,5 +553,6 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 .nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease); }
 .nav-link:hover::after, .nav-link[aria-current="page"]::after { transform: scaleX(1); }
 
-/* Buttons and links styled as buttons use a softly squared shape instead of a full pill */
-a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 0.7rem !important; }
+/* Buttons and links styled as buttons: a leaf shape (two long corners, two sharp ones) that swaps its corners on hover */
+a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 1.1rem 0.25rem 1.1rem 0.25rem !important; }
+a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disabled) { border-radius: 0.25rem 1.1rem 0.25rem 1.1rem !important; }
