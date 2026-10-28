@@ -14,9 +14,6 @@ export default function HeroGallery() {
           <Image src={s.src} alt={s.alt} fill priority={i === 0} sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" style={{ objectPosition: s.position }} />
           <div className="hero-frame-shade" />
           <figcaption className="hero-frame-caption">
-            <span className="hero-frame-count">
-              {String(i + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
-            </span>
             <span className="hero-frame-title">{s.title}</span>
             <span className="hero-frame-note">{s.note}</span>
           </figcaption>

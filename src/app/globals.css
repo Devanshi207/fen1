@@ -581,7 +581,6 @@ a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disable
 .hero-frame-slide img { animation: hero-frame-zoom 20s linear infinite; animation-delay: inherit; }
 .hero-frame-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11, 21, 48, 0.78), rgba(11, 21, 48, 0.1) 55%, transparent); }
 .hero-frame-caption { position: absolute; left: 0; right: 0; bottom: 0; display: grid; gap: 0.2rem; padding: clamp(1rem, 2.4vw, 1.75rem); color: #fff; }
-.hero-frame-count { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; color: #9cc3f7; }
 .hero-frame-title { font-family: var(--font-display); font-size: clamp(1.1rem, 1.8vw, 1.6rem); font-weight: 800; }
 .hero-frame-note { font-size: 0.85rem; font-weight: 500; opacity: 0.85; }
 @keyframes hero-frame-cycle { 0% { opacity: 0; } 5% { opacity: 1; } 25% { opacity: 1; } 30% { opacity: 0; } 100% { opacity: 0; } }
