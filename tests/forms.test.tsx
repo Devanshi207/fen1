@@ -6,16 +6,22 @@ import RequestDemoPage from "@/app/request-demo/page";
 
 async function fillAndSubmit(submitName: RegExp) {
   const user = userEvent.setup();
-  const textboxes = screen.getAllByRole("textbox");
-  // The first four required fields are name, company, email, phone on both forms (order differs slightly), so fill by type.
-  for (const box of textboxes) {
-    const el = box as HTMLInputElement;
-    if (el.type === "email") await user.type(el, "asha@raoglazing.com");
-    else if (el.type === "tel") await user.type(el, "12345");
-    else if (el.tagName === "INPUT" && el.required && !el.value) await user.type(el, "Rao");
+  // The demo form is three steps; the contact form is one. Fill what is on screen, then continue until the submit button.
+  for (let i = 0; i < 4; i++) {
+    for (const box of screen.getAllByRole("textbox")) {
+      const el = box as HTMLInputElement;
+      if (el.type === "email" && !el.value) await user.type(el, "asha@raoglazing.com");
+      else if (el.tagName === "INPUT" && el.required && !el.value) await user.type(el, "Rao");
+    }
+    const tel = document.querySelector('input[type="tel"]') as HTMLInputElement | null;
+    if (tel && !tel.value) await user.type(tel, "12345");
+    const next = screen.queryByRole("button", { name: /continue/i });
+    if (!next) break;
+    // The business-type step needs an answer before moving on
+    const chip = screen.queryByRole("button", { name: /aluminium windows & doors/i });
+    if (chip && chip.getAttribute("aria-pressed") === "false") await user.click(chip);
+    await user.click(next);
   }
-  const tel = document.querySelector('input[type="tel"]') as HTMLInputElement | null;
-  if (tel && !tel.value) await user.type(tel, "12345");
   await user.click(screen.getByRole("button", { name: submitName }));
 }
 
@@ -53,17 +59,26 @@ describe.each([
 });
 
 describe("Business type on the demo form", () => {
-  it("lets the visitor type their own when the list has no match", async () => {
+  it("lets the visitor type their own when no choice fits", async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true });
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
     render(<RequestDemoPage />);
 
-    expect(screen.queryByLabelText("Describe your business")).not.toBeInTheDocument();
-    await user.selectOptions(screen.getByLabelText("Business type"), "Other (type your own)");
-    await user.type(screen.getByLabelText("Describe your business"), "Skylight maker");
+    // Step 1 then step 2
+    for (const box of screen.getAllByRole("textbox")) {
+      const el = box as HTMLInputElement;
+      await user.type(el, el.type === "email" ? "a@b.co" : "Rao");
+    }
+    await user.type(document.querySelector('input[type="tel"]') as HTMLInputElement, "12345");
+    await user.click(screen.getByRole("button", { name: /continue/i }));
 
-    await fillAndSubmit(/request demo/i);
+    expect(screen.queryByLabelText("Describe your business")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /something else/i }));
+    await user.type(screen.getByLabelText("Describe your business"), "Skylight maker");
+    await user.click(screen.getByRole("button", { name: /continue/i }));
+    await user.click(screen.getByRole("button", { name: /request demo/i }));
+
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
     expect(JSON.parse(fetchMock.mock.calls[0][1].body).details.businessType).toBe("Skylight maker");
   });
