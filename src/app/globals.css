@@ -481,10 +481,12 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 .figure-label { margin-top: 0.9rem; font-size: clamp(0.95rem, 1.4vw, 1.25rem); font-weight: 700; color: #0b1530; }
 .figure-note { margin-top: 0.2rem; font-size: clamp(0.8rem, 1.1vw, 0.95rem); color: #4a5b7a; }
 
-.wordband { display: grid; gap: 0.25rem; padding-block: clamp(1.5rem, 4vw, 3rem); user-select: none; }
-.wordband-row { display: flex; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; cursor: grab; }
-.wordband-row::-webkit-scrollbar { display: none; }
-.wordband-row > * { flex: none; }
+.wordband { display: grid; gap: 0.25rem; padding-block: clamp(1.5rem, 4vw, 3rem); overflow: hidden; user-select: none; }
+.wordband-row { display: flex; width: max-content; animation: wordband-run 40s linear infinite; will-change: transform; }
+.wordband-row.is-reverse { animation-direction: reverse; animation-duration: 48s; }
+.wordband:hover .wordband-row { animation-play-state: paused; }
+.wordband-half { display: flex; flex: none; }
+@keyframes wordband-run { to { transform: translate3d(-50%, 0, 0); } }
 .wordband-item {
   display: inline-flex;
   align-items: center;
