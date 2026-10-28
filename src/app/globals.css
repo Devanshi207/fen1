@@ -236,9 +236,9 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
    Layout helpers
    =================================================================== */
 /* Large screens: scale the whole page (everything is rem-based) instead of leaving a small column in the middle */
-@media (min-width: 1700px) { html { font-size: 17.5px; } }
-@media (min-width: 2100px) { html { font-size: 20px; } }
-@media (min-width: 2800px) { html { font-size: 24px; } }
+/* Past 1280px everything (type, spacing, container widths) grows in step with the screen, so a wide monitor shows
+   the same page as a laptop rather than a small one in a large frame. 16px at 1280, about 21px at 1920, capped at 28px. */
+@media (min-width: 1280px) { html { font-size: clamp(16px, calc(16px + (100vw - 1280px) * 0.0075), 28px); } }
 
 /* Touch devices: fingers need at least ~44px hit areas */
 @media (pointer: coarse) {
