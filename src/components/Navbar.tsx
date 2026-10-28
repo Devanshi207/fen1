@@ -119,9 +119,9 @@ export default function Navbar() {
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 bg-[#F2F7FF] grid lg:grid-cols-2 font-sans"
+            className="fixed inset-0 z-40 bg-[#F2F7FF] grid md:grid-cols-2 overflow-y-auto font-sans"
           >
-            <nav aria-label="Main" className="flex flex-col justify-center px-6 sm:px-14 pt-24 pb-10" onMouseLeave={() => setHovered(null)}>
+            <nav aria-label="Main" className="flex flex-col justify-start md:justify-center px-5 sm:px-10 lg:px-14 pt-24 pb-10 min-h-dvh" onMouseLeave={() => setHovered(null)}>
               <ul className="menu-links">
                 {NAV_LINKS.map((link, i) => (
                   <motion.li
@@ -135,13 +135,13 @@ export default function Navbar() {
                       href={link.href}
                       onMouseEnter={() => setHovered(link.name)}
                       onFocus={() => setHovered(link.name)}
-                      className="flex items-center gap-5 py-3.5 sm:py-4 border-b border-[#D0DCF0] group"
+                      className="flex items-center gap-4 py-2.5 sm:py-4 border-b border-[#D0DCF0] group"
                     >
                       <span className="text-xs font-semibold text-[#1B4FD6] tabular-nums w-6">0{i + 1}</span>
                       <span>
                         <span
                           data-current={pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href))}
-                          className="menu-link-text block text-2xl sm:text-4xl font-bold tracking-tight text-[#0B1530]"
+                          className="menu-link-text block text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0B1530]"
                         >
                           {link.name}
                         </span>
@@ -154,7 +154,7 @@ export default function Navbar() {
               </ul>
             </nav>
 
-            <div className="hidden lg:block relative overflow-hidden" aria-hidden="true">
+            <div className="hidden md:block relative overflow-hidden" aria-hidden="true">
               {NAV_LINKS.map((link, i) => {
                 const shown = (hovered ?? NAV_LINKS.find((l) => l.href === pathname)?.name ?? NAV_LINKS[0].name) === link.name;
                 const slide = GALLERY[i % GALLERY.length];
