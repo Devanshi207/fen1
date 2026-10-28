@@ -70,31 +70,21 @@ export default function SolutionsPage() {
               <div
                 key={sol.id}
                 id={sol.id}
-                className="p-7 rounded-2xl bg-[#FFFFFF] border border-[#D0DCF0] hover:border-[#3B82F6] transition-all flex flex-col justify-between space-y-5 shadow-xs scroll-mt-24 font-sans"
+                className="p-6 rounded-2xl bg-[#FFFFFF] border border-[#D0DCF0] hover:border-[#3B82F6] transition-all shadow-xs scroll-mt-24 font-sans"
               >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#1B4FD6] font-semibold text-[11px] uppercase tracking-wider">VERTICAL {sol.number}</span>
-                    <span className="text-[10px] uppercase px-2 py-0.5 rounded bg-[#E3EEFC] text-[#4A5B7A] font-semibold">SPECIALIZATION</span>
-                  </div>
+                <div className="space-y-3">
+                  <span className="text-[#1B4FD6] font-semibold text-[11px] uppercase tracking-wider block">VERTICAL {sol.number}</span>
 
                   <div>
                     <h2 className="text-xl font-semibold text-[#0B1530] tracking-tight font-sans">{sol.title}</h2>
-                    <span className="text-xs text-[#1B4FD6] block mt-0.5 font-semibold">{sol.subtitle}</span>
+                    <span className="text-xs text-[#4A5B7A] block mt-1">{sol.subtitle}</span>
                   </div>
 
-                  <p className="text-xs text-[#4A5B7A] leading-relaxed font-sans">{sol.challenge}</p>
-
-                  <div className="p-3 bg-[#E3EEFC] rounded-xl space-y-1 text-xs font-sans">
-                    <span className="text-[10px] uppercase text-[#4F7556] block font-semibold">FEN1 SOLUTION:</span>
-                    <p className="text-[#0B1530] text-xs leading-snug">{sol.solutionSummary}</p>
-                  </div>
-
-                  <div className="space-y-1.5 pt-1 text-xs text-[#0B1530] font-sans">
+                  <div className="space-y-1.5 pt-3 border-t border-[#D0DCF0] text-xs text-[#0B1530] font-sans">
                     {sol.keyBenefits.slice(0, 2).map((b, bIdx) => (
-                      <div key={bIdx} className="flex items-center gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#4F7556] shrink-0" />
-                        <span className="truncate">{b}</span>
+                      <div key={bIdx} className="flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#1B4FD6] shrink-0 mt-px" />
+                        <span>{b}</span>
                       </div>
                     ))}
                   </div>
