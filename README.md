@@ -70,7 +70,7 @@ The dashboard in the home hero is an illustration and is labelled "Sample data".
 ```
 src/
   app/            routes, layouts and per-route metadata
-  components/     shared UI (Navbar, Footer, HeroDashboard, JourneyTimeline, ...)
+  components/     shared UI (Navbar, Footer, HeroGallery, JourneyTimeline, ...)
   data/           content (see above)
   lib/            small helpers
 tests/            Vitest + Testing Library

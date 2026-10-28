@@ -205,17 +205,6 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 /* ===================================================================
    Hero
    =================================================================== */
-.hero-window {
-  position: relative;
-  background: var(--card);
-  border: 1px solid var(--line);
-  box-shadow: 0 1px 2px rgba(11, 27, 80, 0.05), 0 40px 80px -40px rgba(11, 27, 80, 0.35);
-  transform: translate3d(calc(var(--px, 0) * -8px), calc(var(--py, 0) * -6px), 0);
-  transition: transform 0.6s var(--ease);
-}
-.dash-bar { transform-origin: bottom; animation: growbar 1.1s var(--ease) both; }
-@keyframes growbar { from { transform: scaleY(0); } to { transform: scaleY(1); } }
-
 /* Hero photo backdrop: crossfade + slow zoom, veiled into the page colour */
 .hero-slide { opacity: 0; animation: hero-slide 24s ease-in-out infinite; will-change: opacity, scale; }
 @keyframes hero-slide {
@@ -585,3 +574,15 @@ a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disable
 .mod-tile[data-active="true"] .mod-tile-cat { color: rgba(255, 255, 255, 0.75); }
 .mod-tile[data-active="true"] .mod-tile-icon { transform: rotate(-12deg) scale(1.25); }
 @media (prefers-reduced-motion: reduce) { .mod-tile, .mod-tile::before, .mod-tile-icon { transition: none; } }
+
+/* Hero photo frame: four project photos take turns (5s each, 20s loop) */
+.hero-frame { position: relative; margin: 0; aspect-ratio: 5 / 4; width: 100%; max-height: 70svh; border-radius: 1.25rem; overflow: hidden; background: #cfe0f7; box-shadow: 0 30px 60px -32px rgba(11, 27, 80, 0.55); }
+.hero-frame-slide { position: absolute; inset: 0; opacity: 0; animation: hero-frame-cycle 20s linear infinite both; }
+.hero-frame-slide img { animation: hero-frame-zoom 20s linear infinite; animation-delay: inherit; }
+.hero-frame-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11, 21, 48, 0.78), rgba(11, 21, 48, 0.1) 55%, transparent); }
+.hero-frame-caption { position: absolute; left: 0; right: 0; bottom: 0; display: grid; gap: 0.2rem; padding: clamp(1rem, 2.4vw, 1.75rem); color: #fff; }
+.hero-frame-count { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; color: #9cc3f7; }
+.hero-frame-title { font-family: var(--font-display); font-size: clamp(1.1rem, 1.8vw, 1.6rem); font-weight: 800; }
+.hero-frame-note { font-size: 0.85rem; font-weight: 500; opacity: 0.85; }
+@keyframes hero-frame-cycle { 0% { opacity: 0; } 5% { opacity: 1; } 25% { opacity: 1; } 30% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes hero-frame-zoom { 0% { transform: scale(1); } 30% { transform: scale(1.06); } 100% { transform: scale(1.06); } }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import FinalCtaSection from "@/components/FinalCtaSection";
 import ProjectSlabs from "@/components/ProjectSlabs";
-import HeroDashboard from "@/components/HeroDashboard";
+import HeroGallery from "@/components/HeroGallery";
 import StatsStrip from "@/components/StatsStrip";
 import RoadmapScene from "@/components/RoadmapScene";
 import HeroBackdrop from "@/components/HeroBackdrop";
@@ -41,7 +41,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="lg:col-span-6" data-reveal="zoom" data-delay="200">
-            <HeroDashboard />
+            <HeroGallery />
           </div>
         </div>
       </section>
