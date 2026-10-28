@@ -20,6 +20,8 @@ const subscribeReduce = (cb: () => void) => {
 export default function RoadmapScene() {
   const section = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
+  // True while the page is gliding on its own (a jump out of the roadmap, or a dot click), so those scrolls are not re-judged
+  const gliding = useRef(false);
   const reduce = useSyncExternalStore(subscribeReduce, () => window.matchMedia(REDUCE).matches, () => false);
   const n = ROADMAP_STAGES.length;
 
@@ -35,8 +37,23 @@ export default function RoadmapScene() {
       el.style.setProperty("--p", progress.toFixed(4));
       setActive(activeStage(progress, n));
     };
+    let lastY = window.scrollY;
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
+      // Scrolling back up inside the roadmap does not walk the stages one by one: it returns straight to stage 1
+      const y = window.scrollY;
+      const goingUp = y < lastY - 2;
+      lastY = y;
+      if (!goingUp || gliding.current) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < -8 && r.bottom > window.innerHeight * 0.5) {
+        gliding.current = true;
+        window.scrollTo({ top: window.scrollY + r.top, behavior: window.matchMedia(REDUCE).matches ? "auto" : "smooth" });
+        window.setTimeout(() => {
+          gliding.current = false;
+          lastY = window.scrollY;
+        }, 1100);
+      }
     };
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -53,6 +70,8 @@ export default function RoadmapScene() {
       const el = section.current;
       if (!el) return;
       const top = el.getBoundingClientRect().top + window.scrollY;
+      gliding.current = true;
+      window.setTimeout(() => (gliding.current = false), 1100);
       window.scrollTo({ top: top + stageScrollTarget(index, n, el.offsetHeight, window.innerHeight), behavior: "smooth" });
     },
     [n]
