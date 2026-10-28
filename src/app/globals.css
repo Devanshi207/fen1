@@ -268,9 +268,14 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
   display: inline-block;
   animation: kinetic-rise 0.9s var(--ease) backwards;
   animation-delay: calc(0.25s + var(--i, 0) * 28ms);
-  transition: transform 0.35s var(--ease), color 0.35s;
 }
-.kinetic-char:hover { transform: translateY(-0.07em); color: #1b4fd6; }
+/* Hovering a letter makes it hop and settle; the colour never changes */
+.kinetic-char:hover { animation: kinetic-juggle 0.6s var(--ease); }
+@keyframes kinetic-juggle {
+  30% { transform: translateY(-0.2em) rotate(-7deg); }
+  60% { transform: translateY(0.03em) rotate(3deg); }
+  100% { transform: none; }
+}
 @keyframes kinetic-rise {
   from { transform: translateY(115%) rotate(6deg); opacity: 0; }
   to { transform: none; opacity: 1; }
