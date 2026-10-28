@@ -557,17 +557,23 @@ a[class~="rounded-full"]:hover, button[class~="rounded-full"]:hover:not(:disable
 .mod-tile {
   position: relative; isolation: isolate; overflow: hidden; outline: none; cursor: default;
   display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr; row-gap: 0.5rem;
-  min-height: 5.25rem; padding: 0.7rem 0.8rem; border-radius: 0.7rem; background: #fff; border: 1px solid var(--line);
-  transition: transform 0.45s var(--ease), opacity 0.35s, border-color 0.3s, box-shadow 0.45s var(--ease);
+  min-height: 5.25rem; padding: 0.7rem 0.8rem;
+  /* A glass pane with one corner cut off. The 1px outline is the element itself showing round a white inset. */
+  background: #cdd9ef; clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+  transition: transform 0.45s var(--ease), background 0.3s;
+}
+.mod-tile::after {
+  content: ""; position: absolute; inset: 1px; z-index: -2; background: #fff;
+  clip-path: polygon(0 0, calc(100% - 19.3px) 0, 100% 19.3px, 100% 100%, 0 100%);
 }
 .mod-tile::before {
   content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(160deg, #2f6bf0, #1b4fd6 55%, #102f9e);
   transform: translateY(101%); transition: transform 0.5s var(--ease);
 }
-.mod-tile[data-active="true"] { transform: translateY(-4px); border-color: #1b4fd6; box-shadow: 0 18px 34px -18px rgba(27, 79, 214, 0.6); }
+.mod-tile[data-active="true"] { transform: translateY(-4px); background: #1b4fd6; }
 .mod-tile[data-active="true"]::before { transform: none; }
 .mod-tile-num { font-size: 0.72rem; font-weight: 700; color: var(--accent); transition: color 0.3s; }
-.mod-tile-icon { width: 0.95rem; height: 0.95rem; color: var(--muted); transition: color 0.3s, transform 0.5s var(--ease); }
+.mod-tile-icon { width: 0.95rem; height: 0.95rem; margin-right: 0.5rem; color: var(--muted); transition: color 0.3s, transform 0.5s var(--ease); }
 .mod-tile-title { grid-column: 1 / -1; align-self: end; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.01em; line-height: 1.2; color: var(--ink); transition: color 0.3s; }
 .mod-tile-cat { grid-column: 1 / -1; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em; color: var(--subtle); transition: color 0.3s; }
 .mod-tile[data-active="true"] .mod-tile-num, .mod-tile[data-active="true"] .mod-tile-icon, .mod-tile[data-active="true"] .mod-tile-title, .mod-tile[data-active="true"] .mod-tile-cat { color: #fff; }
