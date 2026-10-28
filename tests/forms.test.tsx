@@ -59,26 +59,17 @@ describe.each([
 });
 
 describe("Business type on the demo form", () => {
-  it("lets the visitor type their own when no choice fits", async () => {
+  it("lets the visitor type their own when the list has no match", async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true });
     vi.stubGlobal("fetch", fetchMock);
     const user = userEvent.setup();
     render(<RequestDemoPage />);
 
-    // Step 1 then step 2
-    for (const box of screen.getAllByRole("textbox")) {
-      const el = box as HTMLInputElement;
-      await user.type(el, el.type === "email" ? "a@b.co" : "Rao");
-    }
-    await user.type(document.querySelector('input[type="tel"]') as HTMLInputElement, "12345");
-    await user.click(screen.getByRole("button", { name: /continue/i }));
-
     expect(screen.queryByLabelText("Describe your business")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /something else/i }));
+    await user.selectOptions(screen.getByLabelText("Business type"), "Other (type your own)");
     await user.type(screen.getByLabelText("Describe your business"), "Skylight maker");
-    await user.click(screen.getByRole("button", { name: /continue/i }));
-    await user.click(screen.getByRole("button", { name: /request demo/i }));
 
+    await fillAndSubmit(/request demo/i);
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
     expect(JSON.parse(fetchMock.mock.calls[0][1].body).details.businessType).toBe("Skylight maker");
   });
