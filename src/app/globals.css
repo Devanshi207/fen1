@@ -483,7 +483,6 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 
 .wordband { display: grid; gap: 0.25rem; padding-block: clamp(1.5rem, 4vw, 3rem); overflow: hidden; user-select: none; }
 .wordband-row { display: flex; width: max-content; animation: wordband-run 40s linear infinite; will-change: transform; }
-.wordband-row.is-reverse { animation-direction: reverse; animation-duration: 48s; }
 .wordband-half { display: flex; flex: none; }
 @keyframes wordband-run { to { transform: translate3d(-50%, 0, 0); } }
 .wordband-item {
