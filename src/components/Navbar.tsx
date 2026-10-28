@@ -2,17 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { GALLERY } from "@/data/gallery";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { name: "HOME", href: "/" },
-  { name: "SOLUTIONS", href: "/solutions" },
-  { name: "ABOUT", href: "/about" },
-  { name: "TRAINING", href: "/training" },
-  { name: "CONTACT US", href: "/contact" },
+  { name: "HOME", href: "/", note: "The FEN1 overview" },
+  { name: "SOLUTIONS", href: "/solutions", note: "Verticals and every module" },
+  { name: "ABOUT", href: "/about", note: "Why FEN1 exists" },
+  { name: "TRAINING", href: "/training", note: "Getting your team up to speed" },
+  { name: "CONTACT US", href: "/contact", note: "Talk to the team" },
 ];
 
 export default function Navbar() {
@@ -109,44 +111,71 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Full-screen menu */}
+      {/* Full-screen menu: links on one side, a photo that follows the link under the pointer on the other */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ clipPath: "circle(0% at calc(100% - 3rem) 2.5rem)" }}
-            animate={{ clipPath: "circle(150% at calc(100% - 3rem) 2.5rem)" }}
-            exit={{ clipPath: "circle(0% at calc(100% - 3rem) 2.5rem)" }}
-            transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 bg-[#F2F7FF] pt-24 px-6 sm:px-10 pb-8 overflow-y-auto flex flex-col justify-center font-sans"
+            initial={{ clipPath: "inset(0 0 100% 0)" }}
+            animate={{ clipPath: "inset(0 0 0% 0)" }}
+            exit={{ clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            className="fixed inset-0 z-40 bg-[#F2F7FF] grid lg:grid-cols-2 font-sans"
           >
-            <nav aria-label="Main" className="max-w-3xl w-full mx-auto">
-              <ul className="menu-links" onMouseLeave={() => setHovered(null)}>
+            <nav aria-label="Main" className="flex flex-col justify-center px-6 sm:px-14 pt-24 pb-10" onMouseLeave={() => setHovered(null)}>
+              <ul className="menu-links">
                 {NAV_LINKS.map((link, i) => (
                   <motion.li
                     key={link.name}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.25 + i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0, x: -40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.35 + i * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     data-dim={hovered !== null && hovered !== link.name}
                   >
                     <Link
                       href={link.href}
                       onMouseEnter={() => setHovered(link.name)}
                       onFocus={() => setHovered(link.name)}
-                      className="flex items-baseline gap-4 py-2 sm:py-3 border-b border-[#D0DCF0] group"
+                      className="flex items-center gap-5 py-3.5 sm:py-4 border-b border-[#D0DCF0] group"
                     >
-                      <span className="text-xs font-semibold text-[#1B4FD6] tabular-nums">0{i + 1}</span>
-                      <span data-current={pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href))} className="menu-link-text text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#0B1530]">
-                        {link.name}
+                      <span className="text-xs font-semibold text-[#1B4FD6] tabular-nums w-6">0{i + 1}</span>
+                      <span>
+                        <span
+                          data-current={pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href))}
+                          className="menu-link-text block text-2xl sm:text-4xl font-bold tracking-tight text-[#0B1530]"
+                        >
+                          {link.name}
+                        </span>
+                        <span className="block text-xs sm:text-sm text-[#4A5B7A] mt-1">{link.note}</span>
                       </span>
-                      <ArrowRight className="ml-auto self-center w-6 h-6 text-[#1B4FD6] -translate-x-3 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
+                      <ArrowRight className="ml-auto w-5 h-5 text-[#1B4FD6] -translate-x-3 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
                     </Link>
                   </motion.li>
                 ))}
               </ul>
-
             </nav>
 
+            <div className="hidden lg:block relative overflow-hidden" aria-hidden="true">
+              {NAV_LINKS.map((link, i) => {
+                const shown = (hovered ?? NAV_LINKS.find((l) => l.href === pathname)?.name ?? NAV_LINKS[0].name) === link.name;
+                const slide = GALLERY[i % GALLERY.length];
+                return (
+                  <Image
+                    key={link.name}
+                    src={slide.src}
+                    alt=""
+                    fill
+                    sizes="50vw"
+                    priority={i === 0}
+                    className="object-cover transition-all duration-700 ease-out"
+                    style={{ opacity: shown ? 1 : 0, transform: shown ? "scale(1)" : "scale(1.08)", objectPosition: slide.position }}
+                  />
+                );
+              })}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1530]/55 via-transparent to-[#0B1530]/10" />
+              <p className="absolute left-8 bottom-8 right-8 text-white text-sm font-semibold">
+                {GALLERY[Math.max(0, NAV_LINKS.findIndex((l) => l.name === (hovered ?? "HOME"))) % GALLERY.length].title}
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

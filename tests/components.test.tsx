@@ -10,7 +10,7 @@ describe("Navbar", () => {
     render(<Navbar />);
     await userEvent.setup().click(screen.getAllByRole("button")[0]);
     const nav = screen.getByRole("navigation", { name: "Main" });
-    const labels = [...nav.querySelectorAll("a")].map((a) => a.textContent?.trim().replace(/^\d+/, ""));
+    const labels = [...nav.querySelectorAll(".menu-link-text")].map((n) => n.textContent?.trim());
     expect(labels).toEqual(expect.arrayContaining(["HOME", "ABOUT", "TRAINING", "CONTACT US"]));
     expect(labels.some((l) => /product/i.test(l ?? ""))).toBe(false);
   });
