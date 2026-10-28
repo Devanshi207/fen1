@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { columnCount, isOffsetColumn, parallaxOffset, staggerDelay } from "@/lib/stagger";
+import { columnCount, isOffsetColumn, staggerDelay } from "@/lib/stagger";
+import { magnetShift } from "@/lib/magnet";
 
 /**
  * Staggered scroll motion. Only the top-most element of each group animates (a card, not the text inside it),
@@ -55,7 +56,7 @@ export default function MotionProvider() {
     const scan = () => {
       const fresh: HTMLElement[] = [];
       document.querySelectorAll<HTMLElement>(TARGETS).forEach((el) => {
-        if (seen.has(el) || el.closest('[role="dialog"], header')) return;
+        if (seen.has(el) || el.closest('[role="dialog"], header, [data-no-reveal]')) return;
         // Animate the card, not the text inside it (unless the inner element asks for its own reveal).
         const own = el.hasAttribute("data-reveal");
         if (!own && el.parentElement?.closest(".reveal")) return;
@@ -82,25 +83,30 @@ export default function MotionProvider() {
       }
     };
 
-    // Parallax layers drift at their own speed while scrolling
-    let raf = 0;
-    const drift = () => {
-      raf = 0;
-      document.querySelectorAll<HTMLElement>("[data-speed]").forEach((el) => {
-        const r = el.getBoundingClientRect();
-        if (r.bottom < -100 || r.top > window.innerHeight + 100) return;
-        const speed = Number(el.dataset.speed) || 0;
-        el.style.setProperty("--sy", `${parallaxOffset(r.top + r.height / 2, window.innerHeight, speed).toFixed(1)}px`);
-      });
+    const onScroll = () => check();
+
+    // Pill buttons lean toward the mouse
+    const MAGNETIC = 'main a[class*="rounded-full"], header a[class*="rounded-full"]';
+    let leaning: HTMLElement | null = null;
+    const release = () => {
+      if (leaning) leaning.style.removeProperty("transform");
+      leaning = null;
     };
-    const onScroll = () => {
-      check();
-      if (!reduce && !raf) raf = requestAnimationFrame(drift);
+    const onMagnet = (e: PointerEvent) => {
+      if (reduce || e.pointerType !== "mouse") return;
+      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>(MAGNETIC) ?? null;
+      if (leaning && leaning !== target) release();
+      if (!target) return;
+      leaning = target;
+      const { x, y } = magnetShift({ x: e.clientX, y: e.clientY }, target.getBoundingClientRect());
+      target.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
     };
+    window.addEventListener("pointermove", onMagnet, { passive: true });
+    document.documentElement.addEventListener("mouseleave", release);
 
     // Card spotlight follows the pointer
     const onSpot = (e: PointerEvent) => {
-      const card = (e.target as HTMLElement | null)?.closest<HTMLElement>('[class~="bg-[#FFFFFF]"], .journey-card, .stats-bar');
+      const card = (e.target as HTMLElement | null)?.closest<HTMLElement>('[class~="bg-[#FFFFFF]"], .stats-bar');
       if (!card) return;
       const r = card.getBoundingClientRect();
       card.style.setProperty("--mx", `${e.clientX - r.left}px`);
@@ -110,7 +116,6 @@ export default function MotionProvider() {
 
     scan();
     check();
-    if (!reduce) drift();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     const tick = window.setInterval(check, 250);
@@ -129,7 +134,9 @@ export default function MotionProvider() {
       window.removeEventListener("resize", onScroll);
       window.removeEventListener("pointermove", onSpot);
       window.clearInterval(tick);
-      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMagnet);
+      document.documentElement.removeEventListener("mouseleave", release);
+      release();
       mo.disconnect();
       window.clearTimeout(t);
     };

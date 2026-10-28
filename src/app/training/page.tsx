@@ -3,6 +3,7 @@
 import React from "react";
 import { CheckCircle2 } from "lucide-react";
 import FinalCtaSection from "@/components/FinalCtaSection";
+import KineticHeading from "@/components/KineticHeading";
 
 const TRACKS = [
   {
@@ -56,7 +57,7 @@ export default function TrainingPage() {
       <section className="pt-20 pb-16 relative">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 relative z-10">
           <span className="text-xs font-sans uppercase text-[#1B4FD6] tracking-widest block font-semibold">TRAINING</span>
-          <h1 className="text-3xl sm:text-5xl font-light text-[#0B1530] tracking-tight">TRAINING FOR EVERY TEAM.</h1>
+          <KineticHeading text={"TRAINING FOR EVERY TEAM."} className="text-3xl sm:text-5xl font-light text-[#0B1530] tracking-tight" />
           <p className="text-sm sm:text-base text-[#4A5B7A] max-w-2xl mx-auto leading-relaxed font-sans">
             Role-based training that follows the FEN1 roadmap, from enquiry to handover.
           </p>

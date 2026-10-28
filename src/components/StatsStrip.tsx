@@ -17,16 +17,19 @@ const STATS = [
 
 export default function StatsStrip() {
   return (
-    <section className="relative pb-24 lg:pb-28">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="stats-bar rounded-[28px] grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-[#D0DCF0]/70">
+    <section id="figures" data-chapter="Figures" data-snap className="figures">
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+        <p className="figures-eyebrow" data-reveal="up">
+          At a glance
+        </p>
+        <div className="figures-grid">
           {STATS.map((s, i) => (
-            <div key={s.label} data-reveal="up" data-delay={i * 90} className="px-6 py-8 sm:px-8 sm:py-10 text-center lg:text-left">
-              <div className="font-display text-4xl sm:text-5xl text-[#0B1530] tracking-tight">
+            <div key={s.label} data-reveal="up" data-delay={i * 110}>
+              <div className="figure-num">
                 <CountUp to={s.to} />
               </div>
-              <div className="mt-3 text-sm font-semibold text-[#0B1530]">{s.label}</div>
-              <div className="mt-1 text-xs text-[#4A5B7A]">{s.note}</div>
+              <p className="figure-label">{s.label}</p>
+              <p className="figure-note">{s.note}</p>
             </div>
           ))}
         </div>

@@ -23,9 +23,3 @@ export function staggerDelay(index: number, columns: number): number {
 export function isOffsetColumn(index: number, columns: number): boolean {
   return columns > 1 && index % columns % 2 === 1;
 }
-
-/** Vertical drift for a parallax layer: positive speed moves with the scroll, negative against it. Clamped. */
-export function parallaxOffset(elementCenterY: number, viewportHeight: number, speed: number, limit = 28): number {
-  const raw = (elementCenterY - viewportHeight / 2) * speed;
-  return Math.max(-limit, Math.min(limit, raw));
-}

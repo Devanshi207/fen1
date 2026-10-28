@@ -3,24 +3,24 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import FinalCtaSection from "@/components/FinalCtaSection";
-import PhotoShowcase from "@/components/PhotoShowcase";
+import ProjectSlabs from "@/components/ProjectSlabs";
 import HeroDashboard from "@/components/HeroDashboard";
 import StatsStrip from "@/components/StatsStrip";
-import JourneyTimeline from "@/components/JourneyTimeline";
+import RoadmapScene from "@/components/RoadmapScene";
 import HeroBackdrop from "@/components/HeroBackdrop";
+import KineticHeading from "@/components/KineticHeading";
+import ChapterRail from "@/components/ChapterRail";
+import WordBand from "@/components/WordBand";
 
 export default function HomePage() {
   return (
-    <div className="w-full flex flex-col bg-[#F2F7FF] text-[#0B1530] font-sans">
-      <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28">
+    <div className="snap-page w-full flex flex-col bg-[#F2F7FF] text-[#0B1530] font-sans">
+      <ChapterRail />
+      <section id="intro" data-chapter="Intro" data-snap className="relative overflow-hidden flex items-center min-h-svh pt-28 pb-16 lg:pt-24">
         <HeroBackdrop />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid lg:grid-cols-12 gap-14 lg:gap-8 items-center">
           <div className="lg:col-span-6 space-y-7 text-center lg:text-left">
-            <h1 className="text-4xl sm:text-5xl lg:text-[2.5rem] xl:text-[3.1rem] font-light text-[#0B1530] tracking-tight leading-[1.1]">
-              THE OPERATING SYSTEM <br className="hidden sm:inline" />
-              FOR GLASS, WINDOWS <br className="hidden sm:inline" />
-              &amp; ALUMINIUM.
-            </h1>
+            <KineticHeading text={"THE OPERATING SYSTEM\nFOR GLASS, WINDOWS\n& ALUMINIUM."} className="text-4xl sm:text-5xl lg:text-[clamp(2rem,2.9vw,3rem)] font-light text-[#0B1530] tracking-tight leading-[1.1]" />
             <p data-reveal="up" data-delay="140" className="text-base lg:text-lg text-[#4A5B7A] max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
               From estimation to installation, FEN1 connects sales, engineering, procurement, production, projects, people, finance and analytics in one unified ERP platform.
             </p>
@@ -47,8 +47,9 @@ export default function HomePage() {
       </section>
 
       <StatsStrip />
-      <JourneyTimeline />
-      <PhotoShowcase />
+      <WordBand />
+      <RoadmapScene />
+      <ProjectSlabs />
       <FinalCtaSection />
     </div>
   );

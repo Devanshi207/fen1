@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { render, waitFor } from "@testing-library/react";
 import MotionProvider from "@/components/MotionProvider";
 
@@ -76,32 +76,5 @@ describe("MotionProvider", () => {
     render(<Page />);
     // jsdom has no layout, so everything counts as in view
     await waitFor(() => expect(document.getElementById("a")).toHaveClass("in"));
-  });
-
-  it("drifts parallax layers at their own speed, in opposite directions for opposite speeds", async () => {
-    const rect = (top: number) =>
-      ({ top, bottom: top + 200, left: 0, right: 100, width: 100, height: 200, x: 0, y: top, toJSON: () => ({}) }) as DOMRect;
-    vi.spyOn(window, "innerHeight", "get").mockReturnValue(800);
-    render(
-      <>
-        <main>
-          <div id="page">
-            <figure id="down" data-speed="0.05" />
-            <figure id="up" data-speed="-0.05" />
-          </div>
-        </main>
-        <MotionProvider />
-      </>
-    );
-    // both layers sit 200px below the viewport centre
-    vi.spyOn(document.getElementById("down")!, "getBoundingClientRect").mockReturnValue(rect(500));
-    vi.spyOn(document.getElementById("up")!, "getBoundingClientRect").mockReturnValue(rect(500));
-    window.dispatchEvent(new Event("scroll"));
-    const sy = (id: string) => parseFloat(document.getElementById(id)!.style.getPropertyValue("--sy"));
-    // The value set at mount (no layout yet) is replaced after the scroll recalculates it from the real position.
-    await waitFor(() => expect(sy("down")).toBeGreaterThan(0));
-    expect(sy("up")).toBeLessThan(0);
-    expect(Math.abs(sy("down"))).toBeCloseTo(Math.abs(sy("up")));
-    vi.restoreAllMocks();
   });
 });

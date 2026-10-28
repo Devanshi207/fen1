@@ -4,7 +4,6 @@ import {
   STAGGER_STEP_MS,
   columnCount,
   isOffsetColumn,
-  parallaxOffset,
   staggerDelay,
 } from "@/lib/stagger";
 
@@ -47,21 +46,5 @@ describe("isOffsetColumn", () => {
 
   it("never offsets a single column", () => {
     expect(isOffsetColumn(1, 1)).toBe(false);
-  });
-});
-
-describe("parallaxOffset", () => {
-  it("is zero when the element is centred in the viewport", () => {
-    expect(parallaxOffset(400, 800, 0.05)).toBeCloseTo(0);
-  });
-
-  it("moves with the scroll for a positive speed and against it for a negative one", () => {
-    expect(parallaxOffset(600, 800, 0.05)).toBeGreaterThan(0);
-    expect(parallaxOffset(600, 800, -0.05)).toBeLessThan(0);
-  });
-
-  it("is clamped so the image never slides out of its frame", () => {
-    expect(parallaxOffset(100000, 800, 0.5)).toBe(28);
-    expect(parallaxOffset(-100000, 800, 0.5)).toBe(-28);
   });
 });

@@ -4,6 +4,7 @@ import React from "react";
 import { XCircle } from "lucide-react";
 import FinalCtaSection from "@/components/FinalCtaSection";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
+import KineticHeading from "@/components/KineticHeading";
 
 const PROBLEMS = [
   { n: "01", name: "Excel Spreadsheets", issue: "Enquiries, follow-ups and estimates live in files that only one person understands." },
@@ -41,10 +42,7 @@ export default function AboutPage() {
           <span className="text-xs font-sans uppercase text-[#1B4FD6] tracking-widest block font-semibold">
             ABOUT FEN1
           </span>
-          <h1 className="text-3xl sm:text-5xl font-light text-[#0B1530] tracking-tight">
-            AN ERP BUILT AROUND <br />
-            GLASS, ALUMINIUM & WINDOWS.
-          </h1>
+          <KineticHeading text={"AN ERP BUILT AROUND\nGLASS, ALUMINIUM & WINDOWS."} className="text-3xl sm:text-5xl font-light text-[#0B1530] tracking-tight" />
           <p className="text-sm sm:text-base text-[#4A5B7A] max-w-2xl mx-auto leading-relaxed font-sans">
             FEN1 runs the whole job in one system, from the first enquiry to final handover.
           </p>

@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MotionProvider from "@/components/MotionProvider";
 import FluidBackground from "@/components/FluidBackground";
+import CursorFollower from "@/components/CursorFollower";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-bricolage", display: "swap" });
 const body = Outfit({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-outfit", display: "swap" });
@@ -55,6 +56,7 @@ export default function RootLayout({
         <main id="page" className="flex-1 w-full pt-16 sm:pt-20">{children}</main>
         <Footer />
         <MotionProvider />
+        <CursorFollower />
       </body>
     </html>
   );

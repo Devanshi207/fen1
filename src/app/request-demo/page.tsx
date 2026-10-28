@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Send, CheckCircle2 } from "lucide-react";
 import { submitEnquiry, type SubmitState } from "@/lib/submitEnquiry";
+import KineticHeading from "@/components/KineticHeading";
 
 export default function RequestDemoPage() {
   const [status, setStatus] = useState<SubmitState>("idle");
@@ -34,10 +35,7 @@ export default function RequestDemoPage() {
           <span className="text-xs font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
             LIVE DEMONSTRATION
           </span>
-          <h1 className="text-3xl sm:text-5xl font-light text-[#0B1530] tracking-tight">
-            SEE YOUR BUSINESS <br />
-            THROUGH FEN1.
-          </h1>
+          <KineticHeading text={"SEE YOUR BUSINESS\nTHROUGH FEN1."} className="text-3xl sm:text-5xl font-light text-[#0B1530] tracking-tight" />
           <p className="text-sm sm:text-base text-[#4A5B7A] max-w-2xl mx-auto leading-relaxed">
             Explore how your sales, estimation, projects, procurement, production, people, and finance can connect within one unified platform.
           </p>

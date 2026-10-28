@@ -25,6 +25,7 @@ import {
   Search,
 } from "lucide-react";
 import FinalCtaSection from "@/components/FinalCtaSection";
+import KineticHeading from "@/components/KineticHeading";
 
 const CATEGORIES = ["ALL MODULES", "BUSINESS", "OPERATIONS", "SUPPLY CHAIN", "FINANCE & PEOPLE", "ANALYTICS", "SYSTEM"];
 
@@ -68,10 +69,7 @@ export default function SolutionsPage() {
       <section className="pt-20 pb-16 relative">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4 relative z-10">
           <span className="text-xs font-sans uppercase text-[#1B4FD6] tracking-widest block font-semibold">SOLUTIONS</span>
-          <h1 className="text-3xl sm:text-5xl font-light text-[#0B1530] tracking-tight">
-            ENGINEERED FOR YOUR <br />
-            EXACT OPERATIONS.
-          </h1>
+          <KineticHeading text={"ENGINEERED FOR YOUR\nEXACT OPERATIONS."} className="text-3xl sm:text-5xl font-light text-[#0B1530] tracking-tight" />
           <p className="text-sm sm:text-base text-[#4A5B7A] max-w-2xl mx-auto leading-relaxed font-sans">
             FEN1 is built for glass processing plants, aluminium window fabricators, glazing contractors and dealer networks, with every module you need in one system.
           </p>
