@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/products", destination: "/solutions#modules", permanent: true },
       { source: "/products/:slug", destination: "/solutions#modules", permanent: true },
+      // Contact and demo are one page now; old /contact links open it on "I have a question"
+      { source: "/contact", destination: "/request-demo?topic=question", permanent: true },
     ];
   },
 };

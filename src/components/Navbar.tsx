@@ -14,8 +14,12 @@ const NAV_LINKS = [
   { name: "SOLUTIONS", href: "/solutions", note: "Verticals and every module" },
   { name: "ABOUT", href: "/about", note: "Why FEN1 exists" },
   { name: "TRAINING", href: "/training", note: "Getting your team up to speed" },
-  { name: "CONTACT US", href: "/contact", note: "Talk to the team" },
+  { name: "CONTACT US", href: "/request-demo?topic=question", note: "Talk to the team" },
 ];
+
+/** A link's path without its query (the contact link carries ?topic=question), for working out which page is current */
+const pathOf = (href: string) => href.split("?")[0];
+const isCurrent = (pathname: string, href: string) => pathname === pathOf(href) || (pathOf(href) !== "/" && pathname.startsWith(pathOf(href)));
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -76,7 +80,7 @@ export default function Navbar() {
               <span className="text-base font-semibold tracking-tight text-[#0B1530] leading-none">
                 FEN1
               </span>
-              <span className="text-[9px] font-mono uppercase text-[#1B4FD6] tracking-widest mt-0.5">
+              <span className="text-[11px] font-mono uppercase text-[#1B4FD6] tracking-widest mt-0.5">
                 ERP
               </span>
             </div>
@@ -85,7 +89,7 @@ export default function Navbar() {
           {/* Page links, one click away on wide screens (the full-screen menu is for smaller ones) */}
           <nav aria-label="Primary" className="hidden lg:flex items-center gap-8 mx-auto">
             {NAV_LINKS.map((link) => {
-              const current = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+              const current = isCurrent(pathname, link.href);
               return (
                 <Link
                   key={link.name}
@@ -157,7 +161,7 @@ export default function Navbar() {
                       <span className="text-xs font-semibold text-[#1B4FD6] tabular-nums w-6">0{i + 1}</span>
                       <span>
                         <span
-                          data-current={pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href))}
+                          data-current={isCurrent(pathname, link.href)}
                           className="menu-link-text block text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#0B1530]"
                         >
                           {link.name}
@@ -173,7 +177,7 @@ export default function Navbar() {
 
             <div className="hidden md:block relative overflow-hidden" aria-hidden="true">
               {NAV_LINKS.map((link, i) => {
-                const shown = (hovered ?? NAV_LINKS.find((l) => l.href === pathname)?.name ?? NAV_LINKS[0].name) === link.name;
+                const shown = (hovered ?? NAV_LINKS.find((l) => pathOf(l.href) === pathname)?.name ?? NAV_LINKS[0].name) === link.name;
                 const slide = GALLERY[i % GALLERY.length];
                 return (
                   <Image

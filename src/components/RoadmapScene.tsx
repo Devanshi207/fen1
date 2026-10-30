@@ -12,6 +12,15 @@ const subscribeReduce = (cb: () => void) => {
   return () => mq.removeEventListener("change", cb);
 };
 
+// Layout under review: ?roadmap=ladder or ?roadmap=film swaps the stage layout; anything else is the original centred one
+const subscribeNone = () => () => {};
+type Variant = "centred" | "ladder" | "film" | "film3";
+const readVariant = (): Variant => {
+  const v = new URLSearchParams(window.location.search).get("roadmap");
+  return v === "ladder" || v === "film" || v === "film3" ? v : "centred";
+};
+const GROUP = 3;
+
 /**
  * The enquiry-to-handover roadmap as one pinned screen: the page stops, and scrolling swaps the stage.
  * Layout and motion live in CSS (`.roadmap-*` in globals.css); this component only reports which stage is active.
@@ -23,7 +32,10 @@ export default function RoadmapScene() {
   // True while the page is gliding on its own (a jump out of the roadmap, or a dot click), so those scrolls are not re-judged
   const gliding = useRef(false);
   const reduce = useSyncExternalStore(subscribeReduce, () => window.matchMedia(REDUCE).matches, () => false);
-  const n = ROADMAP_STAGES.length;
+  const variant = useSyncExternalStore(subscribeNone, readVariant, (): Variant => "centred");
+  const total = ROADMAP_STAGES.length;
+  // film3 moves three cards per scroll step, so the scroll is divided into groups instead of single stages
+  const n = variant === "film3" ? Math.ceil(total / GROUP) : total;
 
   useEffect(() => {
     const el = section.current;
@@ -72,12 +84,18 @@ export default function RoadmapScene() {
       const top = el.getBoundingClientRect().top + window.scrollY;
       gliding.current = true;
       window.setTimeout(() => (gliding.current = false), 1100);
-      window.scrollTo({ top: top + stageScrollTarget(index, n, el.offsetHeight, window.innerHeight), behavior: "smooth" });
+      const unit = variant === "film3" ? Math.min(Math.floor(index / GROUP), n - 1) : index;
+      window.scrollTo({ top: top + stageScrollTarget(unit, n, el.offsetHeight, window.innerHeight), behavior: "smooth" });
     },
-    [n]
+    [n, variant]
   );
 
-  const current = ROADMAP_STAGES[active];
+  const grouped = variant === "film3";
+  // The three cards on show in a group; the last group is pulled back so it still shows three
+  const first = grouped ? Math.min(active * GROUP, total - GROUP) : active;
+  const last = grouped ? first + GROUP - 1 : active;
+  const current = ROADMAP_STAGES[first];
+  const cardState = (i: number) => (i >= first && i <= last ? "is-active" : i < first ? "is-past" : "");
 
   return (
     <section
@@ -86,23 +104,62 @@ export default function RoadmapScene() {
       data-chapter="Roadmap"
       data-no-reveal
       data-reduce={reduce || undefined}
+      data-variant={variant}
       className="roadmap"
-      style={{ ["--n" as string]: n }}
+      style={{ ["--n" as string]: n, ["--a" as string]: grouped ? first + 1 : active }}
     >
       <div className="roadmap-stage">
         <div className="roadmap-top">
           <div className="space-y-1">
             <p className="roadmap-eyebrow">Lead to installation</p>
             <h2 className="roadmap-heading">FROM FIRST ENQUIRY TO FINAL HANDOVER.</h2>
-            <p className="roadmap-sub">{n} connected stages. Each one hands clean data to the next.</p>
+            <p className="roadmap-sub">{total} connected stages. Each one hands clean data to the next.</p>
           </div>
           <p className="roadmap-count" aria-hidden="true">
-            <span>{current.step}</span> / {String(n).padStart(2, "0")}
+            <span>{grouped ? `${current.step}-${ROADMAP_STAGES[last].step}` : current.step}</span> / {String(total).padStart(2, "0")}
           </p>
         </div>
 
+        {variant === "ladder" && (
+          <div className="rl-body">
+            <ol className="rl-list" aria-label="Stages">
+              {ROADMAP_STAGES.map((s, i) => (
+                <li key={s.step}>
+                  <button type="button" onClick={() => goTo(i)} className={`rl-item ${i === active ? "is-active" : i < active ? "is-past" : ""}`} aria-current={i === active ? "step" : undefined}>
+                    <span className="rl-item-num">{s.step}</span>
+                    <span className="rl-item-title">{s.title}</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+            <div className="rl-detail" key={current.step}>
+              <span className="rl-detail-num" aria-hidden="true">{current.step}</span>
+              <p className="roadmap-stage-name">{current.subtitle}</p>
+              <h3 className="roadmap-title">{current.title}</h3>
+              <p className="roadmap-desc">{current.desc}</p>
+            </div>
+          </div>
+        )}
+
+        {(variant === "film" || grouped) && (
+          <div className="rf-view">
+            <ol className="rf-track">
+              {ROADMAP_STAGES.map((s, i) => (
+                <li key={s.step} className={`rf-card ${cardState(i)}`}>
+                  <button type="button" onClick={() => goTo(i)} aria-current={i >= first && i <= last ? "step" : undefined}>
+                    <span className="rf-num">{s.step}</span>
+                    <span className="rf-title">{s.title}</span>
+                    <span className="rf-sub">{s.subtitle}</span>
+                    <span className="rf-desc">{s.desc}</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
         <ol className="roadmap-panels">
-          {ROADMAP_STAGES.map((s, i) => (
+          {variant === "centred" && ROADMAP_STAGES.map((s, i) => (
             <li
               key={s.step}
               className={`roadmap-panel ${i === active ? "is-active" : i < active ? "is-past" : "is-next"}`}

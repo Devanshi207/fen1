@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import FinalCtaSection from "@/components/FinalCtaSection";
+import { useHorizontalLayout } from "@/lib/horizontal";
+import { useStudioHome } from "@/lib/studio";
+import HorizontalHome from "@/components/horizontal/HorizontalHome";
+import StudioHome from "@/components/studio/StudioHome";
+import HomeIntro from "@/components/studio/HomeIntro";
 import ProjectSlabs from "@/components/ProjectSlabs";
 import HeroGallery from "@/components/HeroGallery";
 import StatsStrip from "@/components/StatsStrip";
@@ -13,8 +17,15 @@ import ChapterRail from "@/components/ChapterRail";
 import WordBand from "@/components/WordBand";
 
 export default function HomePage() {
+  // Layouts under review: ?home=studio is the oversized-wordmark home page (lib/studio); ?layout=horizontal is the sideways one
+  const studio = useStudioHome();
+  const horizontal = useHorizontalLayout();
+  if (studio) return <StudioHome />;
+  if (horizontal) return <HorizontalHome />;
+
   return (
     <div className="snap-page w-full flex flex-col bg-[#F2F7FF] text-[#0B1530] font-sans">
+      <HomeIntro />
       <ChapterRail />
       <section id="intro" data-chapter="Intro" data-snap className="relative overflow-hidden flex items-center min-h-[80svh] pt-28 pb-8 lg:pt-24">
         <HeroBackdrop />
@@ -50,7 +61,6 @@ export default function HomePage() {
       <WordBand />
       <RoadmapScene />
       <ProjectSlabs />
-      <FinalCtaSection />
     </div>
   );
 }

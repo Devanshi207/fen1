@@ -2,38 +2,17 @@
 
 import React from "react";
 import { XCircle } from "lucide-react";
-import FinalCtaSection from "@/components/FinalCtaSection";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
 import KineticHeading from "@/components/KineticHeading";
-
-const PROBLEMS = [
-  { n: "01", name: "Excel Spreadsheets", issue: "Enquiries, follow-ups and estimates live in files that only one person understands." },
-  { n: "02", name: "WhatsApp & Paper Slips", issue: "Site measurements and snag photos get lost between the site and the design office." },
-  { n: "03", name: "Standalone Machine Software", issue: "Operators re-type dimensions into saws, risking miscuts and wasted profile." },
-  { n: "04", name: "Separate Accounting Tools", issue: "Finance cannot see job costs or billing status until the month ends." },
-  { n: "05", name: "Manual Purchasing", issue: "Orders are placed without knowing which stock and off-cuts are already in the store." },
-  { n: "06", name: "Untracked Production", issue: "There is no live view of which jobs are cut, assembled, glazed or ready to ship." },
-];
-
-const PRINCIPLES = [
-  {
-    label: "ENQUIRY TO DRAWINGS",
-    title: "One record from the first call",
-    text: "Enquiry, follow-ups, drawings, estimation and quotation stay in one record, and the survey and design teams pick up from it.",
-  },
-  {
-    label: "STORE TO SHOP FLOOR",
-    title: "Stock and machines connected",
-    text: "Purchase, store and job work feed production, and machine integration sends cutting lists straight to the saws.",
-  },
-  {
-    label: "QC TO HANDOVER",
-    title: "Every job closed properly",
-    text: "Quality checks, installation and handover are recorded on the same job, ready for billing and reports.",
-  },
-];
+import { PROBLEMS, PRINCIPLES } from "@/data/aboutContent";
+import { useHorizontalLayout } from "@/lib/horizontal";
+import HorizontalAbout from "@/components/horizontal/HorizontalAbout";
 
 export default function AboutPage() {
+  // Layout under review: ?layout=horizontal shows this page as a sideways journey (see lib/horizontal)
+  const horizontal = useHorizontalLayout();
+  if (horizontal) return <HorizontalAbout />;
+
   return (
     <div className="w-full bg-[#F2F7FF] text-[#0B1530] font-sans">
       {/* Header */}
@@ -53,7 +32,7 @@ export default function AboutPage() {
       <section className="py-20 bg-[#E3EEFC] border-y border-[#D0DCF0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-sans uppercase text-[#A85E55] tracking-widest block font-semibold">
+            <span className="text-xs font-sans uppercase text-[#1B4FD6] tracking-widest block font-semibold">
               WITHOUT ONE SYSTEM
             </span>
             <h2 className="text-3xl sm:text-4xl font-light text-[#0B1530]">Disconnected Tools Drain Efficiency.</h2>
@@ -67,7 +46,7 @@ export default function AboutPage() {
               <div key={item.n} className="p-6 bg-[#FFFFFF] border border-[#D0DCF0] rounded-2xl space-y-3 shadow-xs font-sans">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-[#4A5B7A] font-semibold">{item.n}</span>
-                  <XCircle className="w-4 h-4 text-[#A85E55]" />
+                  <XCircle className="w-4 h-4 text-[#1B4FD6]" />
                 </div>
                 <h3 className="text-base font-semibold text-[#0B1530] font-sans">{item.name}</h3>
                 <p className="text-xs text-[#4A5B7A] font-sans leading-relaxed">{item.issue}</p>
@@ -112,8 +91,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-
-      <FinalCtaSection />
     </div>
   );
 }

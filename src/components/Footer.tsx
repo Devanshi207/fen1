@@ -1,10 +1,75 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
+
+const LEGAL = {
+  privacy: {
+    title: "Privacy Policy",
+    points: [
+      "When you use the Contact or Request a demo form we receive what you type: your name, company, work email, phone number, business details and message.",
+      "We use it only to reply to your enquiry and to arrange a demonstration. We do not sell it.",
+      "This site does not run advertising trackers.",
+      "To see, correct or delete what you sent us, write to us through the Contact page.",
+    ],
+  },
+  terms: {
+    title: "Terms of Service",
+    points: [
+      "The information on this site describes FEN1 and is provided for general information. It is not a contract or a quotation.",
+      "Scope, pricing and delivery for any FEN1 implementation are agreed in a separate written proposal.",
+      "Names, images and text on this site belong to FEN1 Systems and may not be reused without permission.",
+      "We may update this site and these terms from time to time.",
+    ],
+  },
+  security: {
+    title: "Enterprise Security",
+    points: [
+      "Enquiries sent through this site travel over an encrypted connection.",
+      "FEN1 uses role-based permissions, so each person only sees the modules and records their role needs.",
+      "For a security questionnaire or a review of how your data would be handled, contact us and we will go through it with your IT team.",
+    ],
+  },
+} as const;
+
+type LegalKey = keyof typeof LEGAL;
+
+function LegalDialog({ id, onClose }: { id: LegalKey; onClose: () => void }) {
+  const closeBtn = useRef<HTMLButtonElement>(null);
+  const doc = LEGAL[id];
+  useEffect(() => {
+    closeBtn.current?.focus();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0B1530]/50" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label={doc.title} onClick={(e) => e.stopPropagation()} className="w-full max-w-lg rounded-2xl bg-white p-6 sm:p-8 shadow-xl text-[#0B1530]">
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="text-xl font-semibold tracking-tight">{doc.title}</h2>
+          <button ref={closeBtn} type="button" onClick={onClose} aria-label="Close" className="shrink-0 [&>svg]:!transform-none active:!transform-none rounded-md border border-[#D0DCF0] p-1.5 text-[#4A5B7A] transition-colors hover:border-[#1B4FD6] hover:text-[#1B4FD6]">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        <ul className="mt-4 space-y-3 text-sm text-[#4A5B7A] leading-relaxed list-disc pl-5">
+          {doc.points.map((p) => (
+            <li key={p}>{p}</li>
+          ))}
+        </ul>
+        <Link href="/request-demo?topic=question" onClick={onClose} className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-[#1B4FD6]">
+          <span>Questions? Contact us</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 export default function Footer() {
+  const [legal, setLegal] = useState<LegalKey | null>(null);
+  const close = () => setLegal(null);
   return (
     <footer className="bg-[#E3EEFC] text-[#4A5B7A] border-t border-[#D0DCF0] relative font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
@@ -39,7 +104,7 @@ export default function Footer() {
 
           {/* Column 2: Solutions */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[10px] font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
+            <span className="text-[11px] font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
               SOLUTIONS
             </span>
             <ul className="space-y-1.5 text-xs">
@@ -54,30 +119,30 @@ export default function Footer() {
 
           {/* Column 3: Resources */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[10px] font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
+            <span className="text-[11px] font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
               RESOURCES
             </span>
             <ul className="space-y-1.5 text-xs">
               <li><Link href="/training" className="hover:text-[#0B1530] transition-colors">Training</Link></li>
               <li><Link href="/training#roles" className="hover:text-[#0B1530] transition-colors">Role-Based Training</Link></li>
               <li><Link href="/about#philosophy" className="hover:text-[#0B1530] transition-colors">Platform Philosophy</Link></li>
-              <li><Link href="/contact" className="hover:text-[#0B1530] transition-colors">Technical Support</Link></li>
+              <li><Link href="/request-demo?topic=question" className="hover:text-[#0B1530] transition-colors">Technical Support</Link></li>
             </ul>
           </div>
 
           {/* Column 4: Company & Legal */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[10px] font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
+            <span className="text-[11px] font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
               COMPANY
             </span>
             <ul className="space-y-1.5 text-xs">
               <li><Link href="/about" className="hover:text-[#0B1530] transition-colors">About FEN1</Link></li>
-              <li><Link href="/contact" className="hover:text-[#0B1530] transition-colors">Contact Us</Link></li>
+              <li><Link href="/request-demo?topic=question" className="hover:text-[#0B1530] transition-colors">Contact Us</Link></li>
               <li><Link href="/request-demo" className="hover:text-[#0B1530] transition-colors">Request a Demo</Link></li>
-              <li className="pt-2 text-[10px] font-mono uppercase text-[#1B4FD6]">LEGAL</li>
-              <li><span className="text-xs text-[#4A5B7A]">Privacy Policy</span></li>
-              <li><span className="text-xs text-[#4A5B7A]">Terms of Service</span></li>
-              <li><span className="text-xs text-[#4A5B7A]">Enterprise Security</span></li>
+              <li className="pt-2 text-[11px] font-mono uppercase text-[#1B4FD6]">LEGAL</li>
+              <li><button type="button" onClick={() => setLegal("privacy")} className="text-xs hover:text-[#0B1530] transition-colors cursor-pointer">Privacy Policy</button></li>
+              <li><button type="button" onClick={() => setLegal("terms")} className="text-xs hover:text-[#0B1530] transition-colors cursor-pointer">Terms of Service</button></li>
+              <li><button type="button" onClick={() => setLegal("security")} className="text-xs hover:text-[#0B1530] transition-colors cursor-pointer">Enterprise Security</button></li>
             </ul>
           </div>
         </div>
@@ -90,6 +155,7 @@ export default function Footer() {
           </span>
         </div>
       </div>
+      {legal && <LegalDialog id={legal} onClose={close} />}
     </footer>
   );
 }

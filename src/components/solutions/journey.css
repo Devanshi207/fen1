@@ -1,0 +1,540 @@
+/* The Solutions page as a journey of pages. Everything is scoped under .jp-section. The colours are the site's own soft
+   blues and navy, so it sits with the other pages. */
+
+.jp-section {
+  position: relative;
+  /* each page takes --page of scrolling, so the pages slide at a gentle pace under the wheel */
+  --page: 150svh;
+  height: calc(100svh + (var(--n, 5) - 1) * var(--page));
+  margin-top: -4rem; /* the page starts under the fixed header, like the sideways layout */
+  overflow-x: clip;
+}
+@media (min-width: 640px) {
+  .jp-section {
+    margin-top: -5rem;
+  }
+}
+@media (hover: none) {
+  /* a touch screen: a finger covers less ground per swipe, so pages need less scroll */
+  .jp-section {
+    --page: 115svh;
+  }
+}
+.jp-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+/* three layers, bottom to top: the page backgrounds, the plane and its trail, then the pages' text */
+.jp-bgs {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 0;
+  display: flex;
+  width: calc(var(--n, 5) * 100%);
+  height: 100%;
+  will-change: transform;
+}
+.jp-bg {
+  flex: 0 0 calc(100% / var(--n, 5));
+  background: #f2f7ff;
+}
+.jp-bg--pale {
+  background: #e4edfa;
+}
+.jp-track {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: calc(var(--n, 5) * 100%);
+  height: 100%;
+  will-change: transform;
+}
+
+/* ---------- a page ---------- */
+.jp {
+  --bg: #f2f7ff;
+  --fg: #0b1530;
+  --mute: #4a5b7a;
+  --accent: #1b4fd6;
+  --line: rgba(11, 21, 48, 0.14);
+  position: relative;
+  flex: 0 0 calc(100% / var(--n, 5));
+  height: 100%;
+  padding: 6rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  color: var(--fg);
+  overflow: hidden;
+}
+/* Two layouts. WIDE puts things side by side: desktops, tablets across (900px and up) and phones held sideways (wide but
+   short). COMPACT stacks them: phones upright and tablets upright. On very wide screens the content stops spreading at 1900px. */
+@media (min-width: 900px), (min-width: 560px) and (max-height: 520px) {
+  .jp {
+    /* vw, not %: a percentage padding is measured against the whole sliding track (five pages wide), not one page */
+    padding: 7rem max(3.5rem, calc((100vw - 1900px) / 2)) 2.5rem;
+  }
+}
+@media (min-width: 560px) and (max-height: 520px) {
+  /* a phone held sideways: little height, so the header and the margins take less of it */
+  .jp {
+    padding: 5.25rem 1.5rem 0.9rem;
+  }
+}
+/* the second soft tone, so neighbouring pages read as separate pages without a bright colour */
+.jp--pale {
+  --bg: #e4edfa;
+}
+
+.jp-kicker {
+  margin: 0 0 1rem;
+  color: var(--accent);
+  font: 500 0.72rem/1.3 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* the site sets headings to its display font with !important, so these have to as well */
+.jp .jp-title {
+  max-width: 11em;
+  margin: 0;
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif !important;
+  font-weight: 500 !important;
+  font-size: clamp(1.7rem, min(7.2vw, 12.5vh), 6.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+.jp .jp-title--small {
+  max-width: 10em;
+  font-size: clamp(1.9rem, min(4.6vw, 9vh), 4rem);
+}
+@media (min-width: 900px), (min-width: 560px) and (max-height: 520px) {
+  /* keep the headline clear of what sits to its right */
+  .jp:first-child .jp-title {
+    max-width: 46%;
+  }
+}
+@media (min-width: 560px) and (max-height: 520px) {
+  .jp:first-child .jp-title {
+    max-width: 44%;
+    font-size: clamp(1.5rem, 11vh, 2.6rem);
+  }
+}
+.jp-sub {
+  max-width: 26rem;
+  margin: 1.25rem 0 0;
+  color: var(--mute);
+  font-size: clamp(0.9rem, 1.9vh, 1.1rem);
+  line-height: 1.5;
+}
+
+/* departures board on the intro page */
+.jp-board {
+  position: absolute;
+  right: max(3.5rem, calc((100% - 1900px) / 2));
+  top: 50%;
+  width: min(30rem, 42%);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform: translateY(-50%);
+}
+.jp-board li {
+  border-top: 1px solid var(--line);
+}
+.jp-board li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.jp-board button {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: baseline;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.9rem 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(1rem, 2.6vh, 1.45rem);
+  text-align: left;
+  cursor: pointer;
+  transition: padding-left 0.3s var(--ease), color 0.2s;
+}
+.jp-board button span:first-child {
+  color: var(--accent);
+  font: 500 0.72rem/1 ui-monospace, Menlo, Consolas, monospace;
+  letter-spacing: 0.1em;
+}
+.jp-board button:hover,
+.jp-board button:focus-visible {
+  padding-left: 0.75rem;
+  color: var(--accent);
+}
+@media (max-width: 559px), (max-width: 899px) and (min-height: 521px) {
+  .jp-board {
+    position: static;
+    width: 100%;
+    margin-top: 1.5rem;
+    transform: none;
+  }
+  .jp-board button {
+    padding: 0.6rem 0;
+    font-size: 1rem;
+  }
+}
+@media (min-width: 560px) and (max-height: 520px) {
+  /* a phone held sideways: the board takes the right half, in a smaller size so five rows fit */
+  .jp-board {
+    right: 1.5rem;
+    width: 50%;
+  }
+  .jp-board button {
+    grid-template-columns: 2rem 1fr auto;
+    gap: 0.5rem;
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+  }
+}
+@media (max-height: 520px), (max-width: 899px) and (max-height: 700px) {
+  .jp-sub {
+    display: none;
+  }
+}
+@media (max-height: 640px) {
+  /* a short screen of any width: tighter rows */
+  .jp-board button {
+    padding-block: 0.45rem;
+  }
+}
+@media (max-width: 559px) and (max-height: 640px) {
+  .jp-board {
+    margin-top: 1rem;
+  }
+}
+
+/* ---------- vertical pages: the verticals side by side ---------- */
+.jp-cols {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), 1fr);
+  flex: 1;
+  min-height: 0;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--fg);
+}
+.jp-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 1.25rem 1.5rem 1.25rem 0;
+  border-right: 1px solid var(--line);
+  transition: background-color 0.3s;
+}
+.jp-col:not(:first-child) {
+  padding-left: 1.5rem;
+}
+.jp-col:last-child {
+  border-right: 0;
+}
+.jp-col:hover {
+  background: rgba(27, 79, 214, 0.05);
+}
+.jp-col-num {
+  color: var(--accent);
+  font: 500 0.72rem/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  letter-spacing: 0.12em;
+}
+.jp .jp-col-title {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif !important;
+  font-weight: 500 !important;
+  font-size: clamp(1.4rem, min(2.5vw, 4.4vh), 2.3rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  transition: color 0.25s;
+}
+.jp-col:hover .jp-col-title {
+  color: var(--accent);
+}
+.jp-col-sub {
+  margin: 0.75rem 0 0;
+  color: var(--mute);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.jp-col-list {
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+.jp-col-list li {
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--line);
+}
+.jp-col-chain {
+  margin: auto 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--mute);
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+@media (max-width: 559px), (max-width: 899px) and (min-height: 521px) {
+  /* a phone: the verticals stack, as number, title and subtitle only */
+  .jp-cols {
+    grid-template-columns: 1fr;
+    grid-auto-rows: min-content;
+    transform: none;
+  }
+  .jp-col,
+  .jp-col:not(:first-child) {
+    padding: 0.9rem 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .jp .jp-col-title {
+    margin-top: 0.4rem;
+    font-size: 1.35rem;
+  }
+  .jp-col-sub {
+    margin-top: 0.35rem;
+    font-size: 0.85rem;
+  }
+  .jp-col-list,
+  .jp-col-chain {
+    display: none;
+  }
+}
+@media (min-width: 900px) and (max-height: 700px) {
+  .jp-col-list li:nth-child(n + 2) {
+    display: none;
+  }
+}
+@media (min-width: 560px) and (max-height: 520px) {
+  /* a phone held sideways: three or two columns of number, title and subtitle, nothing more */
+  .jp-cols {
+    margin-top: 0;
+  }
+  .jp-col {
+    padding: 0.7rem 0.9rem 0.7rem 0;
+  }
+  .jp-col:not(:first-child) {
+    padding-left: 0.9rem;
+  }
+  .jp .jp-col-title {
+    margin-top: 0.4rem;
+    font-size: clamp(1rem, 5.2vh, 1.4rem);
+  }
+  .jp-col-sub {
+    margin-top: 0.3rem;
+    font-size: 0.78rem;
+  }
+  .jp-col-list,
+  .jp-col-chain {
+    display: none;
+  }
+}
+@media (max-width: 559px) and (max-height: 640px) {
+  .jp-col,
+  .jp-col:not(:first-child) {
+    padding-block: 0.7rem;
+  }
+}
+
+/* ---------- module pages ---------- */
+.jp-mod-wrap {
+  display: grid;
+  gap: 1.5rem;
+  flex: 1;
+  min-height: 0;
+  align-content: start;
+}
+@media (min-width: 900px), (min-width: 560px) and (max-height: 520px) {
+  .jp-mod-wrap {
+    grid-template-columns: 0.9fr 1.3fr;
+    gap: 3rem;
+    align-content: stretch;
+  }
+}
+@media (min-width: 560px) and (max-height: 520px) {
+  .jp-mod-wrap {
+    gap: 1.25rem;
+  }
+}
+.jp-mods {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-self: center;
+}
+@media (min-width: 900px), (min-width: 560px) and (max-height: 520px) {
+  .jp-mods {
+    columns: 2;
+    column-gap: 2.5rem;
+  }
+}
+.jp-mods li {
+  display: grid;
+  grid-template-columns: 2.4rem 1.5rem 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  break-inside: avoid;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding-left 0.3s var(--ease), color 0.2s;
+  outline: none;
+}
+.jp-mods li:hover,
+.jp-mods li:focus-visible {
+  padding-left: 0.6rem;
+  color: var(--accent);
+}
+.jp-mod-num {
+  color: var(--accent);
+  font: 500 0.72rem/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  letter-spacing: 0.1em;
+}
+.jp-mod-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  opacity: 0.8;
+}
+.jp-mod-name {
+  font-size: clamp(0.85rem, 1.9vh, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+@media (max-width: 559px), (max-width: 899px) and (min-height: 521px) {
+  .jp-mods li {
+    padding: 0.55rem 0;
+  }
+  .jp-mod-name {
+    font-size: 0.85rem;
+  }
+}
+@media (max-width: 899px) and (max-height: 640px) {
+  /* a small phone: seven rows must fit under the heading */
+  .jp-mods li {
+    padding: 0.36rem 0;
+  }
+  .jp-mod-name {
+    font-size: 0.78rem;
+  }
+  .jp-mod-wrap {
+    gap: 0.9rem;
+  }
+}
+@media (min-width: 560px) and (max-height: 520px) {
+  /* a phone held sideways */
+  .jp-mods li {
+    padding: 0.42rem 0;
+  }
+  .jp-mod-name {
+    font-size: 0.8rem;
+  }
+}
+@media (min-width: 560px) and (max-width: 899px) and (min-height: 521px) {
+  /* a wide tablet: two columns, so seven rows still fit under the heading */
+  .jp-mods {
+    columns: 2;
+    column-gap: 1.5rem;
+  }
+}
+@media (max-height: 700px) {
+  .jp .jp-title--small {
+    font-size: clamp(1.5rem, 6vh, 2.6rem);
+  }
+}
+@media (max-height: 640px) {
+  .jp .jp-title--small {
+    font-size: clamp(1.3rem, 5.5vh, 2.2rem);
+  }
+}
+@media (max-height: 520px) {
+  .jp .jp-title--small {
+    font-size: clamp(1.15rem, 7vh, 1.9rem);
+  }
+}
+
+/* ---------- the paper plane ----------
+   It rests at a "dock" on each page (an invisible marker below) and flies on its own, along a curve, to the next page's
+   dock as the pages turn, in either direction, leaving a dotted trail. A blue the page already uses. */
+.jp-dock {
+  position: absolute;
+  width: 56px;
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+/* Its route is one diagonal from the bottom left of the first page to the top right of the last: five resting spots, each the
+   centre of its 44px box. The last is just under the 80px site header. (The plane flies under the text, so a spot may sit
+   behind a line of it without covering it.) */
+.jp-dock {
+  width: 44px;
+}
+.jp-dock--0 { left: calc(8% - 22px); top: calc(84% - 22px); }
+.jp-dock--1 { left: calc(30% - 22px); top: calc(68% - 22px); }
+.jp-dock--2 { left: calc(52% - 22px); top: calc(52% - 22px); }
+.jp-dock--3 { left: calc(74% - 22px); top: calc(34% - 22px); }
+.jp-dock--4 { left: calc(92% - 22px); top: calc(7.3rem - 22px); }
+@media (max-width: 559px), (max-width: 899px) and (min-height: 521px) {
+  /* a phone: the same left-to-right route, low on the page where there is room */
+  .jp-dock--0 { left: calc(14% - 22px); top: calc(90% - 22px); }
+  .jp-dock--1 { left: calc(32% - 22px); top: calc(90% - 22px); }
+  .jp-dock--2 { left: calc(50% - 22px); top: calc(90% - 22px); }
+  .jp-dock--3 { left: calc(68% - 22px); top: calc(90% - 22px); }
+  .jp-dock--4 { left: calc(86% - 22px); top: calc(90% - 22px); }
+}
+
+.jp-flyer,
+.jp-trail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.jp-flyer {
+  width: 64px;
+  height: 64px;
+  will-change: transform;
+}
+.jp-trail {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.jp-trail path {
+  fill: none;
+  stroke: #1b4fd6;
+  stroke-width: 2.5px;
+  stroke-linecap: round;
+  stroke-dasharray: 2 11;
+}
+.jp-flyer-rot,
+.jp-flyer-bob {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+.jp-flyer-bob {
+  animation: jp-hover 3.4s ease-in-out infinite;
+}
+@keyframes jp-hover {
+  0%,
+  100% {
+    transform: translateY(-5px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(4px) rotate(3deg);
+  }
+}
+
+/* No "reduce motion" override here on purpose: the sideways turn between pages is what this page is. */

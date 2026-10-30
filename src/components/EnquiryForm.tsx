@@ -111,7 +111,10 @@ export default function EnquiryForm({
 
   const send = async () => {
     setStatus("sending");
-    const ok = await submitEnquiry(kind, values as Parameters<typeof submitEnquiry>[1]);
+    // Only the fields on screen are sent: a field the visitor never saw (hidden when they changed their mind) must not
+    // reach the team with its default value as if it were an answer.
+    const shown = Object.fromEntries(fields.map((f) => [f.key, values[f.key] ?? ""]));
+    const ok = await submitEnquiry(kind, shown as Parameters<typeof submitEnquiry>[1]);
     setStatus(ok ? "sent" : "error");
   };
 

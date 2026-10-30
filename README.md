@@ -1,7 +1,7 @@
 # FEN1
 
 Marketing and product site for **FEN1**, an ERP built for glass, aluminium and window businesses. It presents the
-modules, the industry solutions and the enquiry-to-handover roadmap, and has contact and demo-request forms.
+modules, the industry solutions and the enquiry-to-handover roadmap, and has one enquiry page where a visitor either asks for a demo or sends a question.
 
 Built with Next.js (App Router), React, TypeScript and Tailwind CSS v4.
 
@@ -38,21 +38,20 @@ Copy `.env.example` to `.env.local` and set:
 
 | Variable                    | Purpose                                                                                  |
 | --------------------------- | ---------------------------------------------------------------------------------------- |
-| `ENQUIRY_WEBHOOK_URL`       | Where the contact and demo forms send enquiries (a JSON `POST`). Without it the forms show an error instead of pretending the message was sent. |
-| `NEXT_PUBLIC_CONTACT_EMAIL` | Optional. Shows a direct email address on the Contact page.                               |
+| `ENQUIRY_WEBHOOK_URL`       | Where the enquiry form sends enquiries (a JSON `POST`). Without it the form shows an error instead of pretending the message was sent. |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Optional. Shows a direct email address on the enquiry page when a visitor chooses "I have a question". |
 
 ## Pages
 
 | Route           | Purpose                                                           |
 | --------------- | ----------------------------------------------------------------- |
 | `/`             | Five full-screen chapters: hero, figures, pinned roadmap, photo slabs, closing statement |
-| `/solutions`    | Industry solutions and the full module directory (search, groups) |
+| `/solutions`    | The five industry verticals and all the modules as a scroll-driven journey of pages |
 | `/about`        | What FEN1 is and the problems it removes                          |
 | `/training`     | Role-based training tracks                                        |
-| `/contact`      | Contact form (posts to `/api/enquiry`)                            |
-| `/request-demo` | Demo request form (posts to `/api/enquiry`)                       |
+| `/request-demo` | The one enquiry page: "I'd like a demo" or "I have a question" (posts to `/api/enquiry`; `?topic=question` opens on the question) |
 
-`/products` and `/products/*` redirect to `/solutions#modules`.
+`/products` and `/products/*` redirect to `/solutions#modules`. `/contact` redirects to `/request-demo?topic=question`.
 
 ## Where the content lives
 
@@ -111,6 +110,42 @@ tests/            Vitest + Testing Library
   children, which breaks full-screen overlays. `globals.css` has a `:has(.fixed.inset-0)` rule that clears them
   while an overlay is open. Keep large page wrappers free of those properties.
 - Do not set `position` or `overflow` from a broad global selector; it breaks absolutely positioned dropdowns.
+
+## Deploying
+
+### 1. Push to GitHub
+
+```bash
+git status                       # see what changed
+git add -A
+git commit -m "Describe the change"
+git push origin main             # first push of a new branch: git push -u origin main
+```
+
+`.env*` files are git-ignored (only `.env.example` is committed), so secrets never reach GitHub.
+
+### 2. Deploy on Vercel
+
+Vercel detects Next.js by itself; no `vercel.json` is needed.
+
+1. In Vercel choose **Add New... > Project**, import the GitHub repository and keep the detected **Next.js** preset.
+2. Under **Environment Variables** add `ENQUIRY_WEBHOOK_URL` (required, or the enquiry form reports an error instead of
+   sending) and, optionally, `NEXT_PUBLIC_CONTACT_EMAIL`. Add them for Production and Preview.
+3. Click **Deploy**. Every later `git push` to `main` redeploys; pushes to other branches get a preview URL.
+
+Or from the terminal:
+
+```bash
+npm i -g vercel
+vercel login
+vercel link                              # connect this folder to a Vercel project
+vercel env add ENQUIRY_WEBHOOK_URL production
+vercel                                   # preview deployment
+vercel --prod                            # production deployment
+```
+
+Environment variables are read at build time for `NEXT_PUBLIC_*` and at run time for the rest, so after changing one in
+Vercel, redeploy. Photos are served from Unsplash through `next/image`; the allowed host is in `next.config.ts`.
 
 ## Tests
 

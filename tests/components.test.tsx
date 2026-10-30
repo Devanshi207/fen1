@@ -42,6 +42,17 @@ describe("Footer", () => {
     render(<Footer />);
     expect(document.body.textContent).not.toMatch(/fa[cç]ade/i);
   });
+
+  it("opens each legal note in place and closes it with Escape", async () => {
+    const user = userEvent.setup();
+    render(<Footer />);
+    for (const name of ["Privacy Policy", "Terms of Service", "Enterprise Security"]) {
+      await user.click(screen.getByRole("button", { name }));
+      expect(screen.getByRole("dialog", { name })).toBeInTheDocument();
+      await user.keyboard("{Escape}");
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    }
+  });
 });
 
 describe("CountUp", () => {

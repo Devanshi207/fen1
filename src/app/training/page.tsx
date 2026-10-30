@@ -2,55 +2,16 @@
 
 import React from "react";
 import { CheckCircle2 } from "lucide-react";
-import FinalCtaSection from "@/components/FinalCtaSection";
 import KineticHeading from "@/components/KineticHeading";
-
-const TRACKS = [
-  {
-    num: "01",
-    title: "Sales & Estimation",
-    team: "Sales, estimators and management",
-    topics: ["Enquiry & follow-ups", "Drawing review", "Estimation & takeoff", "Quotation"],
-    desc: "Capture enquiries, track follow-ups and turn drawings into accurate quotations.",
-  },
-  {
-    num: "02",
-    title: "Survey & Design",
-    team: "Site surveyors and design engineers",
-    topics: ["Site survey on mobile", "Shop drawings", "Bills of material", "Cutting lists"],
-    desc: "Record site measurements and produce approved drawings and cutting lists.",
-  },
-  {
-    num: "03",
-    title: "Purchase & Store",
-    team: "Purchase and store teams",
-    topics: ["Material purchase", "Store inward & checking", "Bar and off-cut stock", "Job work tracking"],
-    desc: "Order material, receive it into the store and keep stock and outside work under control.",
-  },
-  {
-    num: "04",
-    title: "Production & QC",
-    team: "Production managers, machine operators and QC",
-    topics: ["Work orders", "Machine integration", "Assembly & glazing progress", "Quality checks"],
-    desc: "Run the shop floor from work order to quality check with live progress.",
-  },
-  {
-    num: "05",
-    title: "Installation & Handover",
-    team: "Site teams and project managers",
-    topics: ["Dispatch & logistics", "Installation updates", "Snag tracking", "Handover records"],
-    desc: "Deliver, install and hand over each job with a full record on site.",
-  },
-  {
-    num: "06",
-    title: "Accounts & Reports",
-    team: "Accounts and management",
-    topics: ["Job costing", "Billing", "Margin reports", "Role permissions"],
-    desc: "Follow every job's cost and billing and review results in reports.",
-  },
-];
+import { TRACKS } from "@/data/trainingContent";
+import { useHorizontalLayout } from "@/lib/horizontal";
+import HorizontalTraining from "@/components/horizontal/HorizontalTraining";
 
 export default function TrainingPage() {
+  // Layout under review: ?layout=horizontal shows this page as a sideways journey (see lib/horizontal)
+  const horizontal = useHorizontalLayout();
+  if (horizontal) return <HorizontalTraining />;
+
   return (
     <div className="w-full bg-[#F2F7FF] text-[#0B1530] font-sans">
       {/* Header */}
@@ -74,14 +35,11 @@ export default function TrainingPage() {
                 className="p-7 rounded-2xl bg-[#FFFFFF] border border-[#D0DCF0] hover:border-[#3B82F6] transition-all flex flex-col justify-between space-y-5 shadow-xs font-sans"
               >
                 <div className="space-y-4">
-                  <span className="text-[#1B4FD6] font-semibold text-[11px] uppercase tracking-wider block">TRACK {track.num}</span>
                   <div>
                     <h2 className="text-xl font-semibold text-[#0B1530] tracking-tight font-sans">{track.title}</h2>
                     <span className="text-xs text-[#4A5B7A] block mt-1">{track.team}</span>
                   </div>
-                  <p className="text-xs text-[#4A5B7A] leading-relaxed font-sans">{track.desc}</p>
                   <div className="p-3 bg-[#E3EEFC] rounded-xl text-xs text-[#0B1530] space-y-1 font-sans">
-                    <span className="text-[10px] text-[#4A5B7A] uppercase block font-semibold">WHAT IT COVERS:</span>
                     {track.topics.map((t) => (
                       <div key={t} className="flex items-center gap-1.5">
                         <CheckCircle2 className="w-3 h-3 text-[#4F7556] shrink-0" />
@@ -95,8 +53,6 @@ export default function TrainingPage() {
           </div>
         </div>
       </section>
-
-      <FinalCtaSection />
     </div>
   );
 }
