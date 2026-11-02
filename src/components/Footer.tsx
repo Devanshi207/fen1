@@ -9,7 +9,7 @@ const LEGAL = {
     title: "Privacy Policy",
     points: [
       "When you use the enquiry or careers form we receive what you type: your name, company, work email, phone number, business details and message.",
-      "We use it only to reply to your enquiry and to arrange a demonstration. We do not sell it.",
+      "We use it only to reply to your enquiry, to arrange a demonstration or to consider a job application. Enquiries are kept in our admin inbox until the team has dealt with them. We do not sell it.",
       "This site does not run advertising trackers.",
       "To see, correct or delete what you sent us, write to us through the Contact section.",
     ],
@@ -81,30 +81,18 @@ export default function Footer() {
               <div className="w-7 h-7 bg-[#A0602F] rounded-sm flex items-center justify-center shadow-xs">
                 <div className="w-2.5 h-2.5 border border-[#DCE2DF] rotate-45" />
               </div>
-              <span className="text-lg font-bold tracking-tight text-[#34434A]">
+              <span className="text-lg font-semibold tracking-tight text-[#34434A]">
                 FEN1
               </span>
             </Link>
-            <p className="text-xs text-[#5B6B73] max-w-sm leading-relaxed">
-              THE OPERATING SYSTEM FOR GLASS, ALUMINIUM & WINDOWS.
+            <p className="text-sm text-[#5B6B73] max-w-sm leading-relaxed">
+              ERP for aluminium fabrication, glass processing and glazing contractors: one job record from enquiry to handover.
             </p>
-            <p className="text-xs text-[#5B6B73] max-w-sm leading-relaxed">
-              From estimation to installation, FEN1 connects sales, engineering, procurement, production, projects, people, finance and analytics in one integrated ERP platform.
-            </p>
-            <div className="pt-2">
-              <Link
-                href="#demo"
-                className="inline-flex items-center gap-2 text-xs font-mono font-medium text-[#34434A] hover:text-[#A0602F] transition-colors"
-              >
-                <span>REQUEST A FEN1 DEMO</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
           </div>
 
           {/* Column 2: Solutions */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-widest block font-semibold">
+            <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-wider block font-semibold">
               SOLUTIONS
             </span>
             <ul className="space-y-1.5 text-xs">
@@ -119,7 +107,7 @@ export default function Footer() {
 
           {/* Column 3: Resources */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-widest block font-semibold">
+            <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-wider block font-semibold">
               RESOURCES
             </span>
             <ul className="space-y-1.5 text-xs">
@@ -132,7 +120,7 @@ export default function Footer() {
 
           {/* Column 4: Company & Legal */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-widest block font-semibold">
+            <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-wider block font-semibold">
               COMPANY
             </span>
             <ul className="space-y-1.5 text-xs">
@@ -149,11 +137,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#5B6B73]">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#5B6B73]">
           <span>© {new Date().getFullYear()} FEN1 SYSTEMS. All rights reserved.</span>
-          <span className="text-[11px] text-[#A0602F]">
-            THE OPERATING SYSTEM FOR GLASS, ALUMINIUM & WINDOWS.
-          </span>
         </div>
       </div>
       {legal && <LegalDialog id={legal} onClose={close} />}

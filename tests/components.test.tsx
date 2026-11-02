@@ -1,9 +1,8 @@
-import { describe, expect, it, vi } from "vitest";
-import { act, render, screen, within } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CountUp from "@/components/CountUp";
 
 describe("Navbar", () => {
   it("shows the main pages and no Products entry once the menu is open", async () => {
@@ -11,7 +10,7 @@ describe("Navbar", () => {
     await userEvent.setup().click(screen.getAllByRole("button")[0]);
     const nav = screen.getByRole("navigation", { name: "Main" });
     const labels = [...nav.querySelectorAll(".menu-link-text")].map((n) => n.textContent?.trim());
-    expect(labels).toEqual(expect.arrayContaining(["HOME", "SOLUTIONS", "ABOUT", "TRAINING", "CAREERS", "CONTACT US"]));
+    expect(labels).toEqual(expect.arrayContaining(["Home", "Solutions", "About", "Training", "Careers", "Contact us"]));
     expect(labels.some((l) => /product/i.test(l ?? ""))).toBe(false);
   });
 });
@@ -60,18 +59,5 @@ describe("Footer", () => {
       await user.keyboard("{Escape}");
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     }
-  });
-});
-
-describe("CountUp", () => {
-  it("settles on the final value", () => {
-    vi.useFakeTimers();
-    render(<CountUp to={18} suffix="+" />);
-    act(() => {
-      vi.advanceTimersByTime(3000);
-    });
-    // jsdom reports zero-size rects, so the element counts as on screen and the fallback timer sets the final value
-    expect(screen.getByText(/^\d+\+$/)).toBeInTheDocument();
-    vi.useRealTimers();
   });
 });

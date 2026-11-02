@@ -52,11 +52,17 @@ describe("validateEnquiry", () => {
 
 describe("POST /api/enquiry", () => {
   const original = process.env.ENQUIRY_WEBHOOK_URL;
+  // these tests are about the webhook, so there is no store: on Vercel with no database nothing can be saved
   beforeEach(() => {
     delete process.env.ENQUIRY_WEBHOOK_URL;
+    vi.stubEnv("VERCEL", "1");
+    vi.stubEnv("UPSTASH_REDIS_REST_URL", "");
+    vi.stubEnv("KV_REST_API_URL", "");
+    vi.stubEnv("FEN1_DATA_FILE", "");
   });
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
     if (original === undefined) delete process.env.ENQUIRY_WEBHOOK_URL;
     else process.env.ENQUIRY_WEBHOOK_URL = original;
   });
@@ -72,7 +78,7 @@ describe("POST /api/enquiry", () => {
     expect((await res.json()).fields.email).toBeTruthy();
   });
 
-  it("returns 503 instead of faking success when no webhook is configured", async () => {
+  it("returns 503 instead of faking success when there is no webhook and nowhere to save", async () => {
     const res = await POST(request(valid));
     expect(res.status).toBe(503);
   });

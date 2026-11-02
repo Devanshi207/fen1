@@ -5,14 +5,16 @@ export type SubmitState = "idle" | "sending" | "sent" | "error";
 /** Posts a form to /api/enquiry. Resolves true only when the server confirms delivery. */
 export async function submitEnquiry(
   kind: EnquiryKind,
-  fields: { name: string; company: string; email: string; phone: string; message: string } & Record<string, string>
+  fields: { name: string; company: string; email: string; phone: string; message: string } & Record<string, string>,
+  /** The hidden spam-trap field: people never fill it in, bots do (see /api/enquiry) */
+  trap = ""
 ): Promise<boolean> {
   const { name, company, email, phone, message, ...details } = fields;
   try {
     const res = await fetch("/api/enquiry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kind, name, company, email, phone, message, details }),
+      body: JSON.stringify({ kind, name, company, email, phone, message, details, website: trap }),
     });
     return res.ok;
   } catch {

@@ -43,3 +43,6 @@ next-env.d.ts
 # local notes
 quotation-site-prompt.md
 !.env.example
+
+# local admin data (job openings and enquiries saved during development)
+.data/

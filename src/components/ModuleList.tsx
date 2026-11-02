@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { FEN1Module } from "@/data/modules";
+import { sentenceCase } from "@/lib/text";
 
 /**
  * The module directory as plain numbered rows, titles only. The hovered or focused row slides across and a blue line
@@ -26,7 +27,7 @@ export default function ModuleList({ modules, icons }: { modules: FEN1Module[]; 
           >
             <span className="mod-tile-num">{m.number}</span>
             {Icon && <Icon className="mod-tile-icon" />}
-            <h3 className="mod-tile-title">{m.name}</h3>
+            <h3 className="mod-tile-title">{sentenceCase(m.name)}</h3>
           </li>
         );
       })}

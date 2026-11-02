@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   // its own scripts for any host but localhost, so the page renders but no JavaScript runs. Dev only; `next build` ignores it.
   allowedDevOrigins: ["127.0.0.1", "192.168.*.*", "10.*.*.*", "172.*.*.*", "*.local"],
   images: {
+    // smaller files for the same photo where the browser can read them
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/photo-**" },
     ],

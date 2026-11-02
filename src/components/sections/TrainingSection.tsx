@@ -7,8 +7,8 @@ export default function TrainingSection() {
     <section id="training" data-section="training" className="page-sec">
       <span id="roles" className="sec-anchor" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="Training" title="TRAINING FOR EVERY TEAM.">
-          Role-based training that follows the FEN1 roadmap, from enquiry to handover.
+        <SectionHead eyebrow="Training" title="Training by role">
+          Each team is trained on the modules it works in, following the same workflow from enquiry to handover.
         </SectionHead>
         <div className="train-grid">
           {TRACKS.map((t) => (

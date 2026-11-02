@@ -193,8 +193,11 @@ describe("Careers form", () => {
     await user.type(screen.getByLabelText(/phone/i), "12345");
     await user.type(screen.getByLabelText(/a few lines about you/i), "Ten years estimating aluminium windows.");
     await user.click(screen.getByRole("button", { name: /send my details/i }));
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    await waitFor(() => expect(fetchMock.mock.calls.some((c) => c[0] === "/api/enquiry")).toBe(true));
+    const sent = fetchMock.mock.calls.filter((c) => c[0] === "/api/enquiry");
+    expect(sent).toHaveLength(1);
+    const body = JSON.parse(sent[0][1].body);
+    expect(body.website).toBe("");
     expect(body.kind).toBe("careers");
     expect(body.name).toBe("Dev Patel");
     expect(body.details.area).toBeTruthy();
@@ -204,5 +207,14 @@ describe("Careers form", () => {
   it("does not advertise vacancies it does not have", () => {
     render(<CareersSection />);
     expect(screen.getByText(/No roles are listed here right now/)).toBeInTheDocument();
+  });
+});
+
+describe("Applying for a listed role", () => {
+  it("asks which role first and does not send an unrelated 'where you could help' default", async () => {
+    const { CAREER_FIELDS_FOR_ROLE, CAREER_FIELDS } = await import("@/data/enquiryForms");
+    expect(CAREER_FIELDS_FOR_ROLE[0].key).toBe("role");
+    expect(CAREER_FIELDS_FOR_ROLE.some((f) => f.key === "area")).toBe(false);
+    expect(CAREER_FIELDS.some((f) => f.key === "area")).toBe(true);
   });
 });

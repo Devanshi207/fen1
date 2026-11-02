@@ -9,12 +9,12 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { name: "HOME", href: "#home", note: "The FEN1 overview" },
-  { name: "SOLUTIONS", href: "#solutions", note: "Industries and every module" },
-  { name: "ABOUT", href: "#about", note: "Why FEN1 exists" },
-  { name: "TRAINING", href: "#training", note: "Getting your team up to speed" },
-  { name: "CAREERS", href: "#careers", note: "Work with us" },
-  { name: "CONTACT US", href: "#contact", note: "Talk to the team" },
+  { name: "Home", href: "#home", note: "The FEN1 overview" },
+  { name: "Solutions", href: "#solutions", note: "Industries and every module" },
+  { name: "About", href: "#about", note: "Why FEN1 exists" },
+  { name: "Training", href: "#training", note: "Getting your team up to speed" },
+  { name: "Careers", href: "#careers", note: "Work with us" },
+  { name: "Contact us", href: "#contact", note: "Talk to the team" },
 ];
 const IDS = NAV_LINKS.map((l) => l.href.slice(1));
 
@@ -79,7 +79,7 @@ export default function Navbar() {
               <span className="text-base font-semibold tracking-tight text-[#34434A] leading-none">
                 FEN1
               </span>
-              <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-widest mt-0.5">
+              <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-wider mt-0.5">
                 ERP
               </span>
             </div>
@@ -94,24 +94,13 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   aria-current={isCurrentLink ? "page" : undefined}
-                  className={cn("nav-link text-xs font-semibold tracking-wider", isCurrentLink ? "text-[#A0602F]" : "text-[#5B6B73] hover:text-[#34434A]")}
+                  className={cn("nav-link text-sm font-medium", isCurrentLink ? "text-[#A0602F]" : "text-[#5B6B73] hover:text-[#34434A]")}
                 >
                   {link.name}
                 </Link>
               );
             })}
           </nav>
-
-          {/* Right Action CTAs */}
-          <div className="hidden sm:flex ml-auto lg:ml-0 items-center gap-2.5">
-            <Link
-              href="#contact"
-              className="px-4 py-2 rounded-full bg-[#A0602F] text-white text-xs font-medium tracking-wide transition-colors duration-300 hover:bg-[#824C27] flex items-center gap-1.5"
-            >
-              <span>GET IN TOUCH</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
 
           {/* Menu button: three lines that fold into a cross */}
           <button
@@ -124,7 +113,7 @@ export default function Navbar() {
             aria-expanded={mobileOpen}
             data-open={mobileOpen}
           >
-            <span className="hidden sm:block text-xs font-semibold tracking-wide">{mobileOpen ? "CLOSE" : "MENU"}</span>
+            <span className="hidden sm:block text-sm font-medium">{mobileOpen ? "Close" : "Menu"}</span>
             <span className="menu-lines" aria-hidden="true">
               <i />
               <i />

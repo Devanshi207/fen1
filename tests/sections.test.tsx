@@ -3,7 +3,7 @@ import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import Page from "@/app/page";
+import Page from "@/app/(site)/page";
 import Navbar from "@/components/Navbar";
 import SolutionsSection from "@/components/sections/SolutionsSection";
 import AboutSection from "@/components/sections/AboutSection";
@@ -20,9 +20,9 @@ describe("the one continuous page", () => {
     expect(ids).toEqual(SECTIONS);
   });
 
-  it("has no other pages left to navigate to: the old routes only redirect", () => {
+  it("has one public page (plus the admin area and the API): the old routes only redirect", () => {
     const app = readdirSync(join("src", "app"), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
-    expect(app).toEqual(["api"]);
+    expect(app).toEqual(["(site)", "admin", "api"]);
     expect(existsSync(join("src", "components", "solutions"))).toBe(false);
   });
 
@@ -59,13 +59,13 @@ describe("Navbar on one page", () => {
       </>
     );
     const nav = screen.getByRole("navigation", { name: "Primary" });
-    expect(within(nav).getByRole("link", { name: "HOME" })).toHaveAttribute("aria-current", "page");
+    expect(within(nav).getByRole("link", { name: "Home" })).toHaveAttribute("aria-current", "page");
     act(() => {
       // the observers are created in order; the one that watches the sections is the one with the centre band
       IO.last!.cb([{ target: document.getElementById("careers")!, isIntersecting: true } as unknown as IntersectionObserverEntry], IO.last as unknown as IntersectionObserver);
     });
-    expect(within(nav).getByRole("link", { name: "CAREERS" })).toHaveAttribute("aria-current", "page");
-    expect(within(nav).getByRole("link", { name: "HOME" })).not.toHaveAttribute("aria-current");
+    expect(within(nav).getByRole("link", { name: "Careers" })).toHaveAttribute("aria-current", "page");
+    expect(within(nav).getByRole("link", { name: "Home" })).not.toHaveAttribute("aria-current");
     expect(window.location.hash).toBe("#careers");
   });
 
@@ -88,11 +88,11 @@ describe("Navbar on one page", () => {
     expect(window.location.hash).toBe("#question");
   });
 
-  it("links to every part, and the call to action goes to Contact", () => {
+  it("links to every part, with no separate call-to-action button in the header", () => {
     render(<Navbar />);
     const nav = screen.getByRole("navigation", { name: "Primary" });
     expect(within(nav).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["#home", "#solutions", "#about", "#training", "#careers", "#contact"]);
-    expect(screen.getByRole("link", { name: /get in touch/i })).toHaveAttribute("href", "#contact");
+    expect(screen.queryByRole("link", { name: /get in touch/i })).toBeNull();
   });
 });
 
@@ -153,5 +153,28 @@ describe("Careers research is applied honestly", () => {
   });
   it("lists no invented vacancies, salaries or benefits", () => {
     expect(src).not.toMatch(/salary|per annum|\$\d|£\d|₹\d|health insurance|stock option|remote-first/i);
+  });
+});
+
+describe("editorial audit of the whole page", () => {
+  it("has no all-capital headings: headings are written in sentence case", () => {
+    render(<Page />);
+    const shouting = [...document.querySelectorAll("h1, h2, h3")]
+      .map((h) => (h.getAttribute("aria-label") ?? h.textContent ?? "").trim())
+      .filter((t) => t.length > 6 && t === t.toUpperCase() && /[A-Z]{4}/.test(t));
+    expect(shouting).toEqual([]);
+  });
+
+  it("has no looping decorative animation, marquee or zero-valued counters", () => {
+    render(<Page />);
+    expect(document.querySelector(".wordband, .hero-slide, .figures, .hero-frame-slide")).toBeNull();
+    const motion = readFileSync(join("src", "app", "motion.css"), "utf8") + readFileSync(join("src", "app", "globals.css"), "utf8");
+    expect(motion).not.toMatch(/animation:[^;]*\binfinite\b/);
+  });
+
+  it("uses the same one-line, sentence-case style for every button label", () => {
+    render(<Page />);
+    const labels = [...document.querySelectorAll("a[class*='rounded-full'], button[type='submit']")].map((b) => (b.textContent ?? "").trim());
+    for (const l of labels) expect(l).not.toBe(l.toUpperCase());
   });
 });

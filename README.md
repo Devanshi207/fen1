@@ -28,8 +28,8 @@ Requires Node 20.19+ (22 recommended).
 
 Run `npm run dev`, then open the **Network** address it prints (for example `http://192.168.0.109:3000`) on a device
 on the same Wi-Fi. `allowedDevOrigins` in `next.config.ts` allows private-network addresses; without it Next.js blocks
-its own scripts for any host but `localhost`, and the page loads with no JavaScript (no scroll-driven
-roadmap, no counters). If the page opens but looks "dead", that is the first thing to check. Allow the port in the
+its own scripts for any host but `localhost`, and the page loads with no JavaScript (no menu, no workflow
+stepper, no tabs). If the page opens but looks "dead", that is the first thing to check. Allow the port in the
 Windows firewall if the device cannot reach it at all.
 
 ## Configuration
@@ -40,19 +40,48 @@ Copy `.env.example` to `.env.local` and set:
 | --------------------------- | ---------------------------------------------------------------------------------------- |
 | `ENQUIRY_WEBHOOK_URL`       | Where the enquiry form sends enquiries (a JSON `POST`). Without it the form shows an error instead of pretending the message was sent. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Optional. Shows a direct email address on the enquiry page when a visitor chooses "I have a question". |
+| `ADMIN_PASSWORD`            | The password for `/admin`. Without it the admin page says it is not set up. |
+| `ADMIN_SESSION_SECRET`      | Optional. A separate secret for signing the admin cookie. |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Where jobs and enquiries are saved when deployed (see Admin). |
 
 ## Pages
 
 | Route           | Purpose                                                           |
 | --------------- | ----------------------------------------------------------------- |
 | `/`             | The whole site as one continuous page: Home, Solutions, About, Training, Careers, Contact, then the footer once |
-| `/api/enquiry`  | Receives the demo, question and careers forms and forwards them to `ENQUIRY_WEBHOOK_URL` |
+| `/api/enquiry`  | Receives the demo, question and careers forms; saves them to the admin inbox and forwards them to `ENQUIRY_WEBHOOK_URL` |
+| `/api/jobs`     | The open job openings, for the Careers section (public) |
+| `/admin`        | Password-protected: the enquiry inbox and job openings (not linked from the site, not indexed) |
 
 Within the page, the header links are `#home`, `#solutions`, `#about`, `#training`, `#careers` and `#contact`; the header
 highlights whichever part is in the middle of the screen and keeps the address in step. Deeper links: `#windows-doors`,
 `#glass`, `#fabrication`, `#contractors`, `#dealers` (open that industry), `#modules`, `#roles`, and `#demo` / `#question`
 (scroll to the enquiry form and pick that choice). The old page addresses (`/solutions`, `/about`, `/training`,
 `/careers`, `/request-demo`, `/contact`, `/products`) redirect to the matching part of the page.
+
+## Admin: job openings and the enquiry inbox
+
+`/admin` is for the team. Sign in with `ADMIN_PASSWORD` (a long random one), then:
+
+- **Enquiries**: every demo request, question and job application, newest first. Filter by type and by waiting / handled,
+  search, open one to see everything the visitor typed, reply by email, mark it handled, delete it, or export the filtered
+  list as CSV.
+- **Job openings**: add, edit, close (hides it from the site but keeps it) and delete roles. Open roles appear in the Careers
+  section with a Read more and an Apply button; Apply fills the form with the role, so the application arrives tagged with it.
+  With no open roles the Careers section says none are listed.
+
+**Where it saves.** A deployed site has no writable disk, so connect a database: in Vercel, *Storage > Marketplace > Upstash
+Redis* (free tier), and the project gets `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (the `KV_REST_API_*` names
+also work). Locally, with none set, everything is saved to `.data/fen1.json` (git-ignored). With neither, the admin says
+nothing can be saved and new enquiries only reach the webhook. Add `ADMIN_PASSWORD` (and optionally `ADMIN_SESSION_SECRET`) to
+the Vercel environment variables, then redeploy.
+
+**How it is protected.** The password is compared in constant time; a successful login sets a signed, `httpOnly`,
+`SameSite=Strict` cookie (`Secure` in production) valid for 12 hours; every `/api/admin/*` route checks it; repeated wrong
+passwords from one address are slowed and then blocked for a while; the public jobs endpoint returns only open roles and only
+the fields the page shows; the enquiry form has a hidden spam-trap field; CSV cells that start with `=`, `+`, `-` or `@` are
+neutralised so a spreadsheet cannot run them. One shared password is the simplest thing that works: if several people need
+access, or you need to know who did what, move to individual accounts (see below).
 
 ## Where the content lives
 
@@ -84,6 +113,9 @@ tests/            Vitest + Testing Library
   There are no dark or navy sections (the footer and menu included), no gradients except page-coloured fades over photos,
   no glows, no blur and no glass. Contrast comes from type, spacing, hairline borders and photography.
   The tokens sit at the top of `globals.css`; components use the same hex values through Tailwind arbitrary classes.
+- Editorial rules, enforced by tests: headings and buttons are in sentence case (capitals only for small mono labels), no looping
+  decorative animation, no marquee, no counters that start at zero, and no performance figures, vendor integrations or sample
+  KPIs that the project cannot back up (`tests/data.test.ts`, `tests/sections.test.tsx`).
 - Type: IBM Plex Sans for headings, Inter for text, IBM Plex Mono for technical labels (`font-mono` / `.tech`), all
   through `next/font`. Weights are set in one block at the top of `globals.css`.
 - Technical-drawing details: `.tech-rule` (a measuring rule with end ticks) and `.tech-grid` (hairline blueprint grid),
@@ -103,22 +135,28 @@ tests/            Vitest + Testing Library
   - **Opening splash** (`HomeIntro`): FEN rises in, the "1" is drawn as a line and then filled, a hairline progress line runs
     underneath; about 1.3s, CSS only. It plays on the first visit in a tab only (a `sessionStorage` flag, checked by the
     script in `app/layout.tsx` before first paint), never when moving between pages, and the hero waits behind it.
-  - **Hero**: header fade, mono eyebrow, heading lines rising through a mask (`KineticHeading`), paragraph, buttons, the photo
-    wiping in by clip-path while it settles from 1.03 to 1, then corner ticks and a measuring line.
+  - **Hero**: header fade, mono eyebrow, heading lines rising through a mask (`KineticHeading`), paragraph, then the photo
+    wiping in by clip-path while it settles from 1.03 to 1. There are no hero buttons: the header links reach everything, and
+    the forms are in Contact and Careers.
   - **Scroll reveals** (`MotionProvider`): the top-most element of each group (a card, a heading, a paragraph, a list item) fades
     up in order; delay maths is in `src/lib/stagger.ts`. Route changes get a short fade with a few pixels of lift; header and
     footer stay put, and there is no loading screen between pages.
   - **Window drawing** (`WindowDrawing`): an aluminium window elevation, its width and height dimensions and a section through
     the profile are drawn in SVG strokes, then resolve into a photograph. The dimension labels are letters (W, H), not numbers.
-  - **Workflow** (`Workflow`): a compact stepper instead of a long scroll. All 13 stages sit on one line, grouped into four phases
-    (win the job, define it, make it, deliver it); the line fills as you move forward and the chosen stage shows below. Real
-    buttons with arrow-key support; two rows of numbers on phones. Nothing is pinned.
-  - **Industry features** (`ProjectSlabs`): each photo is unmasked from alternating sides while it settles from 1.03 to 1, then
-    its label, title, note and link enter in turn.
-  - **Solutions** (`SolutionsSection`): the five industries as tabs with one panel that crossfades (no scroll engine), then the
-    numbered module list. **Careers** (`CareersSection`) follows what fenestration employers actually hire for (estimating,
-    fabrication and production, glazing and installation, project management, plus software roles and early careers); it lists
-    no vacancies, salaries or benefits it does not have, and its form posts to the same webhook as `careers`.
+  - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`): the 13 stages (Enquiry, CRM, Estimation, Survey, Design, Project
+    management, Purchase, Store, Production, Quality control, Logistics, Installation, Handover) sit on one line, grouped into
+    four phases; the line fills as you move forward and the chosen stage shows its description, the FEN1 module it is worked in
+    and the record it leaves. Real buttons with arrow-key support. On phones it is a vertical connected timeline with the chosen
+    stage open in place. The panel has a fixed height, so the previous / next arrows stay in the same place from stage to stage.
+    Nothing is pinned and the scroll is never captured.
+  - **Solutions** (`SolutionsSection`): the five industries as tabs, each with its own photograph (`SOLUTION_PHOTOS` in
+    `src/data/gallery.ts`). The photos are stacked; choosing an industry wipes its photo in over the last one from alternating
+    sides while it settles from 1.03 to 1, and the text enters after it. The industry tabs and an up / down arrow pair stay in
+    view while you read (sticky), and choosing an industry from further down brings its photo back into view. Nothing is pinned,
+    there is no scroll engine, and the numbered module list follows.
+  - **Careers** (`CareersSection`) follows what fenestration employers actually hire for (estimating, fabrication and production,
+    glazing and installation, project management), plus software roles and early careers. It lists no vacancies, salaries or
+    benefits it does not have, and its form posts to the same webhook as `careers`.
   - Tablet and mobile use shorter, lighter fades and no parallax. With `prefers-reduced-motion` there is no travel, no
     line-drawing and no wipes: everything is shown with short fades, so nothing is lost.
 - Photos are hot-linked from Unsplash (see `images.remotePatterns` in `next.config.ts`).
@@ -169,5 +207,5 @@ Vercel, redeploy. Photos are served from Unsplash through `next/image`; the allo
 ## Tests
 
 `npm test` checks the data (unique ids, roadmap order, wording rules), the Solutions page (search, group filter, no
-card links), key components (Navbar, Footer, workflow, counters), the motion system (observers, splash, drawing, no polling) and the light theme and the enquiry flow (validation, the `/api/enquiry`
+card links), key components (Navbar, Footer, workflow), the motion system (observers, splash, drawing, no polling) and the light theme and the enquiry flow (validation, the `/api/enquiry`
 route, and how both forms behave on success and failure).

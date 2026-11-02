@@ -6,24 +6,33 @@ import { ROADMAP_STAGES } from "@/data/roadmap";
 describe("roadmap", () => {
   it("follows the ERP process from enquiry to handover", () => {
     expect(ROADMAP_STAGES.map((s) => s.title)).toEqual([
-      "ENQUIRY",
-      "FOLLOW-UPS",
-      "DRAWING",
-      "ESTIMATION",
-      "SURVEY",
-      "DESIGN",
-      "PURCHASE",
-      "STORE",
-      "JOB WORK",
-      "PRODUCTION",
-      "QC",
-      "INSTALLATION",
-      "HANDOVER",
+      "Enquiry",
+      "CRM",
+      "Estimation",
+      "Survey",
+      "Design",
+      "Project management",
+      "Purchase",
+      "Store",
+      "Production",
+      "Quality control",
+      "Logistics",
+      "Installation",
+      "Handover",
     ]);
   });
 
   it("numbers every step in sequence", () => {
     ROADMAP_STAGES.forEach((s, i) => expect(s.step).toBe(String(i + 1).padStart(2, "0")));
+  });
+
+  it("names, for every step, a real FEN1 module and the record it leaves", () => {
+    const names = FEN1_MODULES.map((m) => m.name.toLowerCase());
+    for (const s of ROADMAP_STAGES) {
+      expect(s.record.length).toBeGreaterThan(0);
+      const wanted = s.module.toLowerCase().replace(" & ", " & ");
+      expect(names.some((n) => n === wanted)).toBe(true);
+    }
   });
 
   it("gives every step a subtitle and description", () => {
@@ -53,7 +62,6 @@ describe("modules", () => {
       expect(m.headline).toBeTruthy();
       expect(m.description).toBeTruthy();
       expect(m.submodules.length).toBeGreaterThan(0);
-      expect(m.sampleKpis.length).toBeGreaterThanOrEqual(3);
     }
   });
 });
@@ -90,5 +98,22 @@ describe("content wording", () => {
     ["RA bill", /\bRA\b/],
   ])("does not use the word %s", (_label, pattern) => {
     expect(all).not.toMatch(pattern);
+  });
+});
+
+describe("claims", () => {
+  const shown = JSON.stringify([FEN1_MODULES, INDUSTRY_SOLUTIONS, ROADMAP_STAGES]);
+
+  it("carries no placeholder KPIs or sample data", () => {
+    expect(shown).not.toMatch(/SAMPLE DATA|sampleKpis/);
+  });
+
+  it("states no performance percentages or named machine-vendor integrations it cannot back up", () => {
+    expect(JSON.stringify(INDUSTRY_SOLUTIONS)).not.toMatch(/\d+(\.\d+)?\s?%/);
+    expect(shown).not.toMatch(/Elumatec|Emmegi|Sch\u00fco|\bFOM\b/);
+  });
+
+  it("avoids stock marketing phrases", () => {
+    expect(shown).not.toMatch(/seamless|end-to-end|cutting-edge|revolution|empower|unlock|next-generation|world-class|state-of-the-art|unified/i);
   });
 });

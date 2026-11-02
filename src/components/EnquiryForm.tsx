@@ -107,6 +107,7 @@ export default function EnquiryForm({
 }) {
   const [values, setValues] = useState<Values>(initial);
   const [status, setStatus] = useState<SubmitState>("idle");
+  const [trap, setTrap] = useState("");
   const set = (key: string) => (v: string) => setValues((cur) => ({ ...cur, [key]: v }));
 
   const send = async () => {
@@ -114,7 +115,7 @@ export default function EnquiryForm({
     // Only the fields on screen are sent: a field the visitor never saw (hidden when they changed their mind) must not
     // reach the team with its default value as if it were an answer.
     const shown = Object.fromEntries(fields.map((f) => [f.key, values[f.key] ?? ""]));
-    const ok = await submitEnquiry(kind, shown as Parameters<typeof submitEnquiry>[1]);
+    const ok = await submitEnquiry(kind, shown as Parameters<typeof submitEnquiry>[1], trap);
     setStatus(ok ? "sent" : "error");
   };
 
@@ -156,6 +157,14 @@ export default function EnquiryForm({
         ))}
       </div>
 
+      {/* a spam trap: hidden from people and from the keyboard, so only a bot fills it in */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <label>
+          Website
+          <input type="text" name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+        </label>
+      </div>
+
       {status === "error" && (
         <p role="alert" className="rounded-lg bg-[#FBEAE8] border border-[#E8B9B4] text-[#A85E55] text-sm px-4 py-3">
           Your message could not be sent. Please try again in a moment.
@@ -165,7 +174,7 @@ export default function EnquiryForm({
       <button
         type="submit"
         disabled={status === "sending"}
-        className="w-full sm:w-auto px-8 py-2.5 bg-[#A0602F] text-white font-semibold uppercase text-[0.7rem] tracking-wider rounded-full flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+        className="w-full sm:w-auto px-8 py-2.5 bg-[#A0602F] text-white font-semibold text-sm rounded-full flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
       >
         <span>{status === "sending" ? "Sending..." : submitLabel}</span>
         <ArrowRight className="w-4 h-4" />

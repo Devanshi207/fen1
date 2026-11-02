@@ -10,7 +10,6 @@ export interface FEN1Module {
   workflow: string[];
   connectedModules: string[];
   dataFlow: string;
-  sampleKpis: { label: string; value: string; detail: string }[];
   accentColor?: string;
 }
 
@@ -25,7 +24,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "Plan, assign, monitor and close tasks across teams, projects and departments with clear ownership, checklists, and supervisor sign-offs.",
     submodules: [
-      "Executive Cockpit & Dashboard",
+      "Executive Dashboard",
       "My Tasks & Action Checklists",
       "Department Manager Kanban Board",
       "Standard Operating Procedure Templates",
@@ -37,11 +36,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["TASK CREATED", "OWNER ASSIGNED", "CHECKLIST ACTIVE", "DEADLINE SET", "SUPERVISOR VERIFICATION", "COMPLETION SIGN-OFF"],
     connectedModules: ["CRM", "ESTIMATION", "SURVEY", "PROJECT MANAGEMENT", "QUALITY CONTROL"],
     dataFlow: "Triggers automated milestone tasks whenever projects, sales orders, or QA inspections are generated.",
-    sampleKpis: [
-      { label: "Active Operational Tasks", value: "148 Tasks", detail: "SAMPLE DATA" },
-      { label: "Checklist Completion Rate", value: "97.4%", detail: "SAMPLE DATA" },
-      { label: "Supervisor Verifications", value: "32 Pending", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "crm",
@@ -51,7 +45,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     category: "BUSINESS",
     headline: "FROM FIRST ENQUIRY TO LONG-TERM CUSTOMER.",
     description:
-      "Manage enquiries, follow-ups, clients, projects, sales orders, and post-sale warranty claims from one unified fenestration CRM.",
+      "Manage enquiries, follow-ups, clients, projects, sales orders, and post-sale warranty claims in one fenestration CRM.",
     submodules: [
       "Commercial Enquiry Dashboard",
       "Lead & Architectural Enquiry Tracker",
@@ -65,11 +59,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["ENQUIRY", "QUALIFIED", "FOLLOW-UP", "ESTIMATION", "QUOTATION", "NEGOTIATION", "SALES ORDER", "PROJECT HANDOVER"],
     connectedModules: ["ESTIMATION", "PROJECT MANAGEMENT", "ACCOUNT", "TASK MANAGEMENT"],
     dataFlow: "Directly transfers architectural project scopes, elevations, and opening schedules to the Estimation engine.",
-    sampleKpis: [
-      { label: "Active Tender Pipeline", value: "$4.2M", detail: "SAMPLE DATA" },
-      { label: "Qualified Enquiries", value: "26 Active", detail: "SAMPLE DATA" },
-      { label: "Order Conversion", value: "34.8%", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "estimation",
@@ -81,7 +70,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "Build project estimates around actual materials, dimensions, system dies, hardware, glass build-ups, labour, overheads, and dynamic margins.",
     submodules: [
-      "Parametric Estimation Cockpit",
+      "Parametric Estimation Dashboard",
       "Elevation & Typology Project Directory",
       "Dynamic Bill of Materials (BOM) Generator",
       "Moment of Inertia & Wind-Load Engine",
@@ -105,11 +94,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     ],
     connectedModules: ["CRM", "DESIGN", "PURCHASE MANAGEMENT", "STORE", "PRODUCTION", "ACCOUNT"],
     dataFlow: "Generates precise BOMs that automatically populate material requisitions in Store and cutting lists in Production.",
-    sampleKpis: [
-      { label: "Avg Takeoff Time", value: "< 2.5 Mins", detail: "SAMPLE DATA" },
-      { label: "BOM Material Accuracy", value: "99.8%", detail: "SAMPLE DATA" },
-      { label: "Active Tenders", value: "18 Open", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "survey",
@@ -133,11 +117,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["PROJECT", "SITE VISIT", "LASER MEASUREMENT", "SUBSTRATE CHECK", "DIGITAL VERIFICATION", "CLIENT SIGN-OFF", "ENGINEERING HANDOVER"],
     connectedModules: ["DESIGN", "ESTIMATION", "PROJECT MANAGEMENT", "PRODUCTION"],
     dataFlow: "Transmits verified millimetric site dimensions directly into the Design CAD module to update fabrication cutting lengths.",
-    sampleKpis: [
-      { label: "Openings Verified", value: "340 Openings", detail: "SAMPLE DATA" },
-      { label: "Tolerance Variance", value: "< 1.5 mm", detail: "SAMPLE DATA" },
-      { label: "Site Sign-Offs", value: "100% Digital", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "design",
@@ -161,11 +140,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["SURVEY DATA", "TYPOLOGY SELECTION", "SYSTEM CALCULATION", "CAD DESIGN", "SHOP DRAWING", "ENGINEERING RELEASE", "CNC SYNC"],
     connectedModules: ["SURVEY", "PRODUCTION", "ESTIMATION", "PROJECT MANAGEMENT"],
     dataFlow: "Pushes validated G-code files directly to CNC double-miter saws and machining centers.",
-    sampleKpis: [
-      { label: "Profile Dies Mapped", value: "1,240 Dies", detail: "SAMPLE DATA" },
-      { label: "Drawing Approval Cycle", value: "2.1 Days", detail: "SAMPLE DATA" },
-      { label: "G-Code Generation", value: "Automated", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "project-management",
@@ -177,7 +151,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "Manage large glazing and residential developments through floor-by-floor panel tracking, material readiness, and milestone billing.",
     submodules: [
-      "Executive Project Portfolio Cockpit",
+      "Executive Project Portfolio Dashboard",
       "Project & Phase Directory",
       "Scope & Quantity Schedule Management",
       "Milestone & Progress S-Curve",
@@ -200,11 +174,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     ],
     connectedModules: ["CRM", "ESTIMATION", "STORE", "PRODUCTION", "LOGISTICS & DISPATCH", "ACCOUNT"],
     dataFlow: "Synchronizes physical site progress directly with Accounts for uncertified claims, retention tracking, and progressive billing.",
-    sampleKpis: [
-      { label: "Active Glazing Projects", value: "14 Projects", detail: "SAMPLE DATA" },
-      { label: "Milestone Adherence", value: "98.2%", detail: "SAMPLE DATA" },
-      { label: "Uncertified Claims", value: "$620K", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "purchase-management",
@@ -237,11 +206,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     ],
     connectedModules: ["ESTIMATION", "STORE", "ACCOUNT", "PROJECT MANAGEMENT"],
     dataFlow: "Directly matches vendor invoices with Purchase Orders and Goods Received Notes for 3-way reconciliation.",
-    sampleKpis: [
-      { label: "Open Extrusion POs", value: "28 Orders", detail: "SAMPLE DATA" },
-      { label: "Vendor On-Time Rate", value: "94.6%", detail: "SAMPLE DATA" },
-      { label: "Price Variance", value: "< 0.8%", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "store",
@@ -253,7 +217,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "Track 6.5m profile bars, off-cut bins, A-frame glass stillages, hardware, gaskets, and consumables with millimetric precision.",
     submodules: [
-      "Central Inventory Cockpit",
+      "Central Inventory Dashboard",
       "Current Stock & Rack Allocation",
       "Central Stock Ledger & Valuation",
       "Barcode/QR Material Movement",
@@ -265,11 +229,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["PURCHASE GRN", "RACK ASSIGNMENT", "PROJECT RESERVATION", "OFF-CUT CATALOGING", "PRODUCTION ISSUE", "SCRAP AUDIT"],
     connectedModules: ["PURCHASE MANAGEMENT", "PRODUCTION", "PROJECT MANAGEMENT", "ACCOUNT"],
     dataFlow: "Instantly reserves specific bar lots and glass crates for scheduled project work orders.",
-    sampleKpis: [
-      { label: "Profile Off-Cut Recovery", value: "91.2%", detail: "SAMPLE DATA" },
-      { label: "Stock Accuracy", value: "99.9%", detail: "SAMPLE DATA" },
-      { label: "Active Extrusion Racks", value: "64 Racks", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "production",
@@ -281,7 +240,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "Drive shop-floor machining, double-miter saw cutting, unitized curtain wall assembly, and structural silicone glazing bays.",
     submodules: [
-      "Shop Floor Live Control Cockpit",
+      "Shop Floor Live Control Dashboard",
       "Production Work Order Scheduling",
       "1D Profile Linear Nesting Engine",
       "2D Glass Sheet Optimization",
@@ -302,11 +261,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     ],
     connectedModules: ["DESIGN", "STORE", "QUALITY CONTROL", "LOGISTICS & DISPATCH", "MAINTENANCE"],
     dataFlow: "Transmits real-time completion timestamps and saw scrap telemetry directly to Project Management and Finance.",
-    sampleKpis: [
-      { label: "Linear Extrusion Scrap", value: "< 3.2%", detail: "SAMPLE DATA" },
-      { label: "Daily Frame Output", value: "84 Units", detail: "SAMPLE DATA" },
-      { label: "OEE Machine Health", value: "92.4%", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "maintenance",
@@ -330,11 +284,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["OPERATING HOURS LOGGED", "PREVENTIVE ALERT", "SERVICE WORK ORDER", "SPARE ISSUED", "TECHNICIAN REPAIR", "CALIBRATION SIGN-OFF"],
     connectedModules: ["PRODUCTION", "STORE", "ACCOUNT"],
     dataFlow: "Alerts the Production scheduler of planned machine downtime to automatically reroute cutting batches.",
-    sampleKpis: [
-      { label: "Preventive Schedule Adherence", value: "99.1%", detail: "SAMPLE DATA" },
-      { label: "Mean Time to Repair (MTTR)", value: "38 Mins", detail: "SAMPLE DATA" },
-      { label: "Uptime Across CNC Lines", value: "99.4%", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "quality-control",
@@ -346,7 +295,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "Enforce incoming extrusion powder coating tests, corner crimp torque checks, DGU dew point verification, and pre-dispatch inspection.",
     submodules: [
-      "Quality Assurance Cockpit",
+      "Quality Assurance Dashboard",
       "Incoming Material Powder Coat & Anodizing QC",
       "In-Process Corner Joint Pull & Torque Tests",
       "Insulated Glass Argon Fill & Seal QC",
@@ -366,11 +315,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     ],
     connectedModules: ["PRODUCTION", "STORE", "PROJECT MANAGEMENT", "LOGISTICS & DISPATCH"],
     dataFlow: "Blocks uninspected or failed panels from being loaded onto dispatch vehicles.",
-    sampleKpis: [
-      { label: "First-Time Pass Rate", value: "99.2%", detail: "SAMPLE DATA" },
-      { label: "Open Non-Conformances", value: "2 Under Review", detail: "SAMPLE DATA" },
-      { label: "Test Certificates Generated", value: "100% Digital", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "logistics",
@@ -394,11 +338,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["PACKED GOODS", "STILLAGE LOADING", "WEIGHT & BALANCE CHECK", "GATE PASS", "TRANSIT TO SITE", "CRANE HOIST", "DIGITAL SIGN-OFF"],
     connectedModules: ["PRODUCTION", "QUALITY CONTROL", "PROJECT MANAGEMENT", "ACCOUNT"],
     dataFlow: "Generates instant delivery notes and triggers progressive billing upon successful site sign-off.",
-    sampleKpis: [
-      { label: "On-Time Site Delivery", value: "98.7%", detail: "SAMPLE DATA" },
-      { label: "Returnable Stillages Located", value: "100%", detail: "SAMPLE DATA" },
-      { label: "Active Dispatch Fleets", value: "8 Trucks", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "account",
@@ -410,7 +349,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "Link project milestones, raw material purchases, scrap write-offs, retention money, and VAT and sales-tax compliance directly with real-time financial ledgers.",
     submodules: [
-      "Financial Executive Cockpit",
+      "Financial Executive Dashboard",
       "Project Costing & Real-Time Profitability (P&L)",
       "General Ledger & Chart of Accounts",
       "Progressive Milestone Invoicing & Claims",
@@ -430,11 +369,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     ],
     connectedModules: ["CRM", "ESTIMATION", "PURCHASE MANAGEMENT", "PROJECT MANAGEMENT", "HRMS"],
     dataFlow: "Automatically calculates exact project margins by aggregating material costs, saw scrap, machine hours, and site labor.",
-    sampleKpis: [
-      { label: "Gross Margin Visibility", value: "Real-Time", detail: "SAMPLE DATA" },
-      { label: "Unbilled Work In Progress", value: "$340K", detail: "SAMPLE DATA" },
-      { label: "Invoice 3-Way Match", value: "100% Automated", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "hr",
@@ -458,11 +392,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["RECRUIT & ONBOARD", "SKILL CERTIFICATION", "SHIFT SCHEDULING", "BIOMETRIC ATTENDANCE", "OVERTIME AUDIT", "PAYROLL DISBURSEMENT"],
     connectedModules: ["MY PORTAL (ESS)", "ACCOUNT", "PRODUCTION", "TASK MANAGEMENT"],
     dataFlow: "Allocates direct factory labor and site erection costs to respective project job codes.",
-    sampleKpis: [
-      { label: "Active Workforce", value: "264 Staff", detail: "SAMPLE DATA" },
-      { label: "Shift Attendance", value: "96.8%", detail: "SAMPLE DATA" },
-      { label: "Payroll Processing Time", value: "< 1 Hour", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "ess",
@@ -474,7 +403,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "A dedicated self-service mobile portal for site engineers, machine operators, estimators, and project leaders.",
     submodules: [
-      "Personal Employee Cockpit",
+      "Personal Employee Dashboard",
       "Mobile Clock-In with Site GPS",
       "Leave Application & Balance Tracker",
       "My Assigned Tasks & Site Snags",
@@ -486,11 +415,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["CLOCK IN", "VIEW ASSIGNED TASKS", "EXECUTE CHECKLIST", "LOG SITE CLAIM", "REQUEST LEAVE", "DOWNLOAD PAYSLIP"],
     connectedModules: ["HRMS", "TASK MANAGEMENT", "PROJECT MANAGEMENT"],
     dataFlow: "Feeds site attendance and task completion data straight to supervisors in real time.",
-    sampleKpis: [
-      { label: "Mobile App Adoption", value: "98.5%", detail: "SAMPLE DATA" },
-      { label: "Avg Leave Approval", value: "2.4 Hours", detail: "SAMPLE DATA" },
-      { label: "Paperless Requests", value: "100%", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "admin-settings",
@@ -502,7 +426,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "Configure role-based access permissions, extrusion die catalogs, cutting formulas, hardware accessories, dealer pricing tiers, and document numbering.",
     submodules: [
-      "System Administration & Security Cockpit",
+      "System Administration & Security Dashboard",
       "Granular Role & Permission Matrix",
       "Dealer Multi-Tier Margin & Discount Rules",
       "System Series & Typology Master",
@@ -514,11 +438,6 @@ export const FEN1_MODULES: FEN1Module[] = [
     workflow: ["DIE SPECIFICATION", "FORMULA DEFINITION", "PRICING RULES", "ROLE ASSIGNMENT", "DEALER PORTAL ACCESS", "ENTERPRISE AUDIT"],
     connectedModules: ["ESTIMATION", "DESIGN", "PURCHASE MANAGEMENT", "STORE", "PRODUCTION", "ACCOUNT"],
     dataFlow: "Serves as the single master source of truth across all 16 operational modules.",
-    sampleKpis: [
-      { label: "System Uptime", value: "99.98%", detail: "SAMPLE DATA" },
-      { label: "Configured Die Formulas", value: "3,400 Rules", detail: "SAMPLE DATA" },
-      { label: "Audit Log Retention", value: "Full Immutable", detail: "SAMPLE DATA" },
-    ],
   },
   {
     id: "reports-analytics",
@@ -530,7 +449,7 @@ export const FEN1_MODULES: FEN1Module[] = [
     description:
       "Executive real-time reporting aggregating tender conversions, scrap percentages, machine OEE, project cash flow, and EBITDA.",
     submodules: [
-      "Executive Boardroom Cockpit",
+      "Executive Boardroom Dashboard",
       "Commercial CRM & Quotation Conversion Analytics",
       "Project Cost S-Curve & Milestone Burn Rate",
       "Shop Floor OEE, Machine Health & Scrap Analysis",
@@ -549,10 +468,5 @@ export const FEN1_MODULES: FEN1Module[] = [
     ],
     connectedModules: ["ALL MODULES"],
     dataFlow: "Pulls synchronized live telemetry from all 16 modules into interactive executive dashboards.",
-    sampleKpis: [
-      { label: "Live Telemetry Feeds", value: "Synchronized", detail: "SAMPLE DATA" },
-      { label: "Custom Report Models", value: "Unlimited", detail: "SAMPLE DATA" },
-      { label: "Executive Drill-down", value: "To Line Item", detail: "SAMPLE DATA" },
-    ],
   },
 ];

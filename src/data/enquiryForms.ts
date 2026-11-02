@@ -45,10 +45,10 @@ export const TOPICS: Record<Topic, TopicCopy> = {
     doneText: "We have received your request and will be in touch to arrange a demonstration for your technical and management team.",
     messageLabel: "Anything specific you want to see?",
     pitch: {
-      kicker: "Live demonstration",
-      heading: "SEE YOUR BUSINESS\nTHROUGH FEN1.",
-      line: "See your business through FEN1",
-      body: "Explore how your sales, estimation, projects, procurement, production, people, and finance can connect within one unified platform.",
+      kicker: "Request a demo",
+      heading: "See how FEN1 fits\nyour operation.",
+      line: "See how FEN1 fits your operation",
+      body: "We walk through the modules that matter to your business, from estimation and bills of material to production, quality inspection and site installation.",
     },
   },
   question: {
@@ -60,10 +60,10 @@ export const TOPICS: Record<Topic, TopicCopy> = {
     doneText: "Our team will review your question and get in touch with you shortly.",
     messageLabel: "Your question",
     pitch: {
-      kicker: "Get in touch",
-      heading: "A TECHNICAL CONVERSATION,\nNOT A SALES PITCH.",
-      line: "A technical conversation, not a sales pitch",
-      body: "During our initial consultation, we analyze your current estimation workflows, extrusion billet scrap rates, and machine software links to demonstrate measurable operational improvements.",
+      kicker: "Ask a question",
+      heading: "A technical conversation\nabout your workflow.",
+      line: "A technical conversation about your workflow",
+      body: "We start from how you estimate, cut and track jobs today, and show where FEN1 fits. Ask about modules, machine links, training or how a project would be set up.",
     },
   },
 };
@@ -128,7 +128,11 @@ export const CAREER_FIELDS: FieldSpec[] = [
   { key: "message", label: "A few lines about you", type: "area", required: true },
 ];
 
+/** The careers form when someone applies for a listed role: the role is asked first, and the general "where you could help" question is dropped. */
+export const CAREER_FIELDS_FOR_ROLE: FieldSpec[] = [{ key: "role", label: "Applying for", required: true }, ...CAREER_FIELDS.filter((f) => f.key !== "area")];
+
 export const CAREER_INITIAL = {
+  role: "",
   name: "",
   company: "",
   email: "",

@@ -3,9 +3,6 @@ import { IBM_Plex_Mono, IBM_Plex_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import "./motion.css";
 import "./sections.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import MotionProvider from "@/components/MotionProvider";
 
 // Headings: IBM Plex Sans. Body: Inter. Technical labels: IBM Plex Mono.
 const display = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-plex", display: "swap" });
@@ -22,11 +19,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "FEN1 - The Operating System for Glass, Aluminium & Windows",
+    default: "FEN1 | ERP for aluminium fabrication, glass processing and glazing",
     template: "%s | FEN1",
   },
   description:
-    "From estimation to installation, FEN1 connects sales, engineering, procurement, production, projects, people, finance and analytics in one integrated ERP platform.",
+    "ERP for window and door manufacturers, glass processors, aluminium fabricators and glazing contractors: estimation, bills of material, purchasing, production planning, quality inspection and site installation on one job record.",
   keywords: [
     "FEN1",
     "Fen1 ERP",
@@ -59,10 +56,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: HOME_FLAG }} />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-[#F6F7F5] text-[#34434A] selection:bg-[#B87545] selection:text-[#FFFFFF]">
-        <Navbar />
-        <main id="page" className="flex-1 w-full pt-16 sm:pt-20">{children}</main>
-        <Footer />
-        <MotionProvider />
+        {children}
       </body>
     </html>
   );

@@ -6,8 +6,8 @@ export default function AboutSection() {
   return (
     <section id="about" data-section="about" className="page-sec page-sec-alt">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="About FEN1" title="AN ERP BUILT AROUND GLASS, ALUMINIUM & WINDOWS.">
-          FEN1 runs the whole job in one system, from the first enquiry to final handover.
+        <SectionHead eyebrow="About FEN1" title="Built around how fenestration work runs">
+          One job record from the first enquiry to final handover, shared by sales, design, purchasing, production and site teams.
         </SectionHead>
 
         <div className="about-cols">

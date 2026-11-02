@@ -21,13 +21,13 @@ export default function WindowDrawing() {
   const [ref, seen] = useOnScreen<HTMLDivElement>({ threshold: 0.35, rootMargin: "0px" });
 
   return (
-    <section id="drawing" data-chapter="Drawing" className="py-16 sm:py-24">
+    <section id="drawing" className="py-16 sm:py-24">
       <div className="wd-wrap max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid gap-4">
-          <p className="wd-eyebrow tech">From drawing to window</p>
-          <h2 className="text-3xl sm:text-4xl leading-[1.1] tracking-tight text-[#34434A]">EVERY FRAME STARTS AS A LINE.</h2>
+          <p className="wd-eyebrow tech">Profile to product</p>
+          <h2 className="text-3xl sm:text-4xl leading-[1.1] tracking-tight text-[#34434A]">From profile drawing to finished window</h2>
           <p className="text-base text-[#5B6B73] max-w-md leading-relaxed">
-            Profile, frame geometry, section and joint details are drawn once and carried through estimation, cutting and production to the finished unit.
+            Profile sections, frame dimensions and joint details are defined once, then carried through estimation, cutting lists and production to the finished unit.
           </p>
         </div>
 

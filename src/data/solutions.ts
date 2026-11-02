@@ -47,8 +47,8 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     ],
     relevantModules: ["ESTIMATION", "DESIGN", "STORE", "PRODUCTION", "QUALITY CONTROL", "LOGISTICS & DISPATCH"],
     keyBenefits: [
-      "1D linear billet nesting with < 3.4% extrusion scrap",
-      "Direct CNC saw integration (Elumatec, Emmegi, Schüco, FOM)",
+      "Linear profile nesting that keeps extrusion scrap and off-cuts down",
+      "Cutting lists sent to CNC saws and machining centres",
       "Instant dealer quotations with live extrusion pricing",
       "Complete assembly bay scheduling & barcode tracking",
     ],
@@ -83,8 +83,8 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     keyBenefits: [
       "Dynamic 2D glass sheet nesting reducing raw float waste",
       "A-frame stillage lifecycle & return deposit tracking",
-      "Dew-point and argon gas compliance certificate generation",
-      "Real-time furnace bed utilization & OEE metrics",
+      "Gas-fill and test records kept for each insulating glass unit",
+      "Furnace bed utilisation reporting",
     ],
   },
   {
@@ -115,7 +115,7 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     ],
     relevantModules: ["ESTIMATION", "STORE", "PRODUCTION", "ACCOUNT", "TASK MANAGEMENT"],
     keyBenefits: [
-      "Over 90% reuse of profile off-cuts through automated remnant matching",
+      "Off-cut matching, so usable remnants are used before new bars are cut",
       "Accurate actual-vs-estimated job margin analytics",
       "Tablet-based shop-floor job card time tracking",
       "Complete inventory traceability per client work order",
@@ -130,7 +130,7 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     challenge:
       "Coordinating multiple factory suppliers, site survey variations, subcontractor claims, weather delays, on-site snag lists, and retention money recovery.",
     solutionSummary:
-      "FEN1 provides an end-to-end contracting cockpit linking architectural drawings, supplier purchase orders, site survey audits, mobile snagging, and client progressive valuations.",
+      "FEN1 links architectural drawings, supplier purchase orders, site survey audits, mobile snagging and client progressive valuations in one job record.",
     workflow: [
       "CLIENT TENDER",
       "SUPPLIER RFQS",
@@ -164,7 +164,7 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     challenge:
       "Outdated price books, delayed quotation turnaround for homeowners and architects, lack of visibility into central factory extrusion inventory, and manual order re-entry.",
     solutionSummary:
-      "FEN1 gives dealer networks a branded, self-service estimation and quotation portal with real-time central stock checks and seamless factory order transmission.",
+      "FEN1 gives dealer networks a branded, self-service estimation and quotation portal with real-time central stock checks and orders passed to the factory without re-keying.",
     workflow: [
       "RETAIL ENQUIRY",
       "DEALER ESTIMATOR",
@@ -183,7 +183,7 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     relevantModules: ["CRM", "ESTIMATION", "STORE", "LOGISTICS & DISPATCH", "ADMIN & SETTINGS"],
     keyBenefits: [
       "Dedicated dealer portal with multi-tier pricing rules",
-      "Elimination of manual quotation re-keying at central plant",
+      "Dealer quotations reach the plant without being re-keyed",
       "Live order fabrication status visible to dealer network",
       "Automated credit limit and payment gateway controls",
     ],

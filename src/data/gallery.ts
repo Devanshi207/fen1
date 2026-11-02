@@ -11,7 +11,7 @@ export interface GallerySlide {
 
 const U = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=2000&q=75`;
 
-/** The photo slabs on the home page. Photography is hot-linked from Unsplash (see next.config.ts). */
+/** Photos for the hero and the contact section. Photography is hot-linked from Unsplash (see next.config.ts). */
 export const GALLERY: GallerySlide[] = [
   {
     src: U("photo-1745015446589-7ee6f702d8c1"),
@@ -43,3 +43,19 @@ export const GALLERY: GallerySlide[] = [
     solution: "glass",
   },
 ];
+
+export interface SolutionPhoto {
+  src: string;
+  alt: string;
+  /** CSS object-position for the photo */
+  position?: string;
+}
+
+/** One photograph per industry on the Solutions section, keyed by the industry's id (see data/solutions.ts). Hot-linked from Unsplash. */
+export const SOLUTION_PHOTOS: Record<string, SolutionPhoto> = {
+  "windows-doors": { src: U("photo-1759367973838-2ad5eabd1f28"), alt: "Slim metal-framed glass panels" },
+  glass: { src: U("photo-1712319160624-8498ace8debe"), alt: "Sky seen through a glass roof structure" },
+  fabrication: { src: U("photo-1727001496055-ba712f0c7f82"), alt: "Large production hall with machining lines" },
+  contractors: { src: U("photo-1758830596893-7aa7c7caf245"), alt: "Glazed curtain-wall panels reflecting the sky" },
+  dealers: { src: U("photo-1745015446589-7ee6f702d8c1"), alt: "Glass-clad building exterior", position: "50% 30%" },
+};
