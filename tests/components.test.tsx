@@ -11,21 +11,29 @@ describe("Navbar", () => {
     await userEvent.setup().click(screen.getAllByRole("button")[0]);
     const nav = screen.getByRole("navigation", { name: "Main" });
     const labels = [...nav.querySelectorAll(".menu-link-text")].map((n) => n.textContent?.trim());
-    expect(labels).toEqual(expect.arrayContaining(["HOME", "ABOUT", "TRAINING", "CONTACT US"]));
+    expect(labels).toEqual(expect.arrayContaining(["HOME", "SOLUTIONS", "ABOUT", "TRAINING", "CAREERS", "CONTACT US"]));
     expect(labels.some((l) => /product/i.test(l ?? ""))).toBe(false);
   });
 });
 
 describe("Navbar menu", () => {
-  it("opens a menu of the five pages and closes on Escape", async () => {
+  it("opens a menu of the six parts of the page and closes on Escape", async () => {
     const user = userEvent.setup();
     render(<Navbar />);
+    // the menu is not built until it is first opened
+    expect(document.querySelector(".menu-overlay")).toBeNull();
     await user.click(screen.getAllByRole("button")[0]);
-    const menu = document.querySelector("div.fixed") as HTMLElement;
+    const menu = document.querySelector(".menu-overlay") as HTMLElement;
     expect(menu).toBeTruthy();
-    expect(within(menu).getAllByRole("link")).toHaveLength(5);
+    expect(menu).toHaveAttribute("data-open", "true");
+    expect(within(menu).getAllByRole("link")).toHaveLength(6);
+    // one continuous page: every entry is a link to a part of it
+    expect(within(menu).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["#home", "#solutions", "#about", "#training", "#careers", "#contact"]);
     await user.keyboard("{Escape}");
     expect(screen.getAllByRole("button")[0]).toHaveAttribute("aria-expanded", "false");
+    // closed, it stays in the page (so it can wipe away) but is marked hidden
+    expect(menu).toHaveAttribute("data-open", "false");
+    expect(menu).toHaveAttribute("aria-hidden", "true");
   });
 });
 

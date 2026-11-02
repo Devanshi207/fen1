@@ -23,8 +23,8 @@ const OTHER = "Other (type your own)";
 
 // Weights are set explicitly (font-[400] / font-[500]) because the site's global scale lifts the named Tailwind weights.
 const BOX =
-  "w-full rounded-md border border-[#C5D6F0] bg-[#FFFFFF] px-3 py-1.5 text-[0.85rem] font-[400] leading-5 text-[#0B1530] outline-none transition placeholder:text-[#7686A6] focus:border-[#1B4FD6] focus:ring-4 focus:ring-[#1B4FD6]/15";
-const LABEL = "mb-1 block text-[0.75rem] font-[500] text-[#4A5B7A]";
+  "w-full rounded-md border border-[#DCE2DF] bg-[#FFFFFF] px-3 py-1.5 text-[0.85rem] font-[400] leading-5 text-[#34434A] outline-none transition placeholder:text-[#788991] focus:border-[#A0602F] focus:ring-4 focus:ring-[#A0602F]/15";
+const LABEL = "mb-1 block text-[0.75rem] font-[500] text-[#5B6B73]";
 
 function Choice({ field, value, set }: { field: FieldSpec; value: string; set: (v: string) => void }) {
   const id = useId();
@@ -55,7 +55,7 @@ function Choice({ field, value, set }: { field: FieldSpec; value: string; set: (
             ))}
             {field.allowOther && <option>{OTHER}</option>}
           </select>
-          <span aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-1.5 w-1.5 -translate-y-[70%] rotate-45 border-b-2 border-r-2 border-[#7686A6]" />
+          <span aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-1.5 w-1.5 -translate-y-[70%] rotate-45 border-b-2 border-r-2 border-[#788991]" />
         </div>
       </div>
       {typing && (
@@ -79,7 +79,7 @@ function Field({ field, value, onChange }: { field: FieldSpec; value: string; on
     <>
       <label htmlFor={id} className={LABEL}>
         {field.label}
-        {!field.required && <span className="text-[#7686A6]"> (optional)</span>}
+        {!field.required && <span className="text-[#788991]"> (optional)</span>}
       </label>
       {field.type === "area" ? (
         <textarea rows={3} {...common} onChange={(e) => onChange(e.target.value)} />
@@ -121,14 +121,14 @@ export default function EnquiryForm({
   if (status === "sent") {
     return (
       <div className="text-center py-12 space-y-4">
-        <div className="w-12 h-12 bg-[#1B4FD6] text-white rounded-full flex items-center justify-center mx-auto">
+        <div className="w-12 h-12 bg-[#A0602F] text-white rounded-full flex items-center justify-center mx-auto">
           <CheckCircle2 className="w-6 h-6" />
         </div>
-        <h3 className="text-2xl font-bold text-[#0B1530]">{doneTitle}</h3>
-        <p className="text-sm text-[#4A5B7A] max-w-md mx-auto">{doneText}</p>
+        <h3 className="text-2xl font-bold text-[#34434A]">{doneTitle}</h3>
+        <p className="text-sm text-[#5B6B73] max-w-md mx-auto">{doneText}</p>
         <button
           onClick={() => setStatus("idle")}
-          className="mt-4 px-6 py-2.5 border border-[#1B4FD6] text-[#1B4FD6] text-sm font-semibold rounded-full hover:bg-[#FFFFFF] transition-colors"
+          className="mt-4 px-6 py-2.5 border border-[#A0602F] text-[#A0602F] text-sm font-semibold rounded-full hover:bg-[#FFFFFF] transition-colors"
         >
           Submit another
         </button>
@@ -165,7 +165,7 @@ export default function EnquiryForm({
       <button
         type="submit"
         disabled={status === "sending"}
-        className="w-full sm:w-auto px-8 py-2.5 bg-[#1B4FD6] text-white font-semibold uppercase text-[0.7rem] tracking-wider rounded-full flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+        className="w-full sm:w-auto px-8 py-2.5 bg-[#A0602F] text-white font-semibold uppercase text-[0.7rem] tracking-wider rounded-full flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
       >
         <span>{status === "sending" ? "Sending..." : submitLabel}</span>
         <ArrowRight className="w-4 h-4" />

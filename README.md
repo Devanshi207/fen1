@@ -1,7 +1,7 @@
 # FEN1
 
 Marketing and product site for **FEN1**, an ERP built for glass, aluminium and window businesses. It presents the
-modules, the industry solutions and the enquiry-to-handover roadmap, and has one enquiry page where a visitor either asks for a demo or sends a question.
+modules, the industry solutions and the enquiry-to-handover roadmap, and has one enquiry form where a visitor either asks for a demo or sends a question, and a careers section with its own form.
 
 Built with Next.js (App Router), React, TypeScript and Tailwind CSS v4.
 
@@ -45,13 +45,14 @@ Copy `.env.example` to `.env.local` and set:
 
 | Route           | Purpose                                                           |
 | --------------- | ----------------------------------------------------------------- |
-| `/`             | Five full-screen chapters: hero, figures, pinned roadmap, photo slabs, closing statement |
-| `/solutions`    | The five industry verticals and all the modules as a scroll-driven journey of pages |
-| `/about`        | What FEN1 is and the problems it removes                          |
-| `/training`     | Role-based training tracks                                        |
-| `/request-demo` | The one enquiry page: "I'd like a demo" or "I have a question" (posts to `/api/enquiry`; `?topic=question` opens on the question) |
+| `/`             | The whole site as one continuous page: Home, Solutions, About, Training, Careers, Contact, then the footer once |
+| `/api/enquiry`  | Receives the demo, question and careers forms and forwards them to `ENQUIRY_WEBHOOK_URL` |
 
-`/products` and `/products/*` redirect to `/solutions#modules`. `/contact` redirects to `/request-demo?topic=question`.
+Within the page, the header links are `#home`, `#solutions`, `#about`, `#training`, `#careers` and `#contact`; the header
+highlights whichever part is in the middle of the screen and keeps the address in step. Deeper links: `#windows-doors`,
+`#glass`, `#fabrication`, `#contractors`, `#dealers` (open that industry), `#modules`, `#roles`, and `#demo` / `#question`
+(scroll to the enquiry form and pick that choice). The old page addresses (`/solutions`, `/about`, `/training`,
+`/careers`, `/request-demo`, `/contact`, `/products`) redirect to the matching part of the page.
 
 ## Where the content lives
 
@@ -77,31 +78,49 @@ tests/            Vitest + Testing Library
 
 ## Design and motion
 
-- Flat, clean light theme: a cool white page, graphite-navy text, one blue accent, solid white cards with hairline borders and soft shadows.
-  Colours are hex values used through Tailwind arbitrary classes plus the tokens at the top of `globals.css`.
-  `scripts/palette.py` swaps the whole palette (blue or petrol teal) in one command.
-- Navigation is one full-screen menu on every screen size: an OPEN MENU / CLOSE MENU button in the header wipes a blue
-  panel in from the right, then the five pages and their rules draw in one after another (`Navbar.tsx`). It locks page
-  scroll, closes on Escape or a route change, keeps keyboard focus inside, and keeps the wipe and fades (but drops the
-  vertical slide) for people who prefer reduced motion.
+- Light industrial theme, and only light: the page is warm mineral grey (#F6F7F5), cards are white, secondary surfaces are
+  #E9EDEB, text is #34434A (reading text #5B6B73, labels #788991), borders are #DCE2DF, and the one accent is copper
+  (#B87545 for lines and marks, #A0602F for text and filled buttons, which keeps white-on-copper above 4.5:1).
+  There are no dark or navy sections (the footer and menu included), no gradients except page-coloured fades over photos,
+  no glows, no blur and no glass. Contrast comes from type, spacing, hairline borders and photography.
+  The tokens sit at the top of `globals.css`; components use the same hex values through Tailwind arbitrary classes.
+- Type: IBM Plex Sans for headings, Inter for text, IBM Plex Mono for technical labels (`font-mono` / `.tech`), all
+  through `next/font`. Weights are set in one block at the top of `globals.css`.
+- Technical-drawing details: `.tech-rule` (a measuring rule with end ticks) and `.tech-grid` (hairline blueprint grid),
+  plus the engineering-line animation of the opening FEN1 mark.
+- Navigation is one full-screen menu on small screens (links in the header from 1024px): a MENU / CLOSE button wipes a
+  light panel down from the top, then the five pages slide in one after another (`Navbar.tsx`, CSS only). It locks page
+  scroll and closes on Escape or a route change.
 - Responsive: phones, tablets and desktops share one layout system. From 1700px the root font size steps up (everything is rem-based), so 1080p,
   1440p and 4K screens scale instead of showing a small column. `viewport-fit=cover` plus safe-area padding keeps
   content clear of iPhone notches, and touch devices get 44px hit areas.
-- The home page is built as scroll "chapters" (`[data-chapter]`), in the spirit of Webflow showcase sites:
-  - `KineticHeading` splits headlines into letters that rise into place (server-rendered, plain text kept for screen readers).
-  - `RoadmapScene` pins the screen and swaps the 13 stages as you scroll (progress dots, giant outlined step number).
-  - `ProjectSlabs` stacks full-screen photos that start tilted, straighten, fill their outlined titles and recede when covered.
-  - `WordBand` slides two rows of giant outlined words against each other; `ScrollWords` lights the closing statement word by word.
-  - `ChapterRail` is the dot timeline on the right edge;
-    pill buttons lean toward the mouse. On desktop the intro, figures and finale snap into place (`scroll-snap-type: y proximity`).
-  - The scroll maths for each lives in `src/lib/` (`roadmap`, `slabs`, `scrollwords`, `chapters`, `magnet`, `stagger`) and is unit-tested.
-  - With reduced motion the scenes stay (so nothing is lost) but drop the large movement: stages cross-fade, photos do not tilt, the magnetic pull is off.
-- `MotionProvider` drives the staggered scroll: the top-most element of each group (a card, a heading, a paragraph, a
-  list item, a pill button) reveals in order, with the delay worked out from the layout at the moment it appears, so a
-  grid cascades left to right row by row, alternate columns travel further, and the gallery photos drift at different
-  speeds (`data-speed`). The delay maths lives in `src/lib/stagger.ts`. `prefers-reduced-motion` keeps fades but drops
-  movement and drift.
-- Fonts (Bricolage Grotesque for headings, Outfit for text) load through `next/font`; the weight scale is set in one block at the end of `globals.css`.
+- Motion is one small system (`src/app/motion.css`, `src/lib/inview.ts`), CSS first, with no animation library (framer-motion
+  was removed). One easing curve (`cubic-bezier(0.22, 1, 0.36, 1)`), reveals of 450-750ms with 15-30px of travel and a
+  70-120ms stagger, and only transform, opacity and clip-path are animated. Nothing polls and no work runs per scroll
+  event: an `IntersectionObserver` adds a class the first time something nears the screen, and anything a fast jump skipped
+  is revealed once scrolling settles (`scrollend`), so content is never left hidden. Hidden start states exist only under
+  `@media (scripting: enabled)`, so without JavaScript every section is simply visible.
+  - **Opening splash** (`HomeIntro`): FEN rises in, the "1" is drawn as a line and then filled, a hairline progress line runs
+    underneath; about 1.3s, CSS only. It plays on the first visit in a tab only (a `sessionStorage` flag, checked by the
+    script in `app/layout.tsx` before first paint), never when moving between pages, and the hero waits behind it.
+  - **Hero**: header fade, mono eyebrow, heading lines rising through a mask (`KineticHeading`), paragraph, buttons, the photo
+    wiping in by clip-path while it settles from 1.03 to 1, then corner ticks and a measuring line.
+  - **Scroll reveals** (`MotionProvider`): the top-most element of each group (a card, a heading, a paragraph, a list item) fades
+    up in order; delay maths is in `src/lib/stagger.ts`. Route changes get a short fade with a few pixels of lift; header and
+    footer stay put, and there is no loading screen between pages.
+  - **Window drawing** (`WindowDrawing`): an aluminium window elevation, its width and height dimensions and a section through
+    the profile are drawn in SVG strokes, then resolve into a photograph. The dimension labels are letters (W, H), not numbers.
+  - **Workflow** (`Workflow`): a compact stepper instead of a long scroll. All 13 stages sit on one line, grouped into four phases
+    (win the job, define it, make it, deliver it); the line fills as you move forward and the chosen stage shows below. Real
+    buttons with arrow-key support; two rows of numbers on phones. Nothing is pinned.
+  - **Industry features** (`ProjectSlabs`): each photo is unmasked from alternating sides while it settles from 1.03 to 1, then
+    its label, title, note and link enter in turn.
+  - **Solutions** (`SolutionsSection`): the five industries as tabs with one panel that crossfades (no scroll engine), then the
+    numbered module list. **Careers** (`CareersSection`) follows what fenestration employers actually hire for (estimating,
+    fabrication and production, glazing and installation, project management, plus software roles and early careers); it lists
+    no vacancies, salaries or benefits it does not have, and its form posts to the same webhook as `careers`.
+  - Tablet and mobile use shorter, lighter fades and no parallax. With `prefers-reduced-motion` there is no travel, no
+    line-drawing and no wipes: everything is shown with short fades, so nothing is lost.
 - Photos are hot-linked from Unsplash (see `images.remotePatterns` in `next.config.ts`).
 
 ### Gotchas worth knowing
@@ -150,5 +169,5 @@ Vercel, redeploy. Photos are served from Unsplash through `next/image`; the allo
 ## Tests
 
 `npm test` checks the data (unique ids, roadmap order, wording rules), the Solutions page (search, group filter, no
-card links), key components (Navbar, Footer, roadmap, counters) and the enquiry flow (validation, the `/api/enquiry`
+card links), key components (Navbar, Footer, workflow, counters), the motion system (observers, splash, drawing, no polling) and the light theme and the enquiry flow (validation, the `/api/enquiry`
 route, and how both forms behave on success and failure).

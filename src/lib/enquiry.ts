@@ -1,4 +1,4 @@
-export type EnquiryKind = "contact" | "demo";
+export type EnquiryKind = "contact" | "demo" | "careers";
 
 export interface Enquiry {
   kind: EnquiryKind;
@@ -27,7 +27,7 @@ export function validateEnquiry(input: unknown): EnquiryResult {
   const raw = (typeof input === "object" && input !== null ? input : {}) as Record<string, unknown>;
   const errors: Record<string, string> = {};
 
-  const kind = raw.kind === "demo" ? "demo" : raw.kind === "contact" ? "contact" : null;
+  const kind = raw.kind === "demo" ? "demo" : raw.kind === "contact" ? "contact" : raw.kind === "careers" ? "careers" : null;
   if (!kind) errors.kind = "Unknown form";
 
   const name = text(raw.name, MAX.short);
@@ -37,7 +37,8 @@ export function validateEnquiry(input: unknown): EnquiryResult {
   const message = text(raw.message, MAX.message);
 
   if (!name) errors.name = "Please enter your name";
-  if (!company) errors.company = "Please enter your company";
+  // a job enquiry has no company to give
+  if (!company && kind !== "careers") errors.company = "Please enter your company";
   if (!email) errors.email = "Please enter your email";
   else if (!EMAIL.test(email)) errors.email = "Please enter a valid email";
 

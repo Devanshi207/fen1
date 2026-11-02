@@ -8,10 +8,10 @@ const LEGAL = {
   privacy: {
     title: "Privacy Policy",
     points: [
-      "When you use the Contact or Request a demo form we receive what you type: your name, company, work email, phone number, business details and message.",
+      "When you use the enquiry or careers form we receive what you type: your name, company, work email, phone number, business details and message.",
       "We use it only to reply to your enquiry and to arrange a demonstration. We do not sell it.",
       "This site does not run advertising trackers.",
-      "To see, correct or delete what you sent us, write to us through the Contact page.",
+      "To see, correct or delete what you sent us, write to us through the Contact section.",
     ],
   },
   terms: {
@@ -45,20 +45,20 @@ function LegalDialog({ id, onClose }: { id: LegalKey; onClose: () => void }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0B1530]/50" onClick={onClose}>
-      <div role="dialog" aria-modal="true" aria-label={doc.title} onClick={(e) => e.stopPropagation()} className="w-full max-w-lg rounded-2xl bg-white p-6 sm:p-8 shadow-xl text-[#0B1530]">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#F6F7F5]/85" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label={doc.title} onClick={(e) => e.stopPropagation()} className="w-full max-w-lg rounded-2xl bg-white p-6 sm:p-8 border border-[#DCE2DF] shadow-[0_24px_48px_-28px_rgba(52,67,74,0.35)] text-[#34434A]">
         <div className="flex items-start justify-between gap-4">
           <h2 className="text-xl font-semibold tracking-tight">{doc.title}</h2>
-          <button ref={closeBtn} type="button" onClick={onClose} aria-label="Close" className="shrink-0 [&>svg]:!transform-none active:!transform-none rounded-md border border-[#D0DCF0] p-1.5 text-[#4A5B7A] transition-colors hover:border-[#1B4FD6] hover:text-[#1B4FD6]">
+          <button ref={closeBtn} type="button" onClick={onClose} aria-label="Close" className="shrink-0 [&>svg]:!transform-none active:!transform-none rounded-md border border-[#DCE2DF] p-1.5 text-[#5B6B73] transition-colors hover:border-[#A0602F] hover:text-[#A0602F]">
             <X className="w-4 h-4" />
           </button>
         </div>
-        <ul className="mt-4 space-y-3 text-sm text-[#4A5B7A] leading-relaxed list-disc pl-5">
+        <ul className="mt-4 space-y-3 text-sm text-[#5B6B73] leading-relaxed list-disc pl-5">
           {doc.points.map((p) => (
             <li key={p}>{p}</li>
           ))}
         </ul>
-        <Link href="/request-demo?topic=question" onClick={onClose} className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-[#1B4FD6]">
+        <Link href="#question" onClick={onClose} className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-[#A0602F]">
           <span>Questions? Contact us</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
@@ -71,30 +71,30 @@ export default function Footer() {
   const [legal, setLegal] = useState<LegalKey | null>(null);
   const close = () => setLegal(null);
   return (
-    <footer className="bg-[#E3EEFC] text-[#4A5B7A] border-t border-[#D0DCF0] relative font-sans">
+    <footer className="bg-[#E9EDEB] text-[#5B6B73] border-t border-[#DCE2DF] relative font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
         {/* Main Columns */}
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-8 pb-14 border-b border-[#D0DCF0]">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-8 pb-14 border-b border-[#DCE2DF]">
           {/* Brand Col */}
           <div className="col-span-2 md:col-span-6 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-7 h-7 bg-[#1B4FD6] rounded-sm flex items-center justify-center shadow-xs">
-                <div className="w-2.5 h-2.5 border border-[#B8D4FB] rotate-45" />
+            <Link href="#home" className="flex items-center gap-2.5">
+              <div className="w-7 h-7 bg-[#A0602F] rounded-sm flex items-center justify-center shadow-xs">
+                <div className="w-2.5 h-2.5 border border-[#DCE2DF] rotate-45" />
               </div>
-              <span className="text-lg font-bold tracking-tight text-[#0B1530]">
+              <span className="text-lg font-bold tracking-tight text-[#34434A]">
                 FEN1
               </span>
             </Link>
-            <p className="text-xs text-[#4A5B7A] max-w-sm leading-relaxed">
+            <p className="text-xs text-[#5B6B73] max-w-sm leading-relaxed">
               THE OPERATING SYSTEM FOR GLASS, ALUMINIUM & WINDOWS.
             </p>
-            <p className="text-xs text-[#4A5B7A] max-w-sm leading-relaxed">
+            <p className="text-xs text-[#5B6B73] max-w-sm leading-relaxed">
               From estimation to installation, FEN1 connects sales, engineering, procurement, production, projects, people, finance and analytics in one integrated ERP platform.
             </p>
             <div className="pt-2">
               <Link
-                href="/request-demo"
-                className="inline-flex items-center gap-2 text-xs font-mono font-medium text-[#0B1530] hover:text-[#1B4FD6] transition-colors"
+                href="#demo"
+                className="inline-flex items-center gap-2 text-xs font-mono font-medium text-[#34434A] hover:text-[#A0602F] transition-colors"
               >
                 <span>REQUEST A FEN1 DEMO</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -104,53 +104,54 @@ export default function Footer() {
 
           {/* Column 2: Solutions */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
+            <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-widest block font-semibold">
               SOLUTIONS
             </span>
             <ul className="space-y-1.5 text-xs">
-              <li><Link href="/solutions#windows-doors" className="hover:text-[#0B1530] transition-colors">Windows & Doors</Link></li>
-              <li><Link href="/solutions#glass" className="hover:text-[#0B1530] transition-colors">Glass Processing & IGUs</Link></li>
-              <li><Link href="/solutions#fabrication" className="hover:text-[#0B1530] transition-colors">Aluminium Fabrication</Link></li>
-              <li><Link href="/solutions#contractors" className="hover:text-[#0B1530] transition-colors">Glazing Contractors</Link></li>
-              <li><Link href="/solutions#dealers" className="hover:text-[#0B1530] transition-colors">Dealer Networks</Link></li>
-              <li><Link href="/solutions#modules" className="hover:text-[#0B1530] transition-colors">All Modules</Link></li>
+              <li><Link href="#windows-doors" className="hover:text-[#34434A] transition-colors">Windows & Doors</Link></li>
+              <li><Link href="#glass" className="hover:text-[#34434A] transition-colors">Glass Processing & IGUs</Link></li>
+              <li><Link href="#fabrication" className="hover:text-[#34434A] transition-colors">Aluminium Fabrication</Link></li>
+              <li><Link href="#contractors" className="hover:text-[#34434A] transition-colors">Glazing Contractors</Link></li>
+              <li><Link href="#dealers" className="hover:text-[#34434A] transition-colors">Dealer Networks</Link></li>
+              <li><Link href="#modules" className="hover:text-[#34434A] transition-colors">All Modules</Link></li>
             </ul>
           </div>
 
           {/* Column 3: Resources */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
+            <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-widest block font-semibold">
               RESOURCES
             </span>
             <ul className="space-y-1.5 text-xs">
-              <li><Link href="/training" className="hover:text-[#0B1530] transition-colors">Training</Link></li>
-              <li><Link href="/training#roles" className="hover:text-[#0B1530] transition-colors">Role-Based Training</Link></li>
-              <li><Link href="/about#philosophy" className="hover:text-[#0B1530] transition-colors">Platform Philosophy</Link></li>
-              <li><Link href="/request-demo?topic=question" className="hover:text-[#0B1530] transition-colors">Technical Support</Link></li>
+              <li><Link href="#training" className="hover:text-[#34434A] transition-colors">Training</Link></li>
+              <li><Link href="#roles" className="hover:text-[#34434A] transition-colors">Role-Based Training</Link></li>
+              <li><Link href="#about" className="hover:text-[#34434A] transition-colors">Platform Philosophy</Link></li>
+              <li><Link href="#question" className="hover:text-[#34434A] transition-colors">Technical Support</Link></li>
             </ul>
           </div>
 
           {/* Column 4: Company & Legal */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase text-[#1B4FD6] tracking-widest block font-semibold">
+            <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-widest block font-semibold">
               COMPANY
             </span>
             <ul className="space-y-1.5 text-xs">
-              <li><Link href="/about" className="hover:text-[#0B1530] transition-colors">About FEN1</Link></li>
-              <li><Link href="/request-demo?topic=question" className="hover:text-[#0B1530] transition-colors">Contact Us</Link></li>
-              <li><Link href="/request-demo" className="hover:text-[#0B1530] transition-colors">Request a Demo</Link></li>
-              <li className="pt-2 text-[11px] font-mono uppercase text-[#1B4FD6]">LEGAL</li>
-              <li><button type="button" onClick={() => setLegal("privacy")} className="text-xs hover:text-[#0B1530] transition-colors cursor-pointer">Privacy Policy</button></li>
-              <li><button type="button" onClick={() => setLegal("terms")} className="text-xs hover:text-[#0B1530] transition-colors cursor-pointer">Terms of Service</button></li>
-              <li><button type="button" onClick={() => setLegal("security")} className="text-xs hover:text-[#0B1530] transition-colors cursor-pointer">Enterprise Security</button></li>
+              <li><Link href="#about" className="hover:text-[#34434A] transition-colors">About FEN1</Link></li>
+              <li><Link href="#careers" className="hover:text-[#34434A] transition-colors">Careers</Link></li>
+              <li><Link href="#question" className="hover:text-[#34434A] transition-colors">Contact Us</Link></li>
+              <li><Link href="#demo" className="hover:text-[#34434A] transition-colors">Request a Demo</Link></li>
+              <li className="pt-2 text-[11px] font-mono uppercase text-[#A0602F]">LEGAL</li>
+              <li><button type="button" onClick={() => setLegal("privacy")} className="text-xs hover:text-[#34434A] transition-colors cursor-pointer">Privacy Policy</button></li>
+              <li><button type="button" onClick={() => setLegal("terms")} className="text-xs hover:text-[#34434A] transition-colors cursor-pointer">Terms of Service</button></li>
+              <li><button type="button" onClick={() => setLegal("security")} className="text-xs hover:text-[#34434A] transition-colors cursor-pointer">Enterprise Security</button></li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#4A5B7A]">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#5B6B73]">
           <span>© {new Date().getFullYear()} FEN1 SYSTEMS. All rights reserved.</span>
-          <span className="text-[11px] text-[#1B4FD6]">
+          <span className="text-[11px] text-[#A0602F]">
             THE OPERATING SYSTEM FOR GLASS, ALUMINIUM & WINDOWS.
           </span>
         </div>

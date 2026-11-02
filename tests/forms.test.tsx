@@ -1,8 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import RequestDemoPage from "@/app/request-demo/page";
-import { resolveTopic, topicHref } from "@/lib/topic";
+import RequestDemoPage from "@/components/sections/ContactSection";
+import CareersSection from "@/components/sections/CareersSection";
+import { resolveTopic, topicFromLocation, topicHref } from "@/lib/topic";
 import nextConfig from "../next.config";
 
 type User = ReturnType<typeof userEvent.setup>;
@@ -29,13 +30,13 @@ afterEach(() => {
   window.history.replaceState(null, "", "/");
 });
 
-describe("The one enquiry page", () => {
+describe("The one enquiry form", () => {
   it("opens on a demo request, with the choice at the top of the form", () => {
     render(<RequestDemoPage />);
     expect(screen.getByRole("radiogroup", { name: /what would you like to do/i })).toBeInTheDocument();
     expect(demoRadio()).toBeChecked();
     expect(questionRadio()).not.toBeChecked();
-    expect(screen.getByRole("heading", { level: 1, name: "Request a demo" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Request a demo" })).toBeInTheDocument();
     expect(screen.getByLabelText(/company size/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/current software/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/modules you want to see/i)).toBeInTheDocument();
@@ -48,7 +49,7 @@ describe("The one enquiry page", () => {
     await user.click(questionRadio());
 
     expect(questionRadio()).toBeChecked();
-    expect(screen.getByRole("heading", { level: 1, name: "Ask a question" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Ask a question" })).toBeInTheDocument();
     expect(screen.getByLabelText(/your question/i)).toBeRequired();
     expect(screen.getByRole("button", { name: /send question/i })).toBeInTheDocument();
     for (const gone of [/company size/i, /current software/i, /modules you want to see/i]) {
@@ -56,20 +57,27 @@ describe("The one enquiry page", () => {
     }
   });
 
-  it("opens on the question when the link asks for it (this is where the old /contact links go)", () => {
-    window.history.replaceState(null, "", "/request-demo?topic=question");
+  it("opens on the question when the address asks for it (#question, or an old ?topic=question link)", async () => {
+    window.history.replaceState(null, "", "/#question");
+    const { unmount } = render(<RequestDemoPage />);
+    await waitFor(() => expect(questionRadio()).toBeChecked());
+    expect(screen.getByRole("heading", { level: 2, name: "Ask a question" })).toBeInTheDocument();
+    unmount();
+    window.history.replaceState(null, "", "/?topic=question");
     render(<RequestDemoPage />);
-    expect(questionRadio()).toBeChecked();
-    expect(screen.getByRole("heading", { level: 1, name: "Ask a question" })).toBeInTheDocument();
+    await waitFor(() => expect(questionRadio()).toBeChecked());
   });
 
-  it("keeps the address in step with the choice, so a refresh or a shared link keeps it", async () => {
+  it("follows a Request a demo or Ask a question link clicked while the page is open", async () => {
     const user = userEvent.setup();
     render(<RequestDemoPage />);
-    await user.click(questionRadio());
-    expect(window.location.search).toBe("?topic=question");
+    expect(demoRadio()).toBeChecked();
+    window.history.replaceState(null, "", "/#question");
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+    await waitFor(() => expect(questionRadio()).toBeChecked());
+    // and the visitor can still change it themselves
     await user.click(demoRadio());
-    expect(window.location.search).toBe("");
+    expect(demoRadio()).toBeChecked();
   });
 
   it("keeps what the visitor typed when they change their mind", async () => {
@@ -138,21 +146,63 @@ describe("Sending an enquiry", () => {
   });
 });
 
-describe("Contact and demo are one page", () => {
-  it("works out the choice from the link: only ?topic=question is a question", () => {
+describe("Contact and demo are one form", () => {
+  it("works out the choice from an old link: only ?topic=question is a question", () => {
     expect(resolveTopic("question")).toBe("question");
     expect(resolveTopic("demo")).toBe("demo");
     expect(resolveTopic("anything else")).toBe("demo");
     expect(resolveTopic(null)).toBe("demo");
   });
 
-  it("links to each choice of the one page", () => {
-    expect(topicHref("demo")).toBe("/request-demo");
-    expect(topicHref("question")).toBe("/request-demo?topic=question");
+  it("reads the choice from the hash first, then from the old query", () => {
+    expect(topicFromLocation("#question", "")).toBe("question");
+    expect(topicFromLocation("#demo", "?topic=question")).toBe("demo");
+    expect(topicFromLocation("", "?topic=question")).toBe("question");
+    expect(topicFromLocation("#contact", "")).toBeNull();
   });
 
-  it("sends the old /contact address to the question form for good", async () => {
-    const redirects = await nextConfig.redirects?.();
-    expect(redirects).toContainEqual({ source: "/contact", destination: "/request-demo?topic=question", permanent: true });
+  it("links to each choice within the page", () => {
+    expect(topicHref("demo")).toBe("#demo");
+    expect(topicHref("question")).toBe("#question");
+  });
+
+  it("sends every old page address to its part of the one page, for good", async () => {
+    const redirects = (await nextConfig.redirects?.()) ?? [];
+    for (const [source, destination] of [
+      ["/contact", "/#question"],
+      ["/request-demo", "/#demo"],
+      ["/solutions", "/#solutions"],
+      ["/about", "/#about"],
+      ["/training", "/#training"],
+      ["/careers", "/#careers"],
+    ]) {
+      expect(redirects).toContainEqual({ source, destination, permanent: true });
+    }
+  });
+});
+
+describe("Careers form", () => {
+  it("asks for no company, and sends the details tagged as careers", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<CareersSection />);
+    expect(screen.queryByLabelText(/^company$/i)).toBeNull();
+    await user.type(screen.getByLabelText(/full name/i), "Dev Patel");
+    await user.type(screen.getByLabelText(/^email/i), "dev@example.com");
+    await user.type(screen.getByLabelText(/phone/i), "12345");
+    await user.type(screen.getByLabelText(/a few lines about you/i), "Ten years estimating aluminium windows.");
+    await user.click(screen.getByRole("button", { name: /send my details/i }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body.kind).toBe("careers");
+    expect(body.name).toBe("Dev Patel");
+    expect(body.details.area).toBeTruthy();
+    expect(await screen.findByText("Thank you")).toBeInTheDocument();
+  });
+
+  it("does not advertise vacancies it does not have", () => {
+    render(<CareersSection />);
+    expect(screen.getByText(/No roles are listed here right now/)).toBeInTheDocument();
   });
 });

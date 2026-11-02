@@ -105,3 +105,36 @@ export const ENQUIRY_INITIAL = {
   interestedModules: "",
   message: "",
 };
+
+/** The kinds of work people can tell us they are interested in on the careers form. Areas, not advertised vacancies. */
+export const CAREER_AREAS = [
+  "Product & engineering",
+  "Implementation & rollout",
+  "Customer support",
+  "Training",
+  "Estimating, production or site experience",
+  "Sales & partnerships",
+  "Starting out (apprenticeship or first role)",
+];
+
+/** The careers form: who you are, where you could help, and a link to your CV or profile. No company is asked for. */
+export const CAREER_FIELDS: FieldSpec[] = [
+  { key: "name", label: "Full name", required: true, half: true },
+  { key: "email", label: "Email", type: "email", required: true, half: true },
+  { key: "phone", label: "Phone / mobile", type: "tel", required: true, half: true },
+  { key: "location", label: "Where you are based", half: true },
+  { key: "area", label: "Where you could help", type: "choice", options: CAREER_AREAS, allowOther: true, otherLabel: "Describe the work you do" },
+  { key: "profile", label: "Link to your CV or profile (optional)" },
+  { key: "message", label: "A few lines about you", type: "area", required: true },
+];
+
+export const CAREER_INITIAL = {
+  name: "",
+  company: "",
+  email: "",
+  phone: "",
+  location: "",
+  area: CAREER_AREAS[0],
+  profile: "",
+  message: "",
+};

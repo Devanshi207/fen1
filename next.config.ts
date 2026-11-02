@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   devIndicators: false,
   // Lets phones and tablets on the same Wi-Fi load the dev server (http://<pc-ip>:3000). Without this Next.js blocks
   // its own scripts for any host but localhost, so the page renders but no JavaScript runs. Dev only; `next build` ignores it.
-  allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.*.*.*", "*.local"],
+  allowedDevOrigins: ["127.0.0.1", "192.168.*.*", "10.*.*.*", "172.*.*.*", "*.local"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/photo-**" },
@@ -12,10 +12,15 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      { source: "/products", destination: "/solutions#modules", permanent: true },
-      { source: "/products/:slug", destination: "/solutions#modules", permanent: true },
-      // Contact and demo are one page now; old /contact links open it on "I have a question"
-      { source: "/contact", destination: "/request-demo?topic=question", permanent: true },
+      // The site is one continuous page; every old page address opens the matching part of it
+      { source: "/products", destination: "/#modules", permanent: true },
+      { source: "/products/:slug", destination: "/#modules", permanent: true },
+      { source: "/solutions", destination: "/#solutions", permanent: true },
+      { source: "/about", destination: "/#about", permanent: true },
+      { source: "/training", destination: "/#training", permanent: true },
+      { source: "/careers", destination: "/#careers", permanent: true },
+      { source: "/request-demo", destination: "/#demo", permanent: true },
+      { source: "/contact", destination: "/#question", permanent: true },
     ];
   },
 };
