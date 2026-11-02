@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 
 const subscribe = () => () => {};
 const armed = () => !!document.documentElement.dataset.intro;
@@ -12,49 +13,11 @@ export const INTRO_SEEN = "fen1-intro-seen";
 const SHOW_MS = 1000;
 const FADE_MS = 300;
 
-/** The letters of the wordmark as plain rectangles and one diagonal, in a 300-wide drawing box (x 324-744, y 248-428). */
-const LETTERS: { key: string; shapes: React.ReactNode }[] = [
-  {
-    key: "F",
-    shapes: (
-      <>
-        <rect x="324" y="248" width="36" height="180" />
-        <rect x="360" y="248" width="80" height="34" />
-        <rect x="360" y="322" width="64" height="32" />
-      </>
-    ),
-  },
-  {
-    key: "E",
-    shapes: (
-      <>
-        <rect x="462" y="248" width="36" height="180" />
-        <rect x="498" y="248" width="82" height="34" />
-        <rect x="498" y="322" width="66" height="32" />
-        <rect x="498" y="394" width="82" height="34" />
-      </>
-    ),
-  },
-  {
-    key: "N",
-    shapes: (
-      <>
-        <rect x="612" y="248" width="36" height="180" />
-        <polygon points="648,248 710,428 648,286" />
-        <rect x="708" y="248" width="36" height="180" />
-      </>
-    ),
-  },
-];
-/** The outline of the "1": flag, stem and foot as one closed line, so it can be drawn. */
-const ONE = "M774 282 L800 248 H836 V396 H860 V428 H776 V396 H800 V282 Z";
-
 /**
- * The opening splash for the home page: FEN appears with a subtle rise, the "1" is drawn as a technical line and
- * then filled, and a fine progress line runs underneath. About 1.3s in all, CSS only. A small script in app/layout
- * marks a first visit (data-intro) and puts a cover over the page from first paint, so the home page never shows
- * before the splash; the hero sequence behind it is paused until it leaves. It does not play again for the rest of
- * the tab's session, and never on navigation between pages.
+ * The opening splash for the home page: the FEN1 logo is wiped in from the left and a fine progress line runs beneath it.
+ * About 1.3s in all, CSS only. A small script in app/layout marks a first visit (data-intro) and puts a cover over the page
+ * from first paint, so the home page never shows before the splash; the hero sequence behind it is paused until it leaves.
+ * It does not play again for the rest of the tab's session, and never on navigation between pages.
  */
 export default function HomeIntro() {
   const playing = useSyncExternalStore(subscribe, armed, () => false);
@@ -86,17 +49,12 @@ export default function HomeIntro() {
   if (!playing || done) return null;
   return createPortal(
     <div className={`intro ${out ? "is-out" : ""}`} role="status" aria-label="Loading FEN1">
-      <svg className="intro-mark" viewBox="300 226 584 270" aria-hidden="true" fill="currentColor" style={{ color: "var(--ink)" }}>
-        {LETTERS.map((l, i) => (
-          <g key={l.key} className="intro-letter" style={{ ["--i" as string]: i }}>
-            {l.shapes}
-          </g>
-        ))}
-        <path className="intro-one-fill" d={ONE} />
-        <path className="intro-one-line" d={ONE} pathLength={1} />
-        <rect className="intro-bar-track" x="324" y="462" width="536" height="2" />
-        <rect className="intro-bar" x="324" y="462" width="536" height="2" />
-      </svg>
+      <div className="intro-lockup">
+        <Image src="/brand/fen1-logo.png" alt="" width={900} height={294} priority sizes="22rem" className="intro-logo" />
+        <span className="intro-track" aria-hidden="true">
+          <span className="intro-bar" />
+        </span>
+      </div>
     </div>,
     document.body
   );

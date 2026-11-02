@@ -25,7 +25,7 @@ export default function EnquiryPanel({
       <Heading className={headingClass}>{copy.heading}</Heading>
 
       {/* Weights are set explicitly (font-[500]) because the site's global scale lifts the named Tailwind weights. */}
-      <div role="radiogroup" aria-label="What would you like to do?" className="inline-flex max-w-full flex-wrap gap-1 rounded-lg border border-[#DCE2DF] bg-[#FFFFFF] p-1">
+      <div role="radiogroup" aria-label="What would you like to do?" className="inline-flex max-w-full flex-wrap gap-1 rounded-lg border border-[#DCE6F5] bg-[#FFFFFF] p-1">
         {TOPIC_ORDER.map((key) => {
           const on = key === topic;
           return (
@@ -35,7 +35,7 @@ export default function EnquiryPanel({
               role="radio"
               aria-checked={on}
               onClick={() => onTopic(key)}
-              className={`rounded-md px-4 py-1.5 text-[0.8rem] font-[500] transition-colors ${on ? "bg-[#A0602F] text-white" : "text-[#5B6B73] hover:bg-[#F6F7F5] hover:text-[#34434A]"}`}
+              className={`rounded-md px-4 py-1.5 text-[0.8rem] font-[500] transition-colors ${on ? "bg-[#0067C0] text-white" : "text-[#55637A] hover:bg-[#F3F7FF] hover:text-[#1E2B45]"}`}
             >
               {TOPICS[key].label}
             </button>
@@ -45,10 +45,10 @@ export default function EnquiryPanel({
 
       {/* A direct email, shown only for questions and only when one is configured (NEXT_PUBLIC_CONTACT_EMAIL) */}
       {topic === "question" && process.env.NEXT_PUBLIC_CONTACT_EMAIL && (
-        <p className="flex items-center gap-2 text-[0.8rem] text-[#5B6B73]">
-          <Mail className="h-4 w-4 text-[#A0602F]" aria-hidden="true" />
+        <p className="flex items-center gap-2 text-[0.8rem] text-[#55637A]">
+          <Mail className="h-4 w-4 text-[#0067C0]" aria-hidden="true" />
           <span>
-            Or email us at <span className="font-[500] text-[#34434A]">{process.env.NEXT_PUBLIC_CONTACT_EMAIL}</span>
+            Or email us at <span className="font-[500] text-[#1E2B45]">{process.env.NEXT_PUBLIC_CONTACT_EMAIL}</span>
           </span>
         </p>
       )}

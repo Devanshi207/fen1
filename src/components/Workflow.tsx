@@ -37,11 +37,11 @@ export default function Workflow() {
   };
 
   return (
-    <section id="roadmap" className="wf2-section">
+    <section id="roadmap" className="wf2-section sec-teal">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="wf-head">
           <p className="wf-eyebrow tech">Workflow</p>
-          <h2 className="text-3xl sm:text-4xl leading-[1.12] tracking-tight text-[#34434A]">From enquiry to handover</h2>
+          <h2 className="text-3xl sm:text-4xl leading-[1.12] tracking-tight text-[#1E2B45]">From enquiry to handover</h2>
           <p className="wf-lede">{total} stages on one job record. Each stage starts from what the one before it recorded.</p>
         </div>
 

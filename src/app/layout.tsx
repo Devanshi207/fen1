@@ -10,7 +10,7 @@ const body = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swa
 const tech = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plexmono", display: "swap" });
 
 export const viewport: Viewport = {
-  themeColor: "#F6F7F5",
+  themeColor: "#FFFFFF",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   authors: [{ name: "FEN1 Systems" }],
 };
 
-const HOME_FLAG = `try{var d=document.documentElement,s=sessionStorage;if(location.pathname==="/"&&!location.hash&&!s.getItem("fen1-intro-seen")){d.dataset.intro="1";var c=document.createElement("div");c.id="fen1-cover";c.setAttribute("aria-hidden","true");c.style.cssText="position:fixed;inset:0;z-index:150;background:#f6f7f5";d.appendChild(c);setTimeout(function(){c.remove()},8000)}}catch(e){}`;
+const HOME_FLAG = `try{var d=document.documentElement,s=sessionStorage;if(location.pathname==="/"&&!location.hash&&!s.getItem("fen1-intro-seen")){d.dataset.intro="1";var c=document.createElement("div");c.id="fen1-cover";c.setAttribute("aria-hidden","true");c.style.cssText="position:fixed;inset:0;z-index:150;background:#ffffff";d.appendChild(c);setTimeout(function(){c.remove()},8000)}}catch(e){}`;
 
 export default function RootLayout({
   children,
@@ -55,7 +55,7 @@ export default function RootLayout({
         {/* Runs at once, before anything paints (next/script's beforeInteractive waits for the site's JavaScript, which is too late): on a first visit to the top of the page it marks the document (data-intro) and puts a cover over it, so the home page never shows before the opening splash (components/HomeIntro). The cover is built here, not in a CSS file, because a stylesheet can arrive after the first paint. */}
         <script dangerouslySetInnerHTML={{ __html: HOME_FLAG }} />
       </head>
-      <body className="min-h-full flex flex-col font-sans bg-[#F6F7F5] text-[#34434A] selection:bg-[#B87545] selection:text-[#FFFFFF]">
+      <body className="min-h-full flex flex-col font-sans bg-white text-[#1E2B45] selection:bg-[#0078D4] selection:text-[#FFFFFF]">
         {children}
       </body>
     </html>

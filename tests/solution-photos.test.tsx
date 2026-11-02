@@ -66,10 +66,9 @@ describe("numbering and type details", () => {
 });
 
 describe("fewer clicks, fewer decorations", () => {
-  it("has no Explore / Request a demo / Get in touch buttons in the hero or header", () => {
+  it("has no call-to-action button in the header (the hero and the final band carry them)", () => {
     render(<Page />);
-    for (const name of [/explore the platform/i, /get in touch/i]) expect(screen.queryByRole("link", { name })).toBeNull();
-    expect(document.querySelector("#intro a[href='#demo'], #intro a[href='#solutions']")).toBeNull();
+    expect(screen.queryByRole("link", { name: /get in touch/i })).toBeNull();
   });
 
   it("has no decorative dash lines or corner marks in the hero", () => {

@@ -18,6 +18,16 @@ import SectionHead from "./SectionHead";
  * in over the last one while it settles from 1.03 to 1, then the text enters. Nothing is pinned and no scroll engine is
  * involved. Below the tabs, every module as a numbered list. A link to #glass, #windows-doors and so on scrolls here and opens that industry.
  */
+/** One colour per industry, used for its tab, its number and the frame behind its photo. */
+const TONES: Record<string, { fill: string; text: string }> = {
+  "windows-doors": { fill: "var(--blue)", text: "var(--accent)" },
+  glass: { fill: "var(--teal)", text: "var(--teal-text)" },
+  fabrication: { fill: "var(--indigo)", text: "var(--indigo)" },
+  contractors: { fill: "var(--violet)", text: "var(--violet)" },
+  dealers: { fill: "var(--lavender)", text: "var(--lavender-text)" },
+};
+const toneStyle = (id: string) => ({ ["--tone-fill" as string]: TONES[id].fill, ["--tone-text" as string]: TONES[id].text });
+
 export default function SolutionsSection() {
   // `prev` is the industry that was showing, so its photo stays underneath while the new one wipes in
   const [{ active, prev }, setShown] = useState({ active: 0, prev: 0 });
@@ -83,6 +93,7 @@ export default function SolutionsSection() {
                   aria-controls="sol-panel"
                   tabIndex={i === active ? 0 : -1}
                   className={`sol-tab ${i === active ? "is-active" : ""}`}
+                  style={toneStyle(x.id)}
                   onClick={() => pick(i)}
                   onKeyDown={(e) => onKey(e, i)}
                 >
@@ -102,7 +113,7 @@ export default function SolutionsSection() {
           </div>
 
           {/* the photo on one side (it stays in view), the content on the other */}
-          <div className="sol-body" ref={body}>
+          <div className="sol-body" ref={body} style={toneStyle(s.id)}>
             <div className="sol-media">
               <div className="sol-photo">
                 {INDUSTRY_SOLUTIONS.map((x, i) => {

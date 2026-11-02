@@ -12,7 +12,7 @@ import ContactSection from "@/components/sections/ContactSection";
  */
 export default function Page() {
   return (
-    <div className="w-full bg-[#F6F7F5] text-[#34434A] font-sans">
+    <div className="w-full bg-white text-[#1E2B45] font-sans">
       <HomeIntro />
       <HomeSection />
       <SolutionsSection />

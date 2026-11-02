@@ -107,15 +107,22 @@ tests/            Vitest + Testing Library
 
 ## Design and motion
 
-- Light industrial theme, and only light: the page is warm mineral grey (#F6F7F5), cards are white, secondary surfaces are
-  #E9EDEB, text is #34434A (reading text #5B6B73, labels #788991), borders are #DCE2DF, and the one accent is copper
-  (#B87545 for lines and marks, #A0602F for text and filled buttons, which keeps white-on-copper above 4.5:1).
-  There are no dark or navy sections (the footer and menu included), no gradients except page-coloured fades over photos,
-  no glows, no blur and no glass. Contrast comes from type, spacing, hairline borders and photography.
-  The tokens sit at the top of `globals.css`; components use the same hex values through Tailwind arbitrary classes.
-- Editorial rules, enforced by tests: headings and buttons are in sentence case (capitals only for small mono labels), no looping
-  decorative animation, no marquee, no counters that start at zero, and no performance figures, vendor integrations or sample
-  KPIs that the project cannot back up (`tests/data.test.ts`, `tests/sections.test.tsx`).
+- A colourful light theme, and only light. White and ice-blue pages (#FFFFFF, #F3F7FF), deep slate text (#1E2B45, reading text
+  #55637A), blue-tinted borders, and a blue-indigo-violet brand range: #0078D4 (lines and marks), #0067C0 (text and buttons: white
+  on it is 5.4:1), deep blue #005A9E, indigo #4353D8, violet #7655D9, lavender #B66CE0, with teal #00A6A6, green #27A66B and amber
+  #F2A23A. The soft backgrounds are ice blue, soft blue #DCEBFF, lavender #E9E7FF, teal #E0F5F4 and pink #F5D8EC. All tokens are at
+  the top of `globals.css`. There are no dark sections or backgrounds anywhere.
+- Colour gives each part of the page its own identity: the hero is white into ice blue with a blue-violet headline accent and a
+  gradient window-frame outline behind the photo; manufacturing (the drawing) is soft blue; the workflow is pale blue into teal;
+  the platform (About) is lavender with indigo; each industry has its own colour (tab, number and frame behind its photo);
+  module icons are coloured by their module group, with a legend; Careers is ice blue with violet; the footer is ice blue. Gradients are used only for the hero headline accent, primary
+  buttons, the window-frame outline and the workflow line: never as glows, orbs or glass, and not on every
+  section. `tests/theme.test.ts` enforces the palette, no dark backgrounds and no radial or conic gradients.
+- The logo is `public/brand/fen1-logo.png` (the supplied artwork with a transparent background; `fen1-mark.png` is the window mark
+  alone, and `src/app/icon.png` is the browser tab icon). It is used in the header, the footer, the admin header and the opening
+  splash. To change it, replace those files and keep the same names.
+- Clicking a link scrolls so a part's first line lands just under the header: each section's stop point is worked out from its own top
+  padding (`--pad` in `sections.css`), so changing a section's padding does not bring back a big gap.
 - Type: IBM Plex Sans for headings, Inter for text, IBM Plex Mono for technical labels (`font-mono` / `.tech`), all
   through `next/font`. Weights are set in one block at the top of `globals.css`.
 - Technical-drawing details: `.tech-rule` (a measuring rule with end ticks) and `.tech-grid` (hairline blueprint grid),
@@ -136,8 +143,7 @@ tests/            Vitest + Testing Library
     underneath; about 1.3s, CSS only. It plays on the first visit in a tab only (a `sessionStorage` flag, checked by the
     script in `app/layout.tsx` before first paint), never when moving between pages, and the hero waits behind it.
   - **Hero**: header fade, mono eyebrow, heading lines rising through a mask (`KineticHeading`), paragraph, then the photo
-    wiping in by clip-path while it settles from 1.03 to 1. There are no hero buttons: the header links reach everything, and
-    the forms are in Contact and Careers.
+    wiping in by clip-path while it settles from 1.03 to 1. There are no buttons in the hero or the header: the header links reach everything, and the forms are in Contact and Careers.
   - **Scroll reveals** (`MotionProvider`): the top-most element of each group (a card, a heading, a paragraph, a list item) fades
     up in order; delay maths is in `src/lib/stagger.ts`. Route changes get a short fade with a few pixels of lift; header and
     footer stay put, and there is no loading screen between pages.

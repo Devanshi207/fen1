@@ -68,21 +68,11 @@ export default function Navbar() {
   return (
     <>
       <div ref={top} aria-hidden="true" className="absolute left-0 top-5 h-px w-px pointer-events-none" />
-      <header data-scrolled={scrolled} className="fixed top-0 left-0 right-0 z-50 bg-[#F6F7F5] border-b border-[#DCE2DF] py-4">
+      <header data-scrolled={scrolled} className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#DCE6F5] py-4">
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 flex items-center justify-between">
           {/* FEN1 Brand Logo */}
-          <Link href="#home" className="flex items-center gap-2.5 group">
-            <div className="relative w-7 h-7 bg-[#A0602F] rounded-sm flex items-center justify-center overflow-hidden shadow-xs">
-              <div className="w-2.5 h-2.5 border border-[#DCE2DF] rotate-45 transition-transform group-hover:rotate-90 duration-500" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-semibold tracking-tight text-[#34434A] leading-none">
-                FEN1
-              </span>
-              <span className="text-[11px] font-mono uppercase text-[#A0602F] tracking-wider mt-0.5">
-                ERP
-              </span>
-            </div>
+          <Link href="#home" aria-label="FEN1, back to the top" className="flex items-center">
+            <Image src="/brand/fen1-logo.png" alt="FEN1" width={900} height={294} priority sizes="120px" className="h-9 w-auto" />
           </Link>
 
           {/* Page links, one click away on wide screens (the full-screen menu is for smaller ones) */}
@@ -94,7 +84,7 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   aria-current={isCurrentLink ? "page" : undefined}
-                  className={cn("nav-link text-sm font-medium", isCurrentLink ? "text-[#A0602F]" : "text-[#5B6B73] hover:text-[#34434A]")}
+                  className={cn("nav-link text-sm font-medium", isCurrentLink ? "text-[#0067C0]" : "text-[#55637A] hover:text-[#1E2B45]")}
                 >
                   {link.name}
                 </Link>
@@ -108,7 +98,7 @@ export default function Navbar() {
               setMenuBuilt(true);
               setMobileOpen(!mobileOpen);
             }}
-            className="menu-toggle lg:hidden ml-auto sm:ml-3 flex items-center gap-2.5 pl-3.5 pr-3 py-2 rounded-full bg-[#E9EDEB] border border-[#DCE2DF] text-[#34434A] hover:bg-[#FFFFFF] transition-colors"
+            className="menu-toggle lg:hidden ml-auto sm:ml-3 flex items-center gap-2.5 pl-3.5 pr-3 py-2 rounded-full bg-[#F3F7FF] border border-[#DCE6F5] text-[#1E2B45] hover:bg-[#FFFFFF] transition-colors"
             aria-label="Toggle Navigation"
             aria-expanded={mobileOpen}
             data-open={mobileOpen}
@@ -125,7 +115,7 @@ export default function Navbar() {
 
       {/* Full-screen menu: links on one side, a photo that follows the link under the pointer on the other */}
       {menuBuilt && (
-          <div data-open={mobileOpen} aria-hidden={!mobileOpen} className="menu-overlay z-40 bg-[#F6F7F5] grid md:grid-cols-2 overflow-y-auto font-sans">
+          <div data-open={mobileOpen} aria-hidden={!mobileOpen} className="menu-overlay z-40 bg-white grid md:grid-cols-2 overflow-y-auto font-sans">
             <nav aria-label="Main" className="flex flex-col justify-start md:justify-center px-5 sm:px-10 lg:px-14 pt-24 pb-10 min-h-dvh" onMouseLeave={() => setHovered(null)}>
               <ul className="menu-links">
                 {NAV_LINKS.map((link, i) => (
@@ -135,19 +125,19 @@ export default function Navbar() {
                       onClick={() => setMobileOpen(false)}
                       onMouseEnter={() => setHovered(link.name)}
                       onFocus={() => setHovered(link.name)}
-                      className="flex items-center gap-4 py-2.5 sm:py-4 border-b border-[#DCE2DF] group"
+                      className="flex items-center gap-4 py-2.5 sm:py-4 border-b border-[#DCE6F5] group"
                     >
-                      <span className="text-xs font-semibold text-[#A0602F] tabular-nums w-6">0{i + 1}</span>
+                      <span className="text-xs font-semibold text-[#0067C0] tabular-nums w-6">0{i + 1}</span>
                       <span>
                         <span
                           data-current={link.href === `#${current}`}
-                          className="menu-link-text block text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#34434A]"
+                          className="menu-link-text block text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#1E2B45]"
                         >
                           {link.name}
                         </span>
-                        <span className="block text-xs sm:text-sm text-[#5B6B73] mt-1">{link.note}</span>
+                        <span className="block text-xs sm:text-sm text-[#55637A] mt-1">{link.note}</span>
                       </span>
-                      <ArrowRight className="ml-auto w-5 h-5 text-[#A0602F] -translate-x-3 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
+                      <ArrowRight className="ml-auto w-5 h-5 text-[#0067C0] -translate-x-3 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
                     </Link>
                   </li>
                 ))}

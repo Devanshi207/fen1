@@ -3,12 +3,14 @@
    Colours, type and easing come from the tokens in globals.css; motion lives in motion.css.
    =================================================================== */
 
-/* every part of the page, and every anchor inside it, stops below the fixed header when a link scrolls to it */
-[data-section] { scroll-margin-top: 4.25rem; }
-#home { scroll-margin-top: 0; }
-.sec-anchor { position: absolute; top: 0; left: 0; width: 1px; height: 1px; scroll-margin-top: 4.5rem; pointer-events: none; }
+/* Clicking a link scrolls to a part of the page. The part has its own space above its first line (--pad), so the stop
+   point is worked out from it: the first line lands a little under the header, not a screenful below it. */
+[data-section] { --pad: clamp(4rem, 9vw, 7rem); scroll-margin-top: calc(4.4rem - var(--pad) + 1.25rem); }
+#contact { --pad: clamp(3rem, 6vw, 5rem); }
+#home { scroll-margin-top: 5rem; }
+.sec-anchor { position: absolute; top: 0; left: 0; width: 1px; height: 1px; scroll-margin-top: calc(4.4rem - var(--pad, 5rem) + 1.25rem); pointer-events: none; }
 
-.page-sec { position: relative; padding-block: clamp(4rem, 9vw, 7rem); border-top: 1px solid var(--line); }
+.page-sec { position: relative; padding-block: var(--pad); border-top: 1px solid var(--line); }
 .page-sec-alt { background: var(--surface); }
 
 .sec-head { display: grid; gap: 0.8rem; max-width: 44rem; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
@@ -24,12 +26,12 @@
 .sol-tabs { display: flex; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
 .sol-tabs::-webkit-scrollbar { display: none; }
 .sol-tab { position: relative; flex: 1 0 9.5rem; display: grid; gap: 0.15rem; align-content: start; padding: 0.8rem 1rem 0.9rem 0; text-align: left; color: var(--muted); cursor: pointer; }
-.sol-tab::after { content: ""; position: absolute; left: 0; right: 1rem; bottom: -1px; height: 2px; background: var(--accent-mark); transform: scaleX(0); transform-origin: left; transition: transform 0.45s var(--ease); }
+.sol-tab::after { content: ""; position: absolute; left: 0; right: 1rem; bottom: -1px; height: 2px; background: var(--tone-fill, var(--accent-mark)); transform: scaleX(0); transform-origin: left; transition: transform 0.45s var(--ease); }
 .sol-tab:hover { color: var(--ink); }
 .sol-tab.is-active { color: var(--ink); }
 .sol-tab.is-active::after { transform: scaleX(1); }
 .sol-tab-num { font-size: 0.72rem; color: var(--muted); }
-.sol-tab.is-active .sol-tab-num { color: var(--accent); }
+.sol-tab.is-active .sol-tab-num { color: var(--tone-text, var(--accent)); }
 .sol-tab-title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 500; line-height: 1.25; }
 .sol-nav { display: none; gap: 0.5rem; flex: none; }
 @media (min-width: 900px) { .sol-nav { display: flex; } }
@@ -39,7 +41,7 @@
 @media (min-width: 900px) { .sol-body { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2rem, 4vw, 3.5rem); align-items: start; } }
 .sol-media { min-width: 0; }
 @media (min-width: 900px) { .sol-media { position: sticky; top: 9.4rem; } }
-.sol-photo { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0.5rem; border: 1px solid var(--line); background: var(--surface); }
+.sol-photo { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0.5rem; border: 1px solid var(--tone-fill, var(--line)); background: var(--surface); box-shadow: 10px 10px 0 -2px color-mix(in srgb, var(--tone-fill, var(--blue)) 20%, white); transition: border-color 0.5s var(--ease), box-shadow 0.5s var(--ease); }
 @media (min-width: 900px) { .sol-photo { aspect-ratio: 4 / 5; max-height: calc(100svh - 12.5rem); } }
 .sol-shot { position: absolute; inset: 0; z-index: 1; visibility: hidden; }
 .sol-shot.is-prev { visibility: visible; z-index: 2; }
@@ -50,14 +52,14 @@
 .sol-panel > :nth-child(3) { animation-delay: 0.2s; }
 .sol-panel > :nth-child(4) { animation-delay: 0.28s; }
 .sol-panel > :nth-child(5) { animation-delay: 0.36s; }
-.sol-kicker { margin: 0; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.sol-kicker { margin: 0; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tone-text, var(--accent)); transition: color 0.5s var(--ease); }
 .sol-title { margin: 0; font-size: clamp(1.6rem, 2.8vw, 2.3rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
 .sol-cols { display: grid; gap: 1.1rem; }
 .sol-text { margin: 0; font-size: 0.93rem; line-height: 1.6; color: var(--muted); }
 .sol-chain { margin: 0; padding: 0.8rem 0; border-block: 1px solid var(--line); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.05em; line-height: 1.9; color: var(--ink); }
 .sol-benefits { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
 .sol-benefits li { display: flex; gap: 0.65rem; align-items: flex-start; font-size: 0.9rem; line-height: 1.5; color: var(--ink); }
-.sol-benefits svg { margin-top: 0.15rem; color: var(--accent); }
+.sol-benefits svg { margin-top: 0.15rem; color: var(--tone-text, var(--accent)); }
 .mods { margin-top: clamp(3rem, 7vw, 5rem); }
 @keyframes panel-in { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: none; } }
 
@@ -115,6 +117,51 @@
 .contact-grid { display: grid; gap: 2.5rem; }
 @media (min-width: 1024px) { .contact-grid { grid-template-columns: 5fr 6fr; gap: 4.5rem; align-items: start; } }
 .contact-photo { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 0.5rem; border: 1px solid var(--line); background: var(--surface); }
-.contact-pitch { display: grid; gap: 0.9rem; padding-block: 1.6rem 1rem; }
-.contact-title { margin: 0; font-size: clamp(1.7rem, 3.2vw, 2.6rem); line-height: 1.08; letter-spacing: -0.02em; color: var(--ink); }
 .contact-form-title { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.02em; color: var(--ink); }
+
+/* ===================================================================
+   Colour identity: each part of the page has its own light tone, so the page has a rhythm instead of one flat colour
+   =================================================================== */
+.hero-bg { background: linear-gradient(180deg, #ffffff 0%, var(--ice) 100%); }
+
+/* manufacturing (the drawing): soft blue with vivid blue lines */
+.sec-blue { background: linear-gradient(180deg, var(--soft-blue) 0%, var(--ice) 100%); }
+.sec-blue .wd-eyebrow { color: var(--accent); }
+/* workflow: pale blue into teal */
+.sec-teal { background: linear-gradient(180deg, var(--ice) 0%, var(--soft-teal) 100%); }
+.sec-teal .wf-eyebrow { color: var(--teal-text); }
+/* the platform (about): lavender and indigo */
+.sec-lavender { background: linear-gradient(180deg, var(--soft-lavender) 0%, #ffffff 100%); border-top-color: transparent; }
+.sec-lavender .sec-eyebrow, .sec-lavender .about-n { color: var(--indigo); }
+.sec-lavender .about-list li { border-top-color: rgba(67, 83, 216, 0.22); }
+/* careers: ice blue with violet */
+.sec-violet .sec-eyebrow, .sec-violet .path-n { color: var(--violet); }
+.sec-violet .role-meta { color: var(--violet); }
+.role-apply { background-image: var(--grad-indigo-violet); background-size: 150% 100%; background-position: 0 0; transition: background-position 0.5s var(--ease); }
+.role-apply:hover { background-image: var(--grad-indigo-violet); background-position: 100% 0; }
+/* training: three tones in turn */
+.train-item:nth-child(3n + 1) .train-n { color: var(--accent); }
+.train-item:nth-child(3n + 2) .train-n { color: var(--teal-text); }
+.train-item:nth-child(3n) .train-n { color: var(--violet); }
+.train-item { border-top-width: 2px; border-top-color: var(--line); }
+.train-item:nth-child(3n + 1) { border-top-color: var(--blue); }
+.train-item:nth-child(3n + 2) { border-top-color: var(--teal); }
+.train-item:nth-child(3n) { border-top-color: var(--violet); }
+
+/* module groups: the colour of an icon is its group */
+.mod-legend { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; margin: 0 0 1.4rem; padding: 0; font-size: 0.8rem; color: var(--muted); }
+.mod-legend li { display: inline-flex; align-items: center; gap: 0.5rem; }
+.mod-legend i { width: 0.6rem; height: 0.6rem; border-radius: 9999px; background: var(--tone-fill); }
+[data-cat="BUSINESS"] { --tone-fill: var(--blue); --tone-text: var(--accent); }
+[data-cat="OPERATIONS"] { --tone-fill: var(--indigo); --tone-text: var(--indigo); }
+[data-cat="SUPPLY CHAIN"] { --tone-fill: var(--teal); --tone-text: var(--teal-text); }
+[data-cat="FINANCE & PEOPLE"] { --tone-fill: var(--violet); --tone-text: var(--violet); }
+[data-cat="ANALYTICS"] { --tone-fill: var(--amber); --tone-text: #9a6511; }
+[data-cat="SYSTEM"] { --tone-fill: #7c8aa5; --tone-text: var(--muted); }
+.mod-tile-icon { color: var(--tone-text, var(--muted)); }
+.mod-tile::before { background: var(--tone-fill, var(--blue)); }
+.mod-tile[data-active="true"] .mod-tile-num, .mod-tile[data-active="true"] .mod-tile-title, .mod-tile[data-active="true"] .mod-tile-icon { color: var(--tone-text, var(--accent)); }
+
+/* the contact section: the photo and the form, on white */
+.contact-sec { position: relative; border-top: 1px solid var(--line); }
+.contact-grid { padding-block: var(--pad); }

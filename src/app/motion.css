@@ -48,7 +48,7 @@ a:hover > svg:last-child, button:hover > svg:last-child { transform: translateX(
 /* ---------- Header: fades in on a fresh load; its background and shadow ease as the page scrolls ---------- */
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 header[class*="fixed"] { animation: fade-in 0.6s var(--ease) backwards; transition: box-shadow 0.3s var(--ease), background-color 0.3s var(--ease); }
-header[data-scrolled="true"] { box-shadow: 0 1px 0 var(--line), 0 14px 24px -22px rgba(52, 67, 74, 0.35); }
+header[data-scrolled="true"] { box-shadow: 0 1px 0 var(--line), 0 14px 24px -22px rgba(30, 43, 69, 0.35); }
 
 /* While the opening splash is up, everything behind it waits, so the hero sequence starts the moment the splash leaves */
 html[data-intro] header, html[data-intro] main * { animation-play-state: paused; }
@@ -56,16 +56,11 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 /* ---------- Opening splash (components/studio/HomeIntro) ---------- */
 .intro { position: fixed; inset: 0; z-index: 150; display: grid; place-items: center; background: var(--bg); transition: opacity 0.3s var(--ease); }
 .intro.is-out { opacity: 0; pointer-events: none; }
-.intro-mark { width: min(78vw, 34rem); height: auto; overflow: visible; }
-.intro-letter { opacity: 0; animation: intro-letter 0.55s var(--ease) forwards; animation-delay: calc(60ms + var(--i, 0) * 90ms); }
-@keyframes intro-letter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-/* the "1" is drawn as a technical line first, then filled */
-.intro-one-line { fill: none; stroke: var(--accent-mark); stroke-width: 2.5; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: intro-draw 0.7s var(--ease) 0.3s forwards; }
-@keyframes intro-draw { to { stroke-dashoffset: 0; } }
-.intro-one-fill { fill: var(--accent-mark); opacity: 0; animation: intro-fill 0.35s ease-out 0.85s forwards; }
-@keyframes intro-fill { to { opacity: 1; } }
-.intro-bar-track { fill: var(--line); }
-.intro-bar { fill: var(--accent-mark); transform-box: fill-box; transform-origin: 0 50%; transform: scaleX(0); animation: intro-bar 1s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.intro-lockup { display: grid; justify-items: center; gap: 1.4rem; width: min(70vw, 22rem); }
+.intro-logo { width: 100%; height: auto; animation: intro-logo 0.7s var(--ease) both; }
+@keyframes intro-logo { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+.intro-track { display: block; width: 100%; height: 2px; background: var(--line); overflow: hidden; }
+.intro-bar { display: block; height: 100%; background: var(--grad-brand); transform-origin: left; transform: scaleX(0); animation: intro-bar 1s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 @keyframes intro-bar { to { transform: scaleX(1); } }
 
 /* ---------- Hero sequence: nav, eyebrow, heading lines, paragraph, buttons, image, annotations ---------- */
@@ -76,12 +71,17 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 @keyframes draw-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 /* Headings: each line rises through a mask */
+.kinetic-accent .kinetic-inner { display: inline-block; background: var(--grad-brand); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .kinetic-line { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
 .kinetic-inner { display: block; animation: line-rise 0.85s var(--ease) backwards; animation-delay: calc(var(--k0, 100ms) + var(--i, 0) * 90ms); }
 @keyframes line-rise { from { transform: translateY(108%); } to { transform: none; } }
 
 /* The main hero photo is revealed by a clip that wipes down, while the picture settles from 1.03 to 1 */
 .hero-media { position: relative; }
+/* a window frame in the brand gradient, offset behind the photograph */
+.hero-media::before { content: ""; position: absolute; inset: 16px -16px -16px 16px; border-radius: 0.75rem; padding: 2px; background: var(--grad-brand); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); pointer-events: none; }
+.hero-media .hero-frame { position: relative; z-index: 1; }
+@media (max-width: 639px) { .hero-media::before { inset: 10px -8px -10px 10px; } }
 .hero-media .hero-frame { animation: media-clip 1s var(--ease) backwards; animation-delay: var(--hs, 0ms); }
 @keyframes media-clip { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
 .hero-media .hero-frame img { animation: media-settle 1.4s var(--ease) backwards; animation-delay: var(--hs, 0ms); }
@@ -91,7 +91,7 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 /* ---------- Workflow: all 13 stages on one line, grouped in phases; the line fills as you move forward ---------- */
 .wf2-section { padding-block: clamp(3rem, 7vw, 6rem); }
 .wf-head { display: grid; gap: 0.7rem; max-width: 40rem; margin-bottom: clamp(1.6rem, 4vw, 2.6rem); }
-.wf-eyebrow { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.wf-eyebrow { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-text); }
 .wf-lede { font-size: 0.95rem; color: var(--muted); }
 .wf-sub { margin: 0; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .wf-title { margin: 0.25rem 0 0; font-size: clamp(1.3rem, 2.4vw, 1.9rem); letter-spacing: -0.01em; color: var(--ink); }
@@ -102,17 +102,17 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 .wf2-rail { position: relative; }
 .wf2-line, .wf2-fill { position: absolute; left: calc(100% / 26); right: calc(100% / 26); top: 50%; }
 .wf2-line { height: 1px; background: var(--line-strong); }
-.wf2-fill { height: 2px; margin-top: -0.5px; background: var(--accent-mark); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 0.6s var(--ease); }
+.wf2-fill { height: 2px; margin-top: -0.5px; background: var(--grad-teal-blue); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 0.6s var(--ease); }
 .wf2-nodes { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); }
 .wf2-nodes li { display: flex; justify-content: center; }
 .wf2-node { display: grid; place-items: center; width: clamp(1.9rem, 3.4vw, 2.5rem); aspect-ratio: 1; border-radius: 9999px; border: 1px solid var(--line-strong); background: var(--card); color: var(--muted); font-size: 0.72rem; cursor: pointer; transition: opacity 0.45s var(--ease), translate 0.45s var(--ease), background-color 0.25s var(--ease), border-color 0.25s var(--ease), color 0.25s var(--ease), scale 0.25s var(--ease); }
-.wf2-node:hover { border-color: var(--accent-mark); color: var(--accent); }
-.wf2-node.is-done { border-color: var(--accent-mark); color: var(--accent); }
-.wf2-node.is-active { background: var(--accent); border-color: var(--accent); color: #fff; scale: 1.12; }
+.wf2-node:hover { border-color: var(--teal); color: var(--teal-text); }
+.wf2-node.is-done { border-color: var(--teal); color: var(--teal-text); }
+.wf2-node.is-active { background: var(--grad-teal-blue); border-color: var(--blue); color: #fff; scale: 1.12; }
 .wf2-panel { display: grid; grid-template-columns: 1fr auto; gap: clamp(1rem, 3vw, 2.5rem); align-items: start; min-height: 17rem; padding-top: clamp(1.2rem, 3vw, 1.8rem); animation: panel-in 0.45s var(--ease) both; }
 .wf2-nav { display: flex; gap: 0.5rem; align-self: start; }
 .wf2-step { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 9999px; border: 1px solid var(--line-strong); background: var(--card); color: var(--ink); cursor: pointer; }
-.wf2-step:hover:not(:disabled) { border-color: var(--accent-mark); color: var(--accent); }
+.wf2-step:hover:not(:disabled) { border-color: var(--teal); color: var(--teal-text); }
 .wf2-step:disabled { opacity: 0.4; cursor: default; }
 .wf2-meta { display: grid; gap: 0.8rem 2rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); margin: 1.1rem 0 0; padding-top: 0.9rem; border-top: 1px solid var(--line); }
 .wf2-meta dt { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
@@ -124,15 +124,15 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
   .wf2-list li { position: relative; padding-bottom: 0.2rem; }
   /* the connecting line: runs from each stage's marker down to the next, and fills as you move forward */
   .wf2-list li::before { content: ""; position: absolute; left: 1.15rem; top: 2.4rem; bottom: -0.1rem; width: 1px; background: var(--line-strong); }
-  .wf2-list li::after { content: ""; position: absolute; left: 1.15rem; top: 2.4rem; bottom: -0.1rem; width: 2px; margin-left: -0.5px; background: var(--accent-mark); transform: scaleY(0); transform-origin: top; transition: transform 0.5s var(--ease); }
+  .wf2-list li::after { content: ""; position: absolute; left: 1.15rem; top: 2.4rem; bottom: -0.1rem; width: 2px; margin-left: -0.5px; background: var(--teal); transform: scaleY(0); transform-origin: top; transition: transform 0.5s var(--ease); }
   .wf2-list li.is-done::after { transform: scaleY(1); }
   .wf2-list li:last-child::before, .wf2-list li:last-child::after { display: none; }
   .wf2-row { display: flex; align-items: center; gap: 1rem; width: 100%; min-height: 2.9rem; text-align: left; cursor: pointer; }
   .wf2-dot { position: relative; z-index: 1; display: grid; place-items: center; flex: none; width: 2.4rem; height: 2.4rem; border-radius: 9999px; border: 1px solid var(--line-strong); background: var(--card); color: var(--muted); font-size: 0.72rem; transition: background-color 0.25s var(--ease), border-color 0.25s var(--ease), color 0.25s var(--ease); }
-  .wf2-list li.is-done .wf2-dot { border-color: var(--accent-mark); color: var(--accent); }
-  .wf2-list li.is-active .wf2-dot { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .wf2-list li.is-done .wf2-dot { border-color: var(--teal); color: var(--teal-text); }
+  .wf2-list li.is-active .wf2-dot { background: var(--grad-teal-blue); border-color: var(--blue); color: #fff; }
   .wf2-row-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 500; color: var(--ink); }
-  .wf2-list li.is-active .wf2-row-title { color: var(--accent); }
+  .wf2-list li.is-active .wf2-row-title { color: var(--teal-text); }
   .wf2-row-body { margin-left: 3.4rem; padding: 0.2rem 0 1.1rem; animation: panel-in 0.4s var(--ease) both; }
   .wf2-row-meta { margin: 0.6rem 0 0; font-size: 0.88rem; color: var(--ink); }
   .wf2-row-meta .tech { display: block; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
@@ -204,10 +204,7 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
   .sol-panel, .wf2-panel { animation-name: fade-in; }
   .hero-seq, .hero-media .hero-frame, .hero-media .hero-frame img { animation-name: fade-in; animation-duration: 0.5s; }
   .kinetic-inner { animation: fade-in 0.5s linear backwards; animation-delay: 0ms; }
-  .intro-letter { animation-name: intro-fade; }
-  @keyframes intro-fade { from { opacity: 0; } to { opacity: 1; } }
-  .intro-one-line { animation: none; stroke-dashoffset: 0; }
-  .intro-one-fill { animation-delay: 0.3s; }
+  .intro-logo { animation-name: fade-in; animation-duration: 0.5s; }
   @media (scripting: enabled) {
     .wf2-node { translate: none; transition-delay: 0s; }
     .wf2.is-in .wf2-fill { transition-delay: 0s; }

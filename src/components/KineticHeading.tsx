@@ -19,14 +19,18 @@ export default function KineticHeading({
   delay?: number;
 }) {
   return (
-    <Tag className={cn("kinetic", className)} aria-label={text.replace(/\n/g, " ")}>
-      {text.split("\n").map((line, li) => (
-        <span key={li} className="kinetic-line" aria-hidden="true">
-          <span className="kinetic-inner" style={{ ["--i" as string]: li + delay }}>
-            {line}
+    <Tag className={cn("kinetic", className)} aria-label={text.replace(/~/g, "").replace(/\n/g, " ")}>
+      {text.split("\n").map((line, li) => {
+        // a line that starts with "~" is the accent line: it is set in the brand gradient
+        const accent = line.startsWith("~");
+        return (
+          <span key={li} className={cn("kinetic-line", accent && "kinetic-accent")} aria-hidden="true">
+            <span className="kinetic-inner" style={{ ["--i" as string]: li + delay }}>
+              {accent ? line.slice(1) : line}
+            </span>
           </span>
-        </span>
-      ))}
+        );
+      })}
     </Tag>
   );
 }

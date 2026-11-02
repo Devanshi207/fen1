@@ -2,10 +2,11 @@
 
 /* ===================================================================
    FEN1 design tokens
-   Light industrial: warm mineral page, white surfaces, hairline borders, one restrained copper accent.
-   Page #F6F7F5, white #FFFFFF, secondary #E9EDEB, ink #34434A, secondary text #788991 (decorative) / #5B6B73 (reading),
-   borders #DCE2DF, accent #B87545 (lines, icons, marks) / #A0602F (text and filled buttons: 4.6:1+ against the page and white text).
-   There are no dark sections, no gradients and no glows anywhere on the site.
+   A colourful light enterprise palette: white and ice-blue pages, a blue-indigo-violet brand range, teal and green for
+   the workflow and status, deep slate text. Every surface is light: there are no dark sections anywhere on the site.
+   Gradients are used on purpose and sparingly: the hero headline, primary buttons and a few
+   accent lines. They are never glows, orbs or backgrounds for every section.
+   Text on white: slate #1E2B45 (13:1), reading text #55637A (6:1), brand blue #0067C0 (5.4:1, white on it likewise).
    =================================================================== */
 @layer base {
   :root {
@@ -13,24 +14,47 @@
     --font-display: var(--font-plex), "IBM Plex Sans", system-ui, sans-serif;
     --font-tech: var(--font-plexmono), "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
-    --bg: #f6f7f5;
-    --surface: #e9edeb;
+    --bg: #ffffff;
+    --surface: #f3f7ff;
     --card: #ffffff;
-    --ink: #34434a;
-    --muted: #5b6b73;
-    --subtle: #788991;
-    --line: #dce2df;
-    --line-strong: #cdd5d1;
-    --accent: #a0602f;
-    --accent-mark: #b87545;
-    --accent-strong: #824c27;
-    --accent-soft: #efe4da;
+    --ink: #1e2b45;
+    --muted: #55637a;
+    --subtle: #6F7C93;
+    --line: #dce6f5;
+    --line-strong: #c7d4ec;
+    --accent: #0067c0;
+    --accent-mark: #0078d4;
+    --accent-strong: #005a9e;
+    --accent-soft: #dcebff;
     --danger: #a85e55;
-    --ok: #4f7556;
-    --shadow-soft: 0 1px 2px rgba(52, 67, 74, 0.05), 0 12px 28px -20px rgba(52, 67, 74, 0.18);
-    --shadow-lift: 0 1px 2px rgba(52, 67, 74, 0.06), 0 20px 40px -22px rgba(52, 67, 74, 0.24);
+    --ok: #1e7f52;
+    --shadow-soft: 0 1px 2px rgba(30, 43, 69, 0.05), 0 12px 28px -20px rgba(30, 43, 69, 0.18);
+    --shadow-lift: 0 1px 2px rgba(30, 43, 69, 0.06), 0 20px 40px -22px rgba(30, 43, 69, 0.24);
 
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* brand range */
+    --blue: #0078d4;
+    --blue-deep: #005a9e;
+    --indigo: #4353d8;
+    --violet: #7655d9;
+    --lavender: #b66ce0;
+    --teal: #00a6a6;
+    --teal-text: #007a7a;
+    --lavender-text: #9333b8;
+    --green: #27a66b;
+    --amber: #f2a23a;
+    /* soft section backgrounds */
+    --ice: #f3f7ff;
+    --soft-blue: #dcebff;
+    --soft-lavender: #e9e7ff;
+    --soft-teal: #e0f5f4;
+    --soft-pink: #f5d8ec;
+    /* gradients */
+    --grad-blue-indigo: linear-gradient(135deg, #0078d4 0%, #4353d8 100%);
+    --grad-indigo-violet: linear-gradient(135deg, #4353d8 0%, #7655d9 100%);
+    --grad-brand: linear-gradient(120deg, #0878d1 0%, #7655d9 58%, #b66ce0 100%);
+    --grad-teal-blue: linear-gradient(135deg, #00a6a6 0%, #0078d4 100%);
   }
 
   html {
@@ -55,7 +79,7 @@
   }
 }
 
-::selection { background: var(--accent-mark); color: #fff; }
+::selection { background: var(--soft-blue); color: var(--ink); }
 
 /* Type scale: one place sets the weight of every page. Headings are IBM Plex Sans, body is Inter, technical labels are IBM Plex Mono. */
 h1, h2, h3, h4 { font-weight: 600 !important; }
@@ -102,14 +126,17 @@ a[class~="bg-[#FFFFFF]"]:hover, button[class~="bg-[#FFFFFF]"]:hover, [class~="gr
   box-shadow: var(--shadow-lift);
 }
 
-/* Primary buttons and chips: flat copper, darker on hover */
-[class~="bg-[#A0602F]"] {
-  background-image: none;
+/* Primary buttons and chips: blue to indigo (white text), the gradient slides a little on hover */
+[class~="bg-[#0067C0]"] {
+  background-image: linear-gradient(135deg, #0067c0 0%, #4353d8 100%);
+  background-size: 160% 100%;
+  background-position: 0 0;
   color: #fff !important;
   box-shadow: none;
+  transition: background-position 0.5s var(--ease), box-shadow 0.3s var(--ease), transform 0.25s var(--ease);
 }
-[class~="bg-[#A0602F]"] * { color: inherit; }
-[class~="bg-[#A0602F]"]:hover { background-color: var(--accent-strong); }
+[class~="bg-[#0067C0]"] * { color: inherit; }
+[class~="bg-[#0067C0]"]:hover { background-position: 100% 0; box-shadow: 0 10px 22px -14px rgba(67, 83, 216, 0.55); }
 
 /* Technical annotation: a hairline measuring rule with end ticks, used above section labels */
 .tech-rule { position: relative; display: block; height: 1px; background: var(--line-strong); }
@@ -120,18 +147,13 @@ a[class~="bg-[#FFFFFF]"]:hover, button[class~="bg-[#FFFFFF]"]:hover, [class~="gr
 /* Blueprint grid: fine lines behind a hero, faded out at the edges */
 .tech-grid {
   background-image:
-    linear-gradient(to right, rgba(52, 67, 74, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(52, 67, 74, 0.06) 1px, transparent 1px);
+    linear-gradient(to right, rgba(30, 43, 69, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 43, 69, 0.06) 1px, transparent 1px);
   background-size: 64px 64px;
   -webkit-mask-image: linear-gradient(180deg, #000 0, transparent 85%);
   mask-image: linear-gradient(180deg, #000 0, transparent 85%);
 }
 
-/* Call-to-action band: a plain secondary surface between two hairlines */
-.cta-light {
-  background: var(--surface);
-  border-block: 1px solid var(--line);
-}
 
 /* Anything holding an open full-screen overlay must not trap it (backdrop-filter / filter / transform make a containing block for position:fixed) */
 :has(.fixed.inset-0) {
@@ -210,11 +232,11 @@ a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 0.375re
 }
 .mod-tile {
   position: relative; display: flex; align-items: center; gap: 1rem; outline: none; cursor: default;
-  padding: 0.85rem 0.25rem; border-bottom: 1px solid #dce2df;
+  padding: 0.85rem 0.25rem; border-bottom: 1px solid #dce6f5;
   transition: transform 0.4s var(--ease);
 }
 .mod-tile::before {
-  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: #a0602f;
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: #0067c0;
   transform: scaleX(0); transform-origin: left; transition: transform 0.45s var(--ease);
 }
 .mod-tile[data-active="true"] { transform: translateX(8px); }
@@ -222,12 +244,12 @@ a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 0.375re
 .mod-tile-num { min-width: 1.6rem; font-size: 0.75rem; font-weight: 700; color: var(--subtle); transition: color 0.3s; }
 .mod-tile-title { flex: 1; font-size: 0.95rem; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; color: var(--ink); transition: color 0.3s; }
 .mod-tile-icon { order: 2; width: 1rem; height: 1rem; color: var(--muted); transition: color 0.3s, transform 0.5s var(--ease); }
-.mod-tile[data-active="true"] .mod-tile-num, .mod-tile[data-active="true"] .mod-tile-title, .mod-tile[data-active="true"] .mod-tile-icon { color: #a0602f; }
+.mod-tile[data-active="true"] .mod-tile-num, .mod-tile[data-active="true"] .mod-tile-title, .mod-tile[data-active="true"] .mod-tile-icon { color: #0067c0; }
 .mod-tile[data-active="true"] .mod-tile-icon { transform: rotate(-12deg) scale(1.2); }
 @media (prefers-reduced-motion: reduce) { .mod-tile, .mod-tile::before, .mod-tile-icon { transition: none; } }
 
 /* Hero photo frame: four project photos take turns (5s each, 20s loop) */
-.hero-frame { position: relative; margin: 0; aspect-ratio: 5 / 4; width: 100%; max-height: 70svh; border-radius: 0.5rem; overflow: hidden; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-lift); }
+.hero-frame { position: relative; margin: 0; aspect-ratio: 3 / 2; width: 100%; max-height: 70svh; border-radius: 0.5rem; overflow: hidden; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-lift); }
 @media (prefers-reduced-motion: reduce) {
   .hz-loader { transition-duration: 0.01ms; }
   .hz[data-ready] .hz-hero-body > *, .hz[data-ready] .hz-scroll-cue { animation: none; }

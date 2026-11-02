@@ -11,7 +11,18 @@ import { sentenceCase } from "@/lib/text";
 export default function ModuleList({ modules, icons }: { modules: FEN1Module[]; icons: Record<string, React.ComponentType<{ className?: string }>> }) {
   const [active, setActive] = useState<string | null>(null);
 
+  const groups = [...new Set(modules.map((m) => m.category))];
   return (
+    <>
+      {/* the colour of each icon is its module group */}
+      <ul className="mod-legend" aria-label="Module groups">
+        {groups.map((g) => (
+          <li key={g} data-cat={g}>
+            <i aria-hidden="true" />
+            {sentenceCase(g)}
+          </li>
+        ))}
+      </ul>
     <ul className="mod-grid" onMouseLeave={() => setActive(null)}>
       {modules.map((m) => {
         const Icon = icons[m.id];
@@ -20,6 +31,7 @@ export default function ModuleList({ modules, icons }: { modules: FEN1Module[]; 
             key={m.id}
             tabIndex={0}
             className="mod-tile"
+            data-cat={m.category}
             data-active={active === m.id}
             onMouseEnter={() => setActive(m.id)}
             onFocus={() => setActive(m.id)}
@@ -32,5 +44,6 @@ export default function ModuleList({ modules, icons }: { modules: FEN1Module[]; 
         );
       })}
     </ul>
+    </>
   );
 }

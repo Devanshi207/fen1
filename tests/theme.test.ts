@@ -14,21 +14,24 @@ function sources(dir: string, out: string[] = []): string[] {
 
 const FILES = sources("src").map((path) => ({ path, text: readFileSync(path, "utf8") }));
 
-/** The light industrial palette, the copper accent, and the two status colours (with their pale tints). */
+/** The colourful light palette: whites and soft section tints, deep slate text, the blue-indigo-violet range, teal, green, amber. */
 const ALLOWED = new Set(
   [
-    "F6F7F5", "FFFFFF", "E9EDEB", // page, white, secondary surface
-    "34434A", "5B6B73", "788991", // text
-    "DCE2DF", "CDD5D1", // borders
-    "B87545", "A0602F", "824C27", "EFE4DA", // accent: marks, text and buttons, hover, pale tint
+    "FFFFFF", "F3F7FF", "DCEBFF", "E9E7FF", "E0F5F4", "F5D8EC", // page, ice blue, soft blue, lavender, teal, pink
+    "1E2B45", "55637A", "6F7C93", "7C8AA5", // text and quiet marks
+    "DCE6F5", "C7D4EC", // blue-tinted borders
+    "0078D4", "0067C0", "005A9E", "0878D1", // blues
+    "4353D8", "7655D9", "B66CE0", "9333B8", // indigo, violet, lavender (and its readable text tone)
+    "00A6A6", "007A7A", // teal (and its readable text tone)
+    "27A66B", "1E7F52", // green (and its readable text tone)
+    "F2A23A", "9A6511", // amber (and its readable text tone)
     "A85E55", "FBEAE8", "E8B9B4", // error
-    "4F7556", // success
     "000000", // alpha masks only
   ].map((h) => h.toUpperCase())
 );
 
-describe("light theme", () => {
-  it("only uses colours from the light palette", () => {
+describe("light colourful theme", () => {
+  it("only uses colours from the palette (no leftover copper, beige or grey)", () => {
     const stray: string[] = [];
     for (const { path, text } of FILES) {
       for (const m of text.matchAll(/#([0-9A-Fa-f]{6})\b/g)) {
@@ -38,32 +41,41 @@ describe("light theme", () => {
     expect(stray).toEqual([]);
   });
 
-  it("has no dark mode, glass or glow", () => {
+  it("defines the brief's brand colours and soft backgrounds as tokens", () => {
+    const css = readFileSync(join("src", "app", "globals.css"), "utf8").toLowerCase();
+    for (const hex of ["#0078d4", "#005a9e", "#4353d8", "#7655d9", "#b66ce0", "#00a6a6", "#27a66b", "#f2a23a", "#f3f7ff", "#dcebff", "#e9e7ff", "#e0f5f4", "#f5d8ec"]) {
+      expect(css).toContain(hex);
+    }
+  });
+
+  it("never uses a dark background, dark mode, glass or glow", () => {
     const found: string[] = [];
     for (const { path, text } of FILES) {
       if (/prefers-color-scheme/.test(text)) found.push(`${path}: prefers-color-scheme`);
       if (/\bdark:/.test(text)) found.push(`${path}: dark: variant`);
       if (/backdrop-blur|backdrop-filter:\s*blur|filter:\s*blur|mix-blend-mode/.test(text)) found.push(`${path}: blur or blend`);
       if (/text-shadow|drop-shadow|feGaussianBlur/.test(text)) found.push(`${path}: glow`);
+      // the slate used for text must never be a background
+      if (/bg-\[#1E2B45\]|background(-color)?:\s*(#1e2b45|var\(--ink\))/i.test(text)) found.push(`${path}: dark background`);
     }
     expect(found).toEqual([]);
   });
 
-  it("keeps every gradient to page-coloured fades or neutral hairlines", () => {
+  it("uses gradients only in the brand colours, and never as orbs: no radial or conic gradients", () => {
     const found: string[] = [];
     for (const { path, text } of FILES) {
-      for (const m of text.matchAll(/(?:linear|radial|conic)-gradient\([^;{}]*/g)) {
-        // allowed: fades into the page colour (246 247 245 / F6F7F5), the blueprint grid's hairlines, and alpha masks
-        if (!/246, ?247, ?245|F6F7F5|52, ?67, ?74|#000|var\(--bg\)/i.test(m[0])) found.push(`${path}: ${m[0].slice(0, 60)}`);
+      if (/radial-gradient|conic-gradient/.test(text)) found.push(`${path}: radial or conic gradient`);
+      for (const m of text.matchAll(/linear-gradient\([^;{}]*/g)) {
+        for (const h of m[0].matchAll(/#([0-9A-Fa-f]{6})\b/g)) if (!ALLOWED.has(h[1].toUpperCase())) found.push(`${path}: ${h[0]}`);
       }
       for (const m of text.matchAll(/(?:from|via|to)-\[#([0-9A-Fa-f]{6})\]/g)) {
-        if (m[1].toUpperCase() !== "F6F7F5") found.push(`${path}: ${m[0]}`);
+        if (!ALLOWED.has(m[1].toUpperCase())) found.push(`${path}: ${m[0]}`);
       }
     }
     expect(found).toEqual([]);
   });
 
-  it("sets the brief's three type families", () => {
+  it("keeps the approved fonts", () => {
     const layout = readFileSync(join("src", "app", "layout.tsx"), "utf8");
     expect(layout).toMatch(/IBM_Plex_Sans/);
     expect(layout).toMatch(/\bInter\(/);
