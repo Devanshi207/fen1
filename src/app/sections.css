@@ -85,8 +85,7 @@
 .paths { display: grid; }
 @media (min-width: 900px) { .paths { grid-template-columns: repeat(3, 1fr); column-gap: 3rem; } }
 .path { padding: 1.4rem 0 1.6rem; border-top: 1px solid var(--line-strong); }
-.path-n { margin: 0; font-size: 0.72rem; color: var(--accent); }
-.path-title { margin: 0.3rem 0 0; font-size: 1.3rem; letter-spacing: -0.01em; color: var(--ink); }
+.path-title { margin: 0; font-size: 1.3rem; letter-spacing: -0.01em; color: var(--ink); }
 .path-text { margin: 0.6rem 0 0; font-size: 0.92rem; line-height: 1.65; color: var(--muted); }
 .path-roles { margin: 0.9rem 0 0; font-size: 0.9rem; line-height: 1.7; color: var(--ink); }
 .roles { margin-bottom: clamp(2.5rem, 6vw, 4rem); }
@@ -135,7 +134,7 @@
 .sec-lavender .sec-eyebrow, .sec-lavender .about-n { color: var(--indigo); }
 .sec-lavender .about-list li { border-top-color: rgba(67, 83, 216, 0.22); }
 /* careers: ice blue with violet */
-.sec-violet .sec-eyebrow, .sec-violet .path-n { color: var(--violet); }
+.sec-violet .sec-eyebrow { color: var(--violet); }
 .sec-violet .role-meta { color: var(--violet); }
 .role-apply { background-image: var(--grad-indigo-violet); background-size: 150% 100%; background-position: 0 0; transition: background-position 0.5s var(--ease); }
 .role-apply:hover { background-image: var(--grad-indigo-violet); background-position: 100% 0; }

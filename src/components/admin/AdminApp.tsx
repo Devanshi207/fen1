@@ -7,8 +7,8 @@ import { KIND_LABEL, type StoredEnquiry } from "@/lib/inbox";
 import type { EnquiryKind } from "@/lib/enquiry";
 import { enquiriesToCsv } from "@/lib/csv";
 
-type Session = { configured: boolean; loggedIn: boolean; storage: "redis" | "file" | null };
-type View = "enquiries" | "jobs";
+type Session = { configured: boolean; loggedIn: boolean; storage: "redis" | "file" | null; defaultPassword?: boolean };
+type View = "enquiries" | "jobs" | "account";
 
 async function api<T = unknown>(path: string, init?: RequestInit): Promise<{ ok: boolean; status: number; data: T }> {
   try {
@@ -46,7 +46,7 @@ export default function AdminApp() {
     return (
       <div className="adm-card">
         <h1 className="adm-h1">Admin is not set up</h1>
-        <p className="adm-note">Add an ADMIN_PASSWORD environment variable (see .env.example), restart the site, and reload this page.</p>
+        <p className="adm-note">Connect a database (Upstash Redis) or add an ADMIN_PASSWORD environment variable (see .env.example), restart the site, and reload this page.</p>
       </div>
     );
   }
@@ -57,9 +57,9 @@ export default function AdminApp() {
       <div className="adm-bar">
         <h1 className="adm-h1">Admin</h1>
         <div className="adm-tabs" role="tablist" aria-label="Admin sections">
-          {(["enquiries", "jobs"] as View[]).map((v) => (
+          {(["enquiries", "jobs", "account"] as View[]).map((v) => (
             <button key={v} type="button" role="tab" aria-selected={view === v} className={view === v ? "is-active" : ""} onClick={() => setView(v)}>
-              {v === "enquiries" ? "Enquiries" : "Job openings"}
+              {v === "enquiries" ? "Enquiries" : v === "jobs" ? "Job openings" : "Account"}
             </button>
           ))}
         </div>
@@ -68,6 +68,11 @@ export default function AdminApp() {
         </button>
       </div>
 
+      {session.defaultPassword && (
+        <p role="alert" className="adm-warn">
+          You are using the starting password. Anyone who knows it can sign in. Open the Account tab and change it now.
+        </p>
+      )}
       {!session.storage && (
         <p role="alert" className="adm-warn">
           Nothing can be saved yet: no database is connected. Add an Upstash Redis database (UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN) and redeploy. Until then new enquiries only reach the webhook, and job openings cannot be added.
@@ -75,7 +80,11 @@ export default function AdminApp() {
       )}
       {session.storage === "file" && <p className="adm-note">Saving to a local file (.data/fen1.json). This is for development; a deployed site needs the Redis database.</p>}
 
-      {session.storage && (view === "enquiries" ? <Enquiries onExpired={refresh} /> : <Jobs onExpired={refresh} />)}
+      {view === "account" ? (
+        <Account canSave={Boolean(session.storage)} onExpired={refresh} onChanged={refresh} />
+      ) : (
+        session.storage && (view === "enquiries" ? <Enquiries onExpired={refresh} /> : <Jobs onExpired={refresh} />)
+      )}
     </div>
   );
 }
@@ -110,6 +119,75 @@ function Login({ onDone }: { onDone: () => void }) {
         {busy ? "Signing in..." : "Sign in"}
       </button>
     </form>
+  );
+}
+
+/* --------------------------------------------------------------- account */
+function Account({ canSave, onExpired, onChanged }: { canSave: boolean; onExpired: () => void; onChanged: () => void }) {
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [again, setAgain] = useState("");
+  const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setDone(false);
+    if (next !== again) return setError("The two new passwords are not the same.");
+    setBusy(true);
+    const res = await api<{ error?: string; message?: string }>("/api/admin/password", { method: "POST", body: JSON.stringify({ current, next }) });
+    setBusy(false);
+    if (res.status === 401) return onExpired();
+    if (res.ok) {
+      setCurrent("");
+      setNext("");
+      setAgain("");
+      setDone(true);
+      return onChanged();
+    }
+    if (res.status === 403) return setError("The current password is not right.");
+    if (res.status === 429) return setError("Too many attempts. Please wait a few minutes.");
+    if (res.status === 422) return setError(res.data.message ?? "That password cannot be used.");
+    if (res.status === 503) return setError("The password cannot be saved because no database is connected.");
+    setError("The password could not be changed. Please try again.");
+  };
+
+  return (
+    <section aria-label="Account">
+      <form onSubmit={submit} className="adm-card adm-login">
+        <h2 className="adm-h2">Change password</h2>
+        {!canSave && <p className="adm-note">A new password is saved in the database, and none is connected yet.</p>}
+        {(
+          [
+            ["adm-cur", "Current password", current, setCurrent, "current-password"],
+            ["adm-new", "New password (at least 8 characters)", next, setNext, "new-password"],
+            ["adm-again", "New password again", again, setAgain, "new-password"],
+          ] as const
+        ).map(([id, label, value, set, auto]) => (
+          <div className="adm-field" key={id}>
+            <label className="adm-label" htmlFor={id}>
+              {label}
+            </label>
+            <input id={id} type="password" autoComplete={auto} required value={value} onChange={(e) => set(e.target.value)} className="adm-input" />
+          </div>
+        ))}
+        {error && (
+          <p role="alert" className="adm-error">
+            {error}
+          </p>
+        )}
+        {done && (
+          <p role="status" className="adm-ok">
+            Password changed. Other browsers have been signed out; use the new password next time.
+          </p>
+        )}
+        <button type="submit" disabled={busy || !canSave} className="adm-btn">
+          {busy ? "Saving..." : "Change password"}
+        </button>
+      </form>
+    </section>
   );
 }
 

@@ -53,7 +53,9 @@ describe("light colourful theme", () => {
     for (const { path, text } of FILES) {
       if (/prefers-color-scheme/.test(text)) found.push(`${path}: prefers-color-scheme`);
       if (/\bdark:/.test(text)) found.push(`${path}: dark: variant`);
-      if (/backdrop-blur|backdrop-filter:\s*blur|filter:\s*blur|mix-blend-mode/.test(text)) found.push(`${path}: blur or blend`);
+      // (the workflow screens blur while another one is pointed at: that single rule is checked in roadmap.test)
+      if (/backdrop-blur|backdrop-filter:\s*blur|mix-blend-mode/.test(text)) found.push(`${path}: glass or blend`);
+      if (/(^|[^-])filter:\s*blur/.test(text.replace(/\.wf3-shots:has\(\.wf3-shot:hover\) \.wf3-shot \{[^}]*\}/g, ""))) found.push(`${path}: blur`);
       if (/text-shadow|drop-shadow|feGaussianBlur/.test(text)) found.push(`${path}: glow`);
       // the slate used for text must never be a background
       if (/bg-\[#1E2B45\]|background(-color)?:\s*(#1e2b45|var\(--ink\))/i.test(text)) found.push(`${path}: dark background`);

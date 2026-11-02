@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import EnquiryPanel from "@/components/EnquiryPanel";
-import { GALLERY } from "@/data/gallery";
+import { CONTACT_PHOTO } from "@/data/gallery";
 import { useTopic } from "@/lib/topic";
 
-const PHOTO = GALLERY[1];
+const PHOTO = CONTACT_PHOTO;
 
 /**
  * The last section: the one enquiry form ("I'd like a demo" or "I have a question") with a photograph beside it.
@@ -21,7 +21,7 @@ export default function ContactSection() {
       <span id="question" className="sec-anchor" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 contact-grid">
         <div className="contact-photo">
-          <Image src={PHOTO.src} alt={PHOTO.alt} fill sizes="(min-width: 1024px) 42vw, 100vw" className="object-cover" style={{ objectPosition: PHOTO.position }} />
+          <Image src={PHOTO.src} alt={PHOTO.alt} fill sizes="(min-width: 1024px) 42vw, 100vw" quality={85} className="object-cover" style={PHOTO.position ? { objectPosition: PHOTO.position } : undefined} />
         </div>
         <div className="contact-form">
           <EnquiryPanel topic={topic} onTopic={setTopic} headingClass="contact-form-title" />

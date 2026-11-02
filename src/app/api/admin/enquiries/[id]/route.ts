@@ -5,7 +5,7 @@ type Ctx = { params: Promise<{ id: string }> };
 
 /** Marks an enquiry as handled, or as new again. */
 export async function PATCH(request: Request, { params }: Ctx) {
-  const gate = admit(request);
+  const gate = await admit(request);
   if ("response" in gate) return gate.response;
   const { id } = await params;
   const record = await gate.store.get("enquiries", id);
@@ -19,7 +19,7 @@ export async function PATCH(request: Request, { params }: Ctx) {
 }
 
 export async function DELETE(request: Request, { params }: Ctx) {
-  const gate = admit(request);
+  const gate = await admit(request);
   if ("response" in gate) return gate.response;
   const { id } = await params;
   return (await gate.store.del("enquiries", id)) ? json({ ok: true }) : json({ error: "not_found" }, 404);

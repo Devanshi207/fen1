@@ -120,7 +120,7 @@ export default function SolutionsSection() {
                   const photo = SOLUTION_PHOTOS[x.id];
                   return (
                     <div key={x.id} className={`sol-shot ${i === active ? "is-active" : i === prev ? "is-prev" : ""}`} data-dir={i % 2 ? "r" : "l"} aria-hidden={i === active ? undefined : true}>
-                      <Image src={photo.src} alt={i === active ? photo.alt : ""} fill sizes="(min-width: 900px) 42vw, 100vw" className="object-cover" style={photo.position ? { objectPosition: photo.position } : undefined} />
+                      <Image src={photo.src} alt={i === active ? photo.alt : ""} fill sizes="(min-width: 900px) 42vw, 100vw" quality={85} className="object-cover" style={photo.position ? { objectPosition: photo.position } : undefined} />
                     </div>
                   );
                 })}

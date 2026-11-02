@@ -9,7 +9,7 @@ import path from "node:path";
  * With neither (a deployed site without a database) getStore() returns null and callers say so; nothing pretends to save.
  * Each record is saved on its own (a Redis hash field), so two enquiries arriving together cannot overwrite each other.
  */
-export type Collection = "jobs" | "enquiries";
+export type Collection = "jobs" | "enquiries" | "settings";
 export type Record_ = Record<string, unknown>;
 
 export interface Store {
@@ -74,9 +74,9 @@ function fileStore(file: string): Store {
   async function read(): Promise<FileData> {
     try {
       const data = JSON.parse(await fs.readFile(file, "utf8")) as Partial<FileData>;
-      return { jobs: data.jobs ?? {}, enquiries: data.enquiries ?? {} };
+      return { jobs: data.jobs ?? {}, enquiries: data.enquiries ?? {}, settings: data.settings ?? {} };
     } catch {
-      return { jobs: {}, enquiries: {} };
+      return { jobs: {}, enquiries: {}, settings: {} };
     }
   }
   function change<T>(fn: (data: FileData) => T): Promise<T> {

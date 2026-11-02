@@ -3,13 +3,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { checkPassword, createSession, resetAttemptsForTests, sessionCookie, verifySession } from "@/lib/adminAuth";
+import { DEFAULT_PASSWORD, checkPassword, createSession, passwordProblem, resetAttemptsForTests, sessionCookie, usingDefaultPassword, verifySession } from "@/lib/adminAuth";
 import { _fileStoreForTests, _redisStoreForTests, getStore } from "@/lib/store";
 import { validateJob } from "@/lib/jobs";
 import { csvCell, enquiriesToCsv } from "@/lib/csv";
 import type { StoredEnquiry } from "@/lib/inbox";
 import { POST as login } from "@/app/api/admin/login/route";
 import { POST as logout } from "@/app/api/admin/logout/route";
+import { POST as changePassword } from "@/app/api/admin/password/route";
 import { GET as sessionInfo } from "@/app/api/admin/session/route";
 import { GET as listJobs, POST as addJob } from "@/app/api/admin/jobs/route";
 import { PATCH as patchJob, DELETE as deleteJob } from "@/app/api/admin/jobs/[id]/route";
@@ -42,6 +43,7 @@ beforeEach(() => {
 afterEach(() => {
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
+  vi.useRealTimers();
   rmSync(dir, { recursive: true, force: true });
 });
 
@@ -52,35 +54,31 @@ async function signIn(): Promise<string> {
 }
 
 describe("admin session", () => {
-  it("accepts only the right password", () => {
-    expect(checkPassword(PASSWORD)).toBe(true);
-    expect(checkPassword("wrong")).toBe(false);
-    expect(checkPassword("")).toBe(false);
-    expect(checkPassword(undefined)).toBe(false);
+  it("accepts only the right password", async () => {
+    expect(await checkPassword(PASSWORD)).toBe(true);
+    expect(await checkPassword("wrong")).toBe(false);
+    expect(await checkPassword("")).toBe(false);
+    expect(await checkPassword(undefined)).toBe(false);
   });
 
-  it("refuses everything when no password is configured", () => {
+  it("refuses everything when there is no password, no secret and nowhere to keep one", async () => {
     vi.stubEnv("ADMIN_PASSWORD", "");
-    expect(checkPassword("")).toBe(false);
-    expect(verifySession(createSession())).toBe(false);
+    vi.stubEnv("FEN1_DATA_FILE", "");
+    vi.stubEnv("VERCEL", "1");
+    expect(await createSession()).toBeNull();
+    expect(await verifySession("1.x")).toBe(false);
   });
 
-  it("signs a session that expires and cannot be forged or edited", () => {
+  it("signs a session that expires and cannot be forged or edited", async () => {
     const now = Date.now();
-    const token = createSession(now);
-    expect(verifySession(token, now + 1000)).toBe(true);
-    expect(verifySession(token, now + 13 * 3600 * 1000)).toBe(false);
+    const token = (await createSession(now))!;
+    expect(await verifySession(token, now + 1000)).toBe(true);
+    expect(await verifySession(token, now + 13 * 3600 * 1000)).toBe(false);
     const [exp, sig] = token.split(".");
-    expect(verifySession(`${Number(exp) + 99999999}.${sig}`, now)).toBe(false);
-    expect(verifySession(`${exp}.${sig.slice(0, -2)}xx`, now)).toBe(false);
-    expect(verifySession("nonsense", now)).toBe(false);
-    expect(verifySession(undefined)).toBe(false);
-  });
-
-  it("is invalidated when the password changes", () => {
-    const token = createSession();
-    vi.stubEnv("ADMIN_PASSWORD", "a different password");
-    expect(verifySession(token)).toBe(false);
+    expect(await verifySession(`${Number(exp) + 99999999}.${sig}`, now)).toBe(false);
+    expect(await verifySession(`${exp}.${sig.slice(0, -2)}xx`, now)).toBe(false);
+    expect(await verifySession("nonsense", now)).toBe(false);
+    expect(await verifySession(undefined)).toBe(false);
   });
 
   it("sets an httpOnly, same-site cookie, and clears it on sign out", () => {
@@ -112,7 +110,9 @@ describe("admin session", () => {
     vi.useFakeTimers();
     const attempt = async () => {
       const p = login(request("/api/admin/login", { method: "POST", body: { password: "nope" }, headers: { "x-forwarded-for": "9.9.9.9" } }));
-      await vi.advanceTimersByTimeAsync(700);
+      let done = false;
+      p.then(() => (done = true));
+      while (!done) await vi.advanceTimersByTimeAsync(100); // the wait starts only after the password has been checked
       return p;
     };
     for (let i = 0; i < 8; i++) expect((await attempt()).status).toBe(401);
@@ -123,8 +123,88 @@ describe("admin session", () => {
 
   it("says admin is not set up when there is no password", async () => {
     vi.stubEnv("ADMIN_PASSWORD", "");
+    vi.stubEnv("FEN1_DATA_FILE", "");
+    vi.stubEnv("VERCEL", "1");
     expect((await login(request("/api/admin/login", { method: "POST", body: { password: "x" } }))).status).toBe(503);
     expect((await listJobs(request("/api/admin/jobs"))).status).toBe(503);
+  });
+});
+
+describe("changing the password from the website", () => {
+  const STARTING = DEFAULT_PASSWORD;
+  const NEW = "a better password 42";
+  const post = (body: unknown, cookie?: string) => changePassword(request("/api/admin/password", { method: "POST", body, cookie }));
+  const signInWith = async (password: string) => login(request("/api/admin/login", { method: "POST", body: { password } }));
+
+  beforeEach(() => vi.stubEnv("ADMIN_PASSWORD", ""));
+
+  it("starts with 123456 when nothing is set, and says so once signed in", async () => {
+    expect(STARTING).toBe("123456");
+    expect(await usingDefaultPassword()).toBe(true);
+    const res = await signInWith(STARTING);
+    expect(res.status).toBe(200);
+    const info = await (await sessionInfo(request("/api/admin/session", { cookie: cookieOf(res) }))).json();
+    expect(info).toMatchObject({ loggedIn: true, defaultPassword: true });
+    const anon = await (await sessionInfo(request("/api/admin/session"))).json();
+    expect(anon.defaultPassword).toBe(false); // not told to anyone who is not signed in
+  });
+
+  it("signs the cookie with a random secret from the database, so the starting password does not make it forgeable", async () => {
+    const cookie = cookieOf(await signInWith(STARTING));
+    expect(cookie).toMatch(/^fen1_admin=\d+\./);
+    const forged = `fen1_admin=${Date.now() + 1e7}.${Buffer.from("fen1-admin:123456").toString("base64url")}`;
+    expect((await listJobs(request("/api/admin/jobs", { cookie: forged }))).status).toBe(401);
+    expect((await listJobs(request("/api/admin/jobs", { cookie }))).status).toBe(200);
+  });
+
+  it("needs the current password, and a new one that is long enough and different", async () => {
+    const cookie = cookieOf(await signInWith(STARTING));
+    expect((await post({ next: NEW }, undefined)).status).toBe(401);
+    expect((await post({ current: "wrong", next: NEW }, cookie)).status).toBe(403);
+    expect((await post({ current: STARTING, next: "short" }, cookie)).status).toBe(422);
+    expect((await post({ current: STARTING, next: STARTING }, cookie)).status).toBe(422);
+    expect(passwordProblem("long enough pw", "something else")).toBeNull();
+    expect(await checkPassword(STARTING)).toBe(true); // nothing changed
+  });
+
+  it("saves only a salted hash, switches to the new password, and keeps this browser signed in", async () => {
+    const cookie = cookieOf(await signInWith(STARTING));
+    const res = await post({ current: STARTING, next: NEW }, cookie);
+    expect(res.status).toBe(200);
+    expect(JSON.stringify(await _fileStoreForTests(join(dir, "data.json")).all("settings"))).not.toContain(NEW);
+    expect(await usingDefaultPassword()).toBe(false);
+    expect(await checkPassword(NEW)).toBe(true);
+    expect(await checkPassword(STARTING)).toBe(false);
+    expect((await signInWith(STARTING)).status).toBe(401);
+    expect((await signInWith(NEW)).status).toBe(200);
+    const fresh = cookieOf(res);
+    expect((await listJobs(request("/api/admin/jobs", { cookie: fresh }))).status).toBe(200);
+  });
+
+  it("signs out every other browser", async () => {
+    const other = cookieOf(await signInWith(STARTING));
+    const mine = cookieOf(await signInWith(STARTING));
+    await post({ current: STARTING, next: NEW }, mine);
+    expect((await listJobs(request("/api/admin/jobs", { cookie: other }))).status).toBe(401);
+  });
+
+  it("uses ADMIN_PASSWORD as the starting password when it is set, until the password is changed", async () => {
+    vi.stubEnv("ADMIN_PASSWORD", "from the environment");
+    expect(await usingDefaultPassword()).toBe(false);
+    expect(await checkPassword("from the environment")).toBe(true);
+    expect(await checkPassword(STARTING)).toBe(false);
+    const cookie = cookieOf(await signInWith("from the environment"));
+    await post({ current: "from the environment", next: NEW }, cookie);
+    expect(await checkPassword("from the environment")).toBe(false);
+    expect(await checkPassword(NEW)).toBe(true);
+  });
+
+  it("cannot save without a database", async () => {
+    vi.stubEnv("ADMIN_SESSION_SECRET", "a secret from the environment");
+    const cookie = cookieOf(await signInWith(STARTING));
+    vi.stubEnv("FEN1_DATA_FILE", "");
+    vi.stubEnv("VERCEL", "1");
+    expect((await post({ current: STARTING, next: NEW }, cookie)).status).toBe(503);
   });
 });
 
@@ -148,6 +228,7 @@ describe("admin routes need a signed-in session", () => {
   });
 
   it("says so when the site has nowhere to save (deployed without a database)", async () => {
+    vi.stubEnv("ADMIN_SESSION_SECRET", "a secret from the environment");
     const cookie = await signIn();
     vi.stubEnv("FEN1_DATA_FILE", "");
     vi.stubEnv("VERCEL", "1");

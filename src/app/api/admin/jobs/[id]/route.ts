@@ -5,7 +5,7 @@ type Ctx = { params: Promise<{ id: string }> };
 
 /** Either a full edit, or just { open: true | false } to close or reopen a role. */
 export async function PATCH(request: Request, { params }: Ctx) {
-  const gate = admit(request);
+  const gate = await admit(request);
   if ("response" in gate) return gate.response;
   const { id } = await params;
   const existing = (await gate.store.get("jobs", id)) && asJob((await gate.store.get("jobs", id))!);
@@ -26,7 +26,7 @@ export async function PATCH(request: Request, { params }: Ctx) {
 }
 
 export async function DELETE(request: Request, { params }: Ctx) {
-  const gate = admit(request);
+  const gate = await admit(request);
   if ("response" in gate) return gate.response;
   const { id } = await params;
   return (await gate.store.del("jobs", id)) ? json({ ok: true }) : json({ error: "not_found" }, 404);

@@ -12,5 +12,7 @@ export default defineConfig({
     setupFiles: ["./tests/setup.ts"],
     include: ["tests/**/*.test.{ts,tsx}"],
     css: false,
+    // rendering the whole page and asking for roles by name is slow in jsdom, especially with several files running at once
+    testTimeout: 20000,
   },
 });

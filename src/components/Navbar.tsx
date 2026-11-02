@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { GALLERY } from "@/data/gallery";
+import { MENU_PHOTOS } from "@/data/gallery";
 import { watchCentre } from "@/lib/inview";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -147,7 +147,7 @@ export default function Navbar() {
             <div className="hidden md:block relative overflow-hidden" aria-hidden="true">
               {NAV_LINKS.map((link, i) => {
                 const shown = (hovered ?? NAV_LINKS.find((l) => l.href === `#${current}`)?.name ?? NAV_LINKS[0].name) === link.name;
-                const slide = GALLERY[i % GALLERY.length];
+                const slide = MENU_PHOTOS[i % MENU_PHOTOS.length];
                 return (
                   <Image
                     key={link.name}

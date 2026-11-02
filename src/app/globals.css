@@ -98,6 +98,12 @@ h1[class], h2[class], h3[class], h4[class] { font-family: var(--font-display) !i
   font-weight: 500;
   font-feature-settings: "tnum";
 }
+/* numbers (stage circles, step and tab numbers) use the site font, not the typewriter one */
+.tech.about-n, .tech.sol-tab-num, .tech.train-n, .tech.wf2-node {
+  font-family: var(--font-display) !important;
+  letter-spacing: 0;
+  font-weight: 600;
+}
 
 /* Hide Next.js dev indicator / badge */
 nextjs-portal, #nextjs-dev-tools, [data-nextjs-dev-tools], [data-nextjs-toast], [data-nextjs-route-announcer], div[data-nextjs-dialog-overlay] {

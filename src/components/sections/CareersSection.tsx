@@ -59,9 +59,8 @@ export default function CareersSection() {
         <OpenRoles roles={roles} onApply={apply} />
 
         <div className="paths">
-          {PATHS.map((p, i) => (
+          {PATHS.map((p) => (
             <div key={p.title} className="path">
-              <p className="tech path-n">{String(i + 1).padStart(2, "0")}</p>
               <h3 className="path-title">{p.title}</h3>
               <p className="path-text">{p.text}</p>
               <p className="path-roles">{p.roles}</p>

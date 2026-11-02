@@ -40,7 +40,7 @@ Copy `.env.example` to `.env.local` and set:
 | --------------------------- | ---------------------------------------------------------------------------------------- |
 | `ENQUIRY_WEBHOOK_URL`       | Where the enquiry form sends enquiries (a JSON `POST`). Without it the form shows an error instead of pretending the message was sent. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Optional. Shows a direct email address on the enquiry page when a visitor chooses "I have a question". |
-| `ADMIN_PASSWORD`            | The password for `/admin`. Without it the admin page says it is not set up. |
+| `ADMIN_PASSWORD`            | Optional. The starting password for `/admin`; without it the starting password is `123456`. Once the password has been changed on the Account tab, the saved one is used instead. |
 | `ADMIN_SESSION_SECRET`      | Optional. A separate secret for signing the admin cookie. |
 | `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Where jobs and enquiries are saved when deployed (see Admin). |
 
@@ -61,11 +61,12 @@ highlights whichever part is in the middle of the screen and keeps the address i
 
 ## Admin: job openings and the enquiry inbox
 
-`/admin` is for the team. Sign in with `ADMIN_PASSWORD` (a long random one), then:
+`/admin` is for the team. The starting password is `123456` (or `ADMIN_PASSWORD` if you set it); **change it straight away on the Account tab** (the page warns you until you do). Then:
 
 - **Enquiries**: every demo request, question and job application, newest first. Filter by type and by waiting / handled,
   search, open one to see everything the visitor typed, reply by email, mark it handled, delete it, or export the filtered
   list as CSV.
+- **Account**: change the password from the website (current password, then the new one twice; at least 8 characters). The new password is saved as a salted scrypt hash in the database (never the password itself), and every other signed-in browser is signed out. This needs the database on a deployed site. If it is ever forgotten, delete the `credential` field of the `fen1:settings` hash in Redis (or `settings.credential` in `.data/fen1.json`) and the starting password works again.
 - **Job openings**: add, edit, close (hides it from the site but keeps it) and delete roles. Open roles appear in the Careers
   section with a Read more and an Apply button; Apply fills the form with the role, so the application arrives tagged with it.
   With no open roles the Careers section says none are listed.
@@ -149,12 +150,17 @@ tests/            Vitest + Testing Library
     footer stay put, and there is no loading screen between pages.
   - **Window drawing** (`WindowDrawing`): an aluminium window elevation, its width and height dimensions and a section through
     the profile are drawn in SVG strokes, then resolve into a photograph. The dimension labels are letters (W, H), not numbers.
-  - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`): the 13 stages (Enquiry, CRM, Estimation, Survey, Design, Project
-    management, Purchase, Store, Production, Quality control, Logistics, Installation, Handover) sit on one line, grouped into
-    four phases; the line fills as you move forward and the chosen stage shows its description, the FEN1 module it is worked in
-    and the record it leaves. Real buttons with arrow-key support. On phones it is a vertical connected timeline with the chosen
-    stage open in place. The panel has a fixed height, so the previous / next arrows stay in the same place from stage to stage.
-    Nothing is pinned and the scroll is never captured.
+  - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`): driven by scrolling and nothing else, so there is nothing to click. It
+    is a tall block (about four screens of scrolling in all, a quarter of a screen per stage) with one panel held in place
+    (`position: sticky`) while you scroll past it; the stage changes as you go; scrolling down walks through all 13 stages, and coming back up from the next section (Solutions) shows step 1 at once instead of replaying them in reverse. The page scrolls as normal and nothing captures the
+    wheel. The stage comes from 13 invisible markers and an `IntersectionObserver` (no scroll listener, and it re-renders only when
+    the stage changes). The 13 numbers along the top and the line between them show where you are; they are not buttons. Each
+    stage shows its description, the module it is worked in, the record it leaves and three ERP screens in a row: the main one
+    big in the middle, a smaller one on each side. Point at any of them and it grows while the other two shrink and blur (pure
+    CSS, `.wf3-shots`). For screen readers the whole workflow is a plain list.
+  - **ERP screens** (`src/data/stageScreens.ts`): RIGHT NOW THESE ARE DEMO IMAGES, wireframe placeholders in `public/erp/` (three
+    per stage, 39 in all, marked "Demo image" on the picture, showing no data). To use real FEN1 screenshots, drop them in
+    `public/erp/` and change the file names in that one data file (three per stage, 16:10 works best).
   - **Solutions** (`SolutionsSection`): the five industries as tabs, each with its own photograph (`SOLUTION_PHOTOS` in
     `src/data/gallery.ts`). The photos are stacked; choosing an industry wipes its photo in over the last one from alternating
     sides while it settles from 1.03 to 1, and the text enters after it. The industry tabs and an up / down arrow pair stay in
@@ -165,7 +171,9 @@ tests/            Vitest + Testing Library
     benefits it does not have, and its form posts to the same webhook as `careers`.
   - Tablet and mobile use shorter, lighter fades and no parallax. With `prefers-reduced-motion` there is no travel, no
     line-drawing and no wipes: everything is shown with short fades, so nothing is lost.
-- Photos are hot-linked from Unsplash (see `images.remotePatterns` in `next.config.ts`).
+- Photos are hot-linked from Unsplash at 2400px and served resized as AVIF or WebP (see `images.remotePatterns` and `images.formats` in
+  `next.config.ts`). They are named in `src/data/gallery.ts`: the hero, the contact section, the picture the drawing resolves into, and
+  one for each industry. Swap a photo by changing its address there.
 
 ### Gotchas worth knowing
 

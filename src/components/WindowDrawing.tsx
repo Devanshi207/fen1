@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { GALLERY } from "@/data/gallery";
+import { DRAWING_PHOTO } from "@/data/gallery";
 import { useOnScreen } from "@/lib/useOnScreen";
 
-/** The photograph the drawing resolves into: slim aluminium-framed glazing. */
-const PHOTO = GALLERY.find((g) => g.solution === "windows-doors") ?? GALLERY[0];
+/** The photograph the drawing resolves into: finished aluminium-framed glazing. */
+const PHOTO = DRAWING_PHOTO;
 
 /** A line of the drawing and when it starts (seconds after the section scrolls into view). */
 const line = (d: string, k: number, extra = "") => <path className={`wd-line ${extra}`} d={d} pathLength={1} style={{ ["--k" as string]: k }} />;
@@ -34,7 +34,7 @@ export default function WindowDrawing() {
         <div ref={ref} className={`wd ${seen ? "is-in" : ""}`} data-no-reveal>
           <figure className="wd-stage" aria-label="An aluminium window drawing that resolves into a photograph of a finished frame">
             <div className="wd-photo">
-              <Image src={PHOTO.src} alt={PHOTO.alt} fill sizes="(min-width: 900px) 58vw, 100vw" className="object-cover" style={{ objectPosition: PHOTO.position }} />
+              <Image src={PHOTO.src} alt={PHOTO.alt} fill sizes="(min-width: 900px) 58vw, 100vw" className="object-cover" quality={85} />
             </div>
             <svg className="wd-svg" viewBox="0 0 600 400" role="img" aria-label="Technical drawing of an aluminium window">
               {/* frame elevation: outer frame, inner frame, mullion, two sashes with their glass */}

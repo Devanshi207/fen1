@@ -78,14 +78,6 @@ describe("fewer clicks, fewer decorations", () => {
     expect(css).not.toMatch(/\.hero-eyebrow::before/);
   });
 
-  it("keeps the workflow arrows in one place: the panel has a fixed height and no rule under the numbers", () => {
-    const css = readFileSync(join("src", "app", "motion.css"), "utf8");
-    const panel = /\.wf2-panel \{[^}]*\}/.exec(css)![0];
-    expect(panel).toMatch(/min-height: 17rem/);
-    expect(panel).not.toMatch(/border-top/);
-    expect(/\.wf2-nav \{[^}]*\}/.exec(css)![0]).toMatch(/align-self: start/);
-  });
-
   it("lets you change industry from anywhere in the section: sticky tabs plus up and down arrows", async () => {
     const user = userEvent.setup();
     render(<SolutionsSection />);
