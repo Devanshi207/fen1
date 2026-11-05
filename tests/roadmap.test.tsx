@@ -91,7 +91,7 @@ describe("Workflow (scroll-driven)", () => {
     });
   });
 
-  it("coming back up from the next section goes straight to step 1, not back through the stages", () => {
+  it("coming back up from the next section goes straight to step 1, without scrolling through the stages", () => {
     const io = stubObserver();
     render(<Workflow />);
     for (let i = 0; i < ROADMAP_STAGES.length; i++) io.cross(i);
@@ -126,6 +126,24 @@ describe("Workflow (scroll-driven)", () => {
     expect(document.querySelector(".wf2-node.is-active")).toHaveTextContent("01");
   });
 
+  it("has one line and a bar of 13 segments for phones, which follow the stage", () => {
+    const io = stubObserver();
+    render(<Workflow />);
+    const bar = () => [...document.querySelectorAll(".wf-m-bar span")];
+    expect(bar()).toHaveLength(ROADMAP_STAGES.length);
+    expect(document.querySelector(".wf-m-phase")).toHaveTextContent("Win the job");
+    expect(document.querySelector(".wf-m-count")).toHaveTextContent("01 / 13");
+    io.cross(6);
+    expect(document.querySelector(".wf-m-phase")).toHaveTextContent("Make it");
+    expect(document.querySelector(".wf-m-count")).toHaveTextContent("07 / 13");
+    expect(bar().filter((s) => s.className === "is-done")).toHaveLength(6);
+    expect(bar()[6]).toHaveClass("is-now");
+    // on a phone the circles and the phase bars give way to it
+    expect(css()).toMatch(/@media \(max-width: 760px\) \{[^@]*\.wf2-phases, \.wf2-rail, \.wf-lede, \.wf-eyebrow \{ display: none; \}[^@]*\.wf-m \{ display: grid/);
+    expect(rule(".wf-m")).toMatch(/display: none/);
+  });
+
+
   it("fills each phase bar along with the numbers, and the last number of a phase completes it", () => {
     const io = stubObserver();
     render(<Workflow />);
@@ -159,9 +177,13 @@ describe("Workflow (scroll-driven)", () => {
     expect(document.querySelector(".wf3-stage")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("stays short enough to fit under the header on a phone: one column, and only the current phase label", () => {
+  it("stays short enough to fit under the header on a phone: one column, the main screen across the width and the other two under it", () => {
     expect(css()).toMatch(/@media \(max-width: 899px\) \{[^@]*\.wf3-panel \{ grid-template-columns: minmax\(0, 1fr\)/);
-    expect(css()).toMatch(/@media \(max-width: 760px\) \{[^@]*\.wf2-phases span \{ display: none; \}[^@]*\.wf2-phases span\.is-active \{ display: block/); // phones show only the phase you are in
+    expect(css()).toMatch(/@media \(max-width: 760px\) \{[^@]*\.wf3-shots \{ display: grid; grid-template-columns: 1fr 1fr;[^@]*\.wf3-shot\.s1 \{ grid-column: 1 \/ -1/);
+  });
+
+  it("blurs the other screens only where there is a pointer to hover with, not after a tap on a phone", () => {
+    expect(css()).toMatch(/@media \(hover: hover\) \{\s*\.wf3-shots:has\(\.wf3-shot:hover\) \.wf3-shot \{/);
   });
 });
 
@@ -173,6 +195,30 @@ describe("Workflow screens", () => {
     expect(srcs()).toEqual(STAGE_SCREENS["01"].map((s) => s.src));
     io.cross(2);
     expect(srcs()).toEqual(STAGE_SCREENS["03"].map((s) => s.src));
+  });
+
+  it("fetches every stage's screens as soon as the section mounts, and none is loaded lazily, so a stage never opens on empty boxes", () => {
+    const fetched: string[] = [];
+    vi.stubGlobal(
+      "Image",
+      class {
+        decoding = "";
+        set src(v: string) {
+          fetched.push(v);
+        }
+      }
+    );
+    render(<Workflow />);
+    const all = Object.values(STAGE_SCREENS).flatMap((shots) => shots.map((s) => s.src));
+    expect(all).toHaveLength(39);
+    expect(fetched.sort()).toEqual([...all].sort());
+    expect(document.querySelector(".wf3-shot img[loading]")).toBeNull();
+  });
+
+  it("has a compact layout for a phone held sideways: copy beside the screens, with the heading and the numbers kept", () => {
+    const block = /@media \(max-height: 520px\) \{[^@]*\}\r?\n/.exec(css())![0];
+    expect(block).toMatch(/\.wf3-panel \{ grid-template-columns: minmax\(0, 5fr\) minmax\(0, 6fr\)/);
+    expect(block).toMatch(/\.wf2-phases[^}]*display: none/);
   });
 
   it("puts the main screen big in the middle with a smaller one on each side", () => {

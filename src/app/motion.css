@@ -132,24 +132,58 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 .wf3-shot.s1 { order: 2; flex-grow: 3; animation-delay: 0.1s; }
 .wf3-shot.s2 { order: 1; animation-delay: 0.2s; }
 .wf3-shot.s3 { order: 3; animation-delay: 0.3s; }
-.wf3-shots:has(.wf3-shot:hover) .wf3-shot { flex-grow: 1; filter: blur(3px); opacity: 0.7; box-shadow: none; }
-.wf3-shots:has(.wf3-shot:hover) .wf3-shot:hover { flex-grow: 3; filter: none; opacity: 1; box-shadow: var(--shadow-lift); }
+/* only where there is a pointer to hover with: a tap on a phone must not leave the other screens blurred */
+@media (hover: hover) {
+  .wf3-shots:has(.wf3-shot:hover) .wf3-shot { flex-grow: 1; filter: blur(3px); opacity: 0.7; box-shadow: none; }
+  .wf3-shots:has(.wf3-shot:hover) .wf3-shot:hover { flex-grow: 3; filter: none; opacity: 1; box-shadow: var(--shadow-lift); }
+}
 @keyframes shot-in { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: none; } }
 
 /* phones and tablets: the copy sits above the screens, which then have the whole width */
 @media (max-width: 899px) {
   .wf3-panel { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
 }
+/* phones: the 13 circles and the phase bars do not fit, so there is one line (the phase and the step) over a bar of 13 segments,
+   and the screens stack: the main one across the width, the other two side by side under it */
+.wf-m { display: none; }
 @media (max-width: 760px) {
-  .wf2-phases { display: block; }
-  .wf2-phases span { display: none; }
-  .wf2-phases span.is-active { display: block; grid-column: auto !important; }
-  .wf2-node { width: 1.7rem; font-size: 0.72rem; }
-  .wf3-shots { gap: 0.4rem; }
+  .wf2-phases, .wf2-rail, .wf-lede, .wf-eyebrow { display: none; }
+  .wf-m { display: grid; gap: 0.6rem; }
+  .wf-m-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .wf-m-phase { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--teal-text); }
+  .wf-m-count { font-family: var(--font-display); font-size: 1.7rem; font-weight: 600; line-height: 1; color: var(--ink); }
+  .wf-m-count small { font-size: 0.95rem; font-weight: 500; color: var(--muted); }
+  .wf-m-bar { display: grid; grid-template-columns: repeat(13, 1fr); gap: 3px; }
+  .wf-m-bar span { height: 6px; border-radius: 9999px; background: var(--line-strong); transition: background-color 0.3s var(--ease); }
+  .wf-m-bar span.is-done { background: var(--teal); }
+  .wf-m-bar span.is-now { background: var(--grad-teal-blue); }
+  .wf3-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .wf3-shot.s1 { grid-column: 1 / -1; order: 0; }
+  .wf3-shot.s2 { order: 1; }
+  .wf3-shot.s3 { order: 2; }
+  .wf3-shot.s1 { aspect-ratio: 2 / 1; }
+  .wf3-shot.s2, .wf3-shot.s3 { aspect-ratio: 16 / 9; }
+  .wf3-inner { gap: 0.7rem; }
+}
+/* a short phone: the main screen alone, so the panel still fits */
+@media (max-width: 760px) and (max-height: 720px) {
+  .wf3-shot.s2, .wf3-shot.s3 { display: none; }
 }
 /* short screens: the panel must still fit under the header */
 @media (max-height: 760px) { .wf-lede { display: none; } .wf3-inner { gap: 0.6rem; } .wf-desc { margin-top: 0.3rem; font-size: 0.9rem; line-height: 1.5; } .wf2-meta { margin-top: 0.7rem; } }
 @media (max-height: 640px) { .wf3-heading { font-size: 1.4rem; } .wf2-meta { display: none; } }
+/* a phone held sideways (very little height): copy beside the screens, and only what fits: heading, numbers, stage */
+@media (max-height: 520px) {
+  .wf-eyebrow, .wf-lede, .wf2-phases, .wf2-meta { display: none; }
+  .wf3-heading { font-size: 1.15rem; }
+  .wf3-inner { gap: 0.4rem; }
+  .wf3-panel { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 1rem; padding-top: 0; }
+  .wf-sub { font-size: 0.7rem; }
+  .wf-title { font-size: 1.2rem; margin-top: 0.1rem; }
+  .wf-desc { margin-top: 0.2rem; font-size: 0.85rem; line-height: 1.4; }
+  .wf2-node { width: 1.6rem; font-size: 0.7rem; }
+  .wf3-shot.s1 { flex-grow: 2; }
+}
 
 /* ---------- Solutions photos: the new photo is unmasked from alternating sides over the last one, settling from 1.03 to 1 ---------- */
 @media (scripting: enabled) {

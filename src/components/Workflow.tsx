@@ -27,7 +27,7 @@ function Screens({ step }: { step: string }) {
         <div key={s.src} className={`wf3-shot s${i + 1}`}>
           {/* plain img: the screens are small SVGs now and can be any image type later */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={s.src} alt={s.alt} width={960} height={600} loading="lazy" decoding="async" />
+          <img src={s.src} alt={s.alt} width={960} height={600} decoding="async" />
         </div>
       ))}
     </div>
@@ -46,15 +46,28 @@ function Screens({ step }: { step: string }) {
  */
 export default function Workflow() {
   const [active, setActive] = useState(0);
+
+  // every stage's screens are fetched as soon as the section mounts, so a stage never opens on empty white boxes
+  useEffect(() => {
+    for (const shots of Object.values(STAGE_SCREENS)) {
+      for (const s of shots) {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = s.src;
+      }
+    }
+  }, []);
+
   const [short, setShort] = useState(false); // the block is one screen tall while you are on your way back up
   const markers = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const total = ROADMAP_STAGES.length;
   const stage = ROADMAP_STAGES[active];
+  const phase = PHASES.find((p) => active >= p.from && active <= p.to) ?? PHASES[0];
 
   // the stage whose marker is crossing the middle of the screen is the one to show. Scrolling down walks through every stage.
-  // Coming back up from the next section (past the end of the block) does not replay the stages in reverse: the panel shows
-  // step 1 at once, and the block shrinks to one screen so Home is one scroll away; it grows back once you are above it.
+  // Coming back up from the next section (past the end of the block) does not make you scroll through the stages again: the panel
+  // shows step 1 at once, and the block shrinks to one screen so Home is one scroll away; it grows back once you are above it.
   useEffect(() => {
     const box = markers.current;
     const track = trackRef.current;
@@ -106,6 +119,22 @@ export default function Workflow() {
               <p className="wf-eyebrow tech">Workflow</p>
               <p className="wf3-heading">From enquiry to handover</p>
               <p className="wf-lede">{total} stages on one job record. Each stage starts from what the one before it recorded.</p>
+            </div>
+
+            {/* phones: one line for where you are, and a bar of 13 segments, instead of the row of 13 numbered circles */}
+            <div className="wf-m">
+              <div className="wf-m-row">
+                <span className="wf-m-phase">{phase.label}</span>
+                <span className="wf-m-count">
+                  {stage.step}
+                  <small> / {total}</small>
+                </span>
+              </div>
+              <div className="wf-m-bar">
+                {ROADMAP_STAGES.map((s, i) => (
+                  <span key={s.step} className={i < active ? "is-done" : i === active ? "is-now" : ""} />
+                ))}
+              </div>
             </div>
 
             <div className="wf2-phases tech">

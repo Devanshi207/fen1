@@ -152,9 +152,9 @@ tests/            Vitest + Testing Library
     the profile are drawn in SVG strokes, then resolve into a photograph. The dimension labels are letters (W, H), not numbers.
   - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`): driven by scrolling and nothing else, so there is nothing to click. It
     is a tall block (about four screens of scrolling in all, a quarter of a screen per stage) with one panel held in place
-    (`position: sticky`) while you scroll past it; the stage changes as you go; scrolling down walks through all 13 stages, and coming back up from the next section (Solutions) shows step 1 at once instead of replaying them in reverse. The page scrolls as normal and nothing captures the
+    (`position: sticky`) while you scroll past it; the stage changes as you go: scrolling down walks through stages 1 to 13, and coming back up from the next section (Solutions) shows step 1 at once and shrinks the block to one screen, so Home is one scroll away instead of four (it grows back once you are above it); this is the same on every screen size. The page scrolls as normal and nothing captures the
     wheel. The stage comes from 13 invisible markers and an `IntersectionObserver` (no scroll listener, and it re-renders only when
-    the stage changes). The 13 numbers along the top and the line between them show where you are; they are not buttons. Each
+    the stage changes). The 13 numbers along the top and the line between them show where you are; they are not buttons. On a phone (760px and narrower) the circles give way to one line (the phase and "05 / 13") over a bar of 13 segments, and the screens stack, the main one across the width and the other two under it; on a short phone only the main screen shows, and on a phone held sideways the copy sits beside the screens. Each
     stage shows its description, the module it is worked in, the record it leaves and three ERP screens in a row: the main one
     big in the middle, a smaller one on each side. Point at any of them and it grows while the other two shrink and blur (pure
     CSS, `.wf3-shots`). For screen readers the whole workflow is a plain list.
