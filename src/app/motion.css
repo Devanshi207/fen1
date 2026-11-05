@@ -56,29 +56,28 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 /* ---------- Opening splash (components/studio/HomeIntro) ---------- */
 .intro { position: fixed; inset: 0; z-index: 150; display: grid; place-items: center; background: var(--bg); transition: opacity 0.3s var(--ease); }
 .intro.is-out { opacity: 0; pointer-events: none; }
-.intro-lockup { display: grid; justify-items: center; gap: 1.4rem; width: min(70vw, 22rem); }
+.intro-lockup { display: grid; justify-items: center; gap: 1.5rem; width: min(70vw, 22rem); }
 .intro-logo { width: 100%; height: auto; animation: intro-logo 0.7s var(--ease) both; }
 @keyframes intro-logo { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
 .intro-track { display: block; width: 100%; height: 2px; background: var(--line); overflow: hidden; }
-.intro-bar { display: block; height: 100%; background: var(--grad-brand); transform-origin: left; transform: scaleX(0); animation: intro-bar 1s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.intro-bar { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); animation: intro-bar 1s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 @keyframes intro-bar { to { transform: scaleX(1); } }
 
 /* ---------- Hero sequence: nav, eyebrow, heading lines, paragraph, buttons, image, annotations ---------- */
 .hero-seq { animation: hero-rise 0.7s var(--ease) backwards; animation-delay: var(--hs, 0ms); }
 @keyframes hero-rise { from { opacity: 0; translate: 0 16px; } to { opacity: 1; translate: none; } }
 
-.hero-eyebrow { display: inline-flex; align-items: center; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.hero-eyebrow { display: inline-flex; align-items: center; font-size: 0.75rem; letter-spacing: 0.01em; color: var(--accent); }
 @keyframes draw-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 /* Headings: each line rises through a mask */
-.kinetic-accent .kinetic-inner { display: inline-block; background: var(--grad-brand); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.kinetic-accent .kinetic-inner { display: inline-block; color: var(--accent); }
 .kinetic-line { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
 .kinetic-inner { display: block; animation: line-rise 0.85s var(--ease) backwards; animation-delay: calc(var(--k0, 100ms) + var(--i, 0) * 90ms); }
 @keyframes line-rise { from { transform: translateY(108%); } to { transform: none; } }
 
 /* The main hero photo is revealed by a clip that wipes down, while the picture settles from 1.03 to 1 */
 .hero-media { position: relative; }
-/* a window frame in the brand gradient, offset behind the photograph */
 .hero-media .hero-frame { position: relative; z-index: 1; }
 .hero-media .hero-frame { animation: media-clip 1s var(--ease) backwards; animation-delay: var(--hs, 0ms); }
 @keyframes media-clip { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
@@ -91,43 +90,46 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 .wf3-track.is-short { height: calc(100svh - 4.4rem); }
 .wf3-track.is-short .wf3-markers { display: none; }
 .wf3-stage { position: sticky; top: 4.4rem; height: calc(100svh - 4.4rem); display: flex; align-items: center; }
-.wf3-inner { display: grid; gap: 0.9rem; }
+.wf3-inner { display: grid; gap: 1rem; }
 .wf3-markers { position: absolute; top: calc(50svh - 4.4rem); left: 0; right: 0; pointer-events: none; }
 .wf3-markers span { display: block; height: var(--step, 24svh); }
-.wf-head { display: grid; gap: 0.4rem; max-width: 40rem; }
-.wf-eyebrow { font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-text); }
-.wf3-heading { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); }
-.wf-lede { margin: 0; font-size: 1.05rem; color: var(--muted); }
-.wf-sub { margin: 0; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.wf-head { display: grid; gap: 0.5rem; max-width: 40rem; }
+.wf-eyebrow { font-size: 0.875rem; letter-spacing: 0.01em; color: var(--accent); }
+.wf3-heading { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); }
+.wf-lede { margin: 0; font-size: 1rem; color: var(--muted); }
+.wf-sub { margin: 0; font-size: 0.8125rem; letter-spacing: 0.01em; color: var(--muted); }
 .wf-title { margin: 0.25rem 0 0; font-size: clamp(1.6rem, 2.9vw, 2.4rem); letter-spacing: -0.01em; color: var(--ink); }
-.wf3-title { font-family: var(--font-display); font-weight: 600; }
-.wf-desc { margin: 0.5rem 0 0; max-width: 36rem; font-size: 1.05rem; line-height: 1.6; color: var(--muted); }
+.wf3-title { font-family: var(--font-display); font-weight: 500; }
+.wf-desc { margin: 0.5rem 0 0; max-width: 36rem; font-size: 1rem; line-height: 1.6; color: var(--muted); }
 .wf2-phases { display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); }
-.wf2-phases span { position: relative; padding: 0.7rem 0 0.55rem 0.3rem; font-family: var(--font-display); font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 600; letter-spacing: -0.005em; text-transform: none; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.4s var(--ease); }
-.wf2-phases span::before, .wf2-phases span::after { content: ""; position: absolute; left: 0.3rem; right: 0.3rem; top: 0; height: 4px; border-radius: 9999px; }
-.wf2-phases span::before { background: var(--line-strong); }
+.wf2-phases span { position: relative; padding: 0.75rem 0 0.5rem 0.25rem; font-family: var(--font-display); font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 500; letter-spacing: -0.005em; text-transform: none; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.4s var(--ease); }
+.wf2-phases span::before, .wf2-phases span::after { content: ""; position: absolute; left: 0.25rem; right: 0.25rem; top: 0; height: 0.5rem; }
+/* each phase is a dimension line: a hairline with a tick at each end; the line fills in the brand blue as the stages go by */
+.wf2-phases span::before { border-inline: 1px solid var(--line-strong); background: linear-gradient(var(--line-strong), var(--line-strong)) center / 100% 1px no-repeat; transition: border-color 0.4s var(--ease); }
 /* the bar fills along with the numbers: whole for a finished phase, and up to the end of the current number for the phase you are in (so the last number of a phase completes its bar) */
-.wf2-phases span::after { background: var(--grad-teal-blue); transform-origin: left; transform: scaleX(var(--f, 0)); transition: transform 0.5s var(--ease); }
-.wf2-phases span.is-done { color: var(--teal-text); }
+.wf2-phases span::after { background: linear-gradient(var(--accent), var(--accent)) center / 100% 2px no-repeat; transform-origin: left; transform: scaleX(var(--f, 0)); transition: transform 0.5s var(--ease); }
+.wf2-phases span.is-done { color: var(--accent); }
+.wf2-phases span.is-done::before { border-color: var(--accent); }
 .wf2-phases span.is-active { color: var(--ink); }
 .wf2-rail { position: relative; }
 .wf2-line, .wf2-fill { position: absolute; left: calc(100% / 26); right: calc(100% / 26); top: 50%; }
 .wf2-line { height: 1px; background: var(--line-strong); }
-.wf2-fill { height: 2px; margin-top: -0.5px; background: var(--grad-teal-blue); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 0.5s var(--ease); }
+.wf2-fill { height: 2px; margin-top: -0.5px; background: var(--accent); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 0.5s var(--ease); }
 .wf2-nodes { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); }
 .wf2-nodes li { display: flex; justify-content: center; }
 .wf2-node { display: grid; place-items: center; width: clamp(2rem, 3.8vw, 2.9rem); aspect-ratio: 1; border-radius: 9999px; border: 1px solid var(--line-strong); background: var(--card); color: var(--muted); font-size: clamp(0.8rem, 1.2vw, 1rem); transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease), color 0.3s var(--ease), scale 0.3s var(--ease); }
-.wf2-node.is-done { border-color: var(--teal); color: var(--teal-text); }
-.wf2-node.is-active { background: var(--grad-teal-blue); border-color: var(--blue); color: #fff; scale: 1.12; }
-.wf3-panel { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(1.5rem, 3.5vw, 3.5rem); align-items: center; padding-top: 0.6rem; animation: panel-in 0.45s var(--ease) both; }
-.wf2-meta { display: grid; gap: 0.8rem 2rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); margin: 1rem 0 0; padding-top: 0.8rem; border-top: 1px solid var(--line); }
-.wf2-meta dt { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-.wf2-meta dd { margin: 0.2rem 0 0; font-size: 1rem; color: var(--ink); }
+.wf2-node.is-done { border-color: var(--blue); color: var(--accent); }
+.wf2-node.is-active { background: var(--accent); border-color: var(--blue); color: #fff; scale: 1.12; }
+.wf3-panel { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(1.5rem, 3.5vw, 3.5rem); align-items: center; padding-top: 0.5rem; animation: panel-in 0.45s var(--ease) both; }
+.wf2-meta { display: grid; gap: 0.75rem 2rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); margin: 1rem 0 0; padding-top: 0.75rem; border-top: 1px solid var(--line); }
+.wf2-meta dt { font-size: 0.75rem; letter-spacing: 0.01em; color: var(--muted); }
+.wf2-meta dd { margin: 0.25rem 0 0; font-size: 1rem; color: var(--ink); }
 
 /* three screens in a row: the main one big in the middle, one small on each side.
    Point at one and it grows while the other two shrink and blur (only while one is pointed at, so the gaps do nothing). */
-.wf3-shots { display: flex; align-items: center; gap: 0.8rem; min-width: 0; }
-.wf3-shot { flex: 1 1 0; min-width: 0; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 0.5rem; border: 1px solid var(--line-strong); background: #fff; box-shadow: var(--shadow-soft); cursor: zoom-in; animation: shot-in 0.6s var(--ease) both; transition: flex-grow 0.55s var(--ease), filter 0.45s var(--ease), opacity 0.45s var(--ease), box-shadow 0.45s var(--ease); }
+.wf3-shots { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.wf3-shot { display: block; padding: 0; font: inherit; color: inherit; flex: 1 1 0; min-width: 0; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 0.5rem; border: 1px solid var(--line-strong); background: #fff; box-shadow: var(--shadow-soft); cursor: zoom-in; animation: shot-in 0.6s var(--ease) both; transition: flex-grow 0.55s var(--ease), filter 0.45s var(--ease), opacity 0.45s var(--ease), box-shadow 0.45s var(--ease); }
+.wf3-shot:focus-visible { outline: 3px solid color-mix(in srgb, var(--blue) 40%, white); outline-offset: 3px; }
 .wf3-shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .wf3-shot.s1 { order: 2; flex-grow: 3; animation-delay: 0.1s; }
 .wf3-shot.s2 { order: 1; animation-delay: 0.2s; }
@@ -148,22 +150,22 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 .wf-m { display: none; }
 @media (max-width: 760px) {
   .wf2-phases, .wf2-rail, .wf-lede, .wf-eyebrow { display: none; }
-  .wf-m { display: grid; gap: 0.6rem; }
+  .wf-m { display: grid; gap: 0.5rem; }
   .wf-m-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
-  .wf-m-phase { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--teal-text); }
-  .wf-m-count { font-family: var(--font-display); font-size: 1.7rem; font-weight: 600; line-height: 1; color: var(--ink); }
-  .wf-m-count small { font-size: 0.95rem; font-weight: 500; color: var(--muted); }
+  .wf-m-phase { font-family: var(--font-display); font-size: 1.125rem; font-weight: 500; color: var(--accent); }
+  .wf-m-count { font-family: var(--font-display); font-size: 1.75rem; font-weight: 500; line-height: 1; color: var(--ink); }
+  .wf-m-count small { font-size: 1rem; font-weight: 500; color: var(--muted); }
   .wf-m-bar { display: grid; grid-template-columns: repeat(13, 1fr); gap: 3px; }
   .wf-m-bar span { height: 6px; border-radius: 9999px; background: var(--line-strong); transition: background-color 0.3s var(--ease); }
-  .wf-m-bar span.is-done { background: var(--teal); }
-  .wf-m-bar span.is-now { background: var(--grad-teal-blue); }
+  .wf-m-bar span.is-done { background: var(--blue); }
+  .wf-m-bar span.is-now { background: var(--accent); }
   .wf3-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
   .wf3-shot.s1 { grid-column: 1 / -1; order: 0; }
   .wf3-shot.s2 { order: 1; }
   .wf3-shot.s3 { order: 2; }
   .wf3-shot.s1 { aspect-ratio: 2 / 1; }
   .wf3-shot.s2, .wf3-shot.s3 { aspect-ratio: 16 / 9; }
-  .wf3-inner { gap: 0.7rem; }
+  .wf3-inner { gap: 0.75rem; }
 }
 /* a short phone: all three screens stay; the "Worked in" lines go first, then the screens get a little shorter, so the panel still fits */
 @media (max-width: 760px) and (max-height: 720px) {
@@ -175,18 +177,18 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
   .wf-sub { display: none; }
 }
 /* short screens: the panel must still fit under the header */
-@media (max-height: 760px) { .wf-lede { display: none; } .wf3-inner { gap: 0.6rem; } .wf-desc { margin-top: 0.3rem; font-size: 0.9rem; line-height: 1.5; } .wf2-meta { margin-top: 0.7rem; } }
-@media (max-height: 640px) { .wf3-heading { font-size: 1.4rem; } .wf2-meta { display: none; } }
+@media (max-height: 760px) { .wf-lede { display: none; } .wf3-inner { gap: 0.5rem; } .wf-desc { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.5; } .wf2-meta { margin-top: 0.75rem; } }
+@media (max-height: 640px) { .wf3-heading { font-size: 1.5rem; } .wf2-meta { display: none; } }
 /* a phone held sideways (very little height): copy beside the screens, and only what fits: heading, numbers, stage */
 @media (max-height: 520px) {
   .wf-eyebrow, .wf-lede, .wf2-phases, .wf2-meta { display: none; }
-  .wf3-heading { font-size: 1.15rem; }
-  .wf3-inner { gap: 0.4rem; }
+  .wf3-heading { font-size: 1.125rem; }
+  .wf3-inner { gap: 0.5rem; }
   .wf3-panel { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 1rem; padding-top: 0; }
-  .wf-sub { font-size: 0.7rem; }
-  .wf-title { font-size: 1.2rem; margin-top: 0.1rem; }
-  .wf-desc { margin-top: 0.2rem; font-size: 0.85rem; line-height: 1.4; }
-  .wf2-node { width: 1.6rem; font-size: 0.7rem; }
+  .wf-sub { font-size: 0.75rem; }
+  .wf-title { font-size: 1.25rem; margin-top: 0.25rem; }
+  .wf-desc { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.4; }
+  .wf2-node { width: 1.6rem; font-size: 0.75rem; }
   .wf3-shot.s1 { flex-grow: 2; }
 }
 
@@ -203,7 +205,7 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 /* ---------- Signature animation: an aluminium window drawn in fine lines, then resolved into the photograph ---------- */
 .wd-wrap { display: grid; gap: clamp(1.6rem, 4vw, 3.5rem); align-items: center; }
 @media (min-width: 900px) { .wd-wrap { grid-template-columns: 5fr 7fr; } }
-.wd-eyebrow { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.wd-eyebrow { font-size: 0.75rem; letter-spacing: 0.01em; color: var(--accent); }
 .wd-stage { position: relative; aspect-ratio: 3 / 2; overflow: hidden; border-radius: 0.5rem; border: 1px solid var(--line); background: var(--card); box-shadow: var(--shadow-soft); }
 .wd-photo { position: absolute; inset: 0; }
 .wd-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -229,13 +231,12 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 @keyframes wd-wipe { to { clip-path: inset(0 0 0 0); } }
 @keyframes wd-out { to { opacity: 0; } }
 
-/* ---------- Tablet and mobile: lighter, shorter, less travel; no parallax ---------- */
+/* ---------- Tablet and mobile: lighter, shorter, less travel ---------- */
 @media (max-width: 1023px) {
   .reveal { translate: 0 14px; }
   .reveal[data-reveal="left"], .reveal[data-reveal="right"], .reveal[data-reveal="zoom"] { translate: 0 14px; }
   .reveal.reveal-alt:not(.in) { translate: 0 14px; }
   .reveal { transition: opacity 0.5s var(--ease) min(var(--d, 0ms), 180ms), translate 0.5s var(--ease) min(var(--d, 0ms), 180ms), transform 0.3s var(--ease), box-shadow 0.3s var(--ease), background-color 0.3s var(--ease), border-color 0.3s var(--ease); }
-  [data-speed] { transform: none !important; }
 }
 @media (max-width: 639px) {
   .wd-svg text { font-size: 17px; }
@@ -247,7 +248,7 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
   html { scroll-behavior: auto; }
   .reveal, .reveal[data-reveal], .reveal.reveal-alt:not(.in) { translate: none; transition: opacity 0.4s linear, transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-color 0.2s; }
   #page.page-in { animation: fade-in 0.3s linear backwards; }
-  .sol-panel, .wf3-panel, .wf3-shot, .wiz-step, .wiz-done { animation-name: fade-in; }
+  .sol-panel, .wf3-panel, .wf3-shot, .wiz-step, .wiz-done, .flow-dlg { animation-name: fade-in; }
   .hero-seq, .hero-media .hero-frame, .hero-media .hero-frame img { animation-name: fade-in; animation-duration: 0.5s; }
   .kinetic-inner { animation: fade-in 0.5s linear backwards; animation-delay: 0ms; }
   .intro-logo { animation-name: fade-in; animation-duration: 0.5s; }

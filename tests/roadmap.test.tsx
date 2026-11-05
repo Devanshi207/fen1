@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import Workflow, { PHASES, STEP_SVH } from "@/components/Workflow";
@@ -38,9 +39,66 @@ function stubObserver() {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("Workflow (scroll-driven)", () => {
-  it("has nothing to click: no buttons, links or tabs", () => {
+  it("has only the ERP screens to click: no links or tabs, and the three screens are the only buttons", () => {
     render(<Workflow />);
-    expect(document.querySelector("#roadmap button, #roadmap a, #roadmap [role='tab'], #roadmap [tabindex]")).toBeNull();
+    expect(document.querySelector("#roadmap a, #roadmap [role='tab'], #roadmap [tabindex]")).toBeNull();
+    const buttons = [...document.querySelectorAll("#roadmap button")];
+    expect(buttons).toHaveLength(3);
+    expect(buttons.every((b) => b.classList.contains("wf3-shot"))).toBe(true);
+  });
+
+  it("opens the stage's details when a screen is clicked, with its description, module and record", async () => {
+    const io = stubObserver();
+    const user = userEvent.setup();
+    render(<Workflow />);
+    io.cross(2); // Estimation
+    const est = ROADMAP_STAGES[2];
+    await user.click(screen.getByRole("button", { name: `${est.title}, screen 2 of 3: open details` }));
+    const dlg = screen.getByRole("dialog");
+    expect(dlg).toHaveAttribute("aria-modal", "true");
+    expect(within(dlg).getByRole("heading", { name: est.title })).toBeInTheDocument();
+    expect(dlg).toHaveTextContent(est.desc);
+    expect(dlg).toHaveTextContent(est.module);
+    expect(dlg).toHaveTextContent(est.record);
+    expect(dlg).toHaveTextContent("Step 03 of 13");
+    // it opens on the screen that was clicked
+    expect(dlg.querySelector(".flow-dlg-img")!.getAttribute("src")).toBe(STAGE_SCREENS["03"][1].src);
+    expect(within(dlg).getByRole("button", { name: "Close" })).toHaveFocus();
+    expect(document.body.style.overflow).toBe("hidden");
+  });
+
+  it("closes with Close, Escape or a click outside, gives the page its scrolling back and returns focus to the screen", async () => {
+    const user = userEvent.setup();
+    render(<Workflow />);
+    const open = () => user.click(screen.getByRole("button", { name: /screen 1 of 3: open details/ }));
+    await open();
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.body.style.overflow).not.toBe("hidden");
+    expect(screen.getByRole("button", { name: /screen 1 of 3: open details/ })).toHaveFocus();
+    await open();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await open();
+    await user.click(document.querySelector(".flow-overlay") as HTMLElement);
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("moves through all 13 stages inside the dialog, and swaps between the three screens of a stage", async () => {
+    const user = userEvent.setup();
+    render(<Workflow />);
+    await user.click(screen.getByRole("button", { name: /screen 1 of 3: open details/ }));
+    const dlg = screen.getByRole("dialog");
+    expect(within(dlg).getByRole("button", { name: "Previous step" })).toBeDisabled();
+    for (let i = 1; i < ROADMAP_STAGES.length; i++) {
+      await user.click(within(dlg).getByRole("button", { name: "Next step" }));
+      expect(within(dlg).getByRole("heading", { name: ROADMAP_STAGES[i].title })).toBeInTheDocument();
+    }
+    expect(within(dlg).getByRole("button", { name: "Next step" })).toBeDisabled();
+    const big = () => dlg.querySelector(".flow-dlg-img")!.getAttribute("src");
+    const first = big();
+    await user.click(within(dlg).getByRole("button", { name: "Screen 3 of 3" }));
+    expect(big()).not.toBe(first);
   });
 
   it("never captures the scroll: no listeners, no wheel handling, no scrolling by script", () => {
@@ -168,13 +226,14 @@ describe("Workflow (scroll-driven)", () => {
     expect(covered).toEqual(ROADMAP_STAGES.map((_, i) => i));
   });
 
-  it("gives screen readers the whole workflow as a plain list, and hides the pinned panel from them so nothing is read twice", () => {
+  it("gives screen readers the whole workflow as a plain list, and hides the pinned panel's text from them so nothing is read twice (the screens stay reachable)", () => {
     render(<Workflow />);
     const items = screen.getAllByRole("listitem").filter((li) => li.closest(".sr-only"));
     expect(items).toHaveLength(ROADMAP_STAGES.length);
     expect(screen.getByRole("heading", { level: 2, name: "From enquiry to handover" })).toBeInTheDocument();
     ROADMAP_STAGES.forEach((s, i) => expect(items[i]).toHaveTextContent(s.desc));
-    expect(document.querySelector(".wf3-stage")).toHaveAttribute("aria-hidden", "true");
+    for (const sel of [".wf-head", ".wf-m", ".wf2-phases", ".wf2-rail", ".wf3-copy"]) expect(document.querySelector(sel)).toHaveAttribute("aria-hidden", "true");
+    expect(document.querySelector(".wf3-stage")).not.toHaveAttribute("aria-hidden");
   });
 
   it("stays short enough to fit under the header on a phone: one column, the main screen across the width and the other two under it", () => {

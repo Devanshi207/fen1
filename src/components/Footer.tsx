@@ -7,7 +7,7 @@ import { ArrowRight, X } from "lucide-react";
 
 const LEGAL = {
   privacy: {
-    title: "Privacy Policy",
+    title: "Privacy policy",
     points: [
       "When you use the enquiry or careers form we receive what you type: your name, company, work email, phone number, business details and message.",
       "We use it only to reply to your enquiry, to arrange a demonstration or to consider a job application. Enquiries are kept in our admin inbox until the team has dealt with them. We do not sell it.",
@@ -16,7 +16,7 @@ const LEGAL = {
     ],
   },
   terms: {
-    title: "Terms of Service",
+    title: "Terms of service",
     points: [
       "The information on this site describes FEN1 and is provided for general information. It is not a contract or a quotation.",
       "Scope, pricing and delivery for any FEN1 implementation are agreed in a separate written proposal.",
@@ -25,7 +25,7 @@ const LEGAL = {
     ],
   },
   security: {
-    title: "Enterprise Security",
+    title: "Enterprise security",
     points: [
       "Enquiries sent through this site travel over an encrypted connection.",
       "FEN1 uses role-based permissions, so each person only sees the modules and records their role needs.",
@@ -59,7 +59,7 @@ function LegalDialog({ id, onClose }: { id: LegalKey; onClose: () => void }) {
             <li key={p}>{p}</li>
           ))}
         </ul>
-        <Link href="#question" onClick={onClose} className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-[#0067C0]">
+        <Link href="/contact#question" onClick={onClose} className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-[#0067C0]">
           <span>Questions? Contact us</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
@@ -78,7 +78,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-8 pb-14 border-b border-[#DCE6F5]">
           {/* Brand Col */}
           <div className="col-span-2 md:col-span-6 space-y-4">
-            <Link href="#home" aria-label="FEN1, back to the top" className="inline-flex">
+            <Link href="/" aria-label="FEN1, home" className="inline-flex">
               <Image src="/brand/fen1-logo.png" alt="FEN1" width={900} height={294} sizes="140px" className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-[#55637A] max-w-sm leading-relaxed">
@@ -88,44 +88,43 @@ export default function Footer() {
 
           {/* Column 2: Solutions */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase text-[#0067C0] tracking-wider block font-semibold">
-              SOLUTIONS
+            <span className="text-[13px] text-[#0067C0] block font-medium">
+              Solutions
             </span>
             <ul className="space-y-1.5 text-xs">
-              <li><Link href="#windows-doors" className="hover:text-[#1E2B45] transition-colors">Windows & Doors</Link></li>
-              <li><Link href="#glass-railing" className="hover:text-[#1E2B45] transition-colors">Glass Railing</Link></li>
-              <li><Link href="#curtain-wall" className="hover:text-[#1E2B45] transition-colors">Curtain Wall</Link></li>
-              <li><Link href="#modules" className="hover:text-[#1E2B45] transition-colors">All Modules</Link></li>
+              <li><Link href="/solutions#windows-doors" className="hover:text-[#1E2B45] transition-colors">Windows & Doors</Link></li>
+              <li><Link href="/solutions#glass-railing" className="hover:text-[#1E2B45] transition-colors">Glass Railing</Link></li>
+              <li><Link href="/solutions#curtain-wall" className="hover:text-[#1E2B45] transition-colors">Curtain Wall</Link></li>
             </ul>
           </div>
 
           {/* Column 3: Resources */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase text-[#0067C0] tracking-wider block font-semibold">
-              RESOURCES
+            <span className="text-[13px] text-[#0067C0] block font-medium">
+              Resources
             </span>
             <ul className="space-y-1.5 text-xs">
-              <li><Link href="#training" className="hover:text-[#1E2B45] transition-colors">Training</Link></li>
-              <li><Link href="#roles" className="hover:text-[#1E2B45] transition-colors">Role-Based Training</Link></li>
-              <li><Link href="#about" className="hover:text-[#1E2B45] transition-colors">Platform Philosophy</Link></li>
-              <li><Link href="#question" className="hover:text-[#1E2B45] transition-colors">Technical Support</Link></li>
+              <li><Link href="/training" className="hover:text-[#1E2B45] transition-colors">Training</Link></li>
+              <li><Link href="/training#roles" className="hover:text-[#1E2B45] transition-colors">Role-based training</Link></li>
+              <li><Link href="/about" className="hover:text-[#1E2B45] transition-colors">Platform philosophy</Link></li>
+              <li><Link href="/contact#question" className="hover:text-[#1E2B45] transition-colors">Technical support</Link></li>
             </ul>
           </div>
 
           {/* Column 4: Company & Legal */}
           <div className="col-span-1 md:col-span-2 space-y-3">
-            <span className="text-[11px] font-mono uppercase text-[#0067C0] tracking-wider block font-semibold">
-              COMPANY
+            <span className="text-[13px] text-[#0067C0] block font-medium">
+              Company
             </span>
             <ul className="space-y-1.5 text-xs">
-              <li><Link href="#about" className="hover:text-[#1E2B45] transition-colors">About FEN1</Link></li>
-              <li><Link href="#careers" className="hover:text-[#1E2B45] transition-colors">Careers</Link></li>
-              <li><Link href="#question" className="hover:text-[#1E2B45] transition-colors">Contact Us</Link></li>
-              <li><Link href="#demo" className="hover:text-[#1E2B45] transition-colors">Request a Demo</Link></li>
-              <li className="pt-2 text-[11px] font-mono uppercase text-[#0067C0]">LEGAL</li>
-              <li><button type="button" onClick={() => setLegal("privacy")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Privacy Policy</button></li>
-              <li><button type="button" onClick={() => setLegal("terms")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Terms of Service</button></li>
-              <li><button type="button" onClick={() => setLegal("security")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Enterprise Security</button></li>
+              <li><Link href="/about" className="hover:text-[#1E2B45] transition-colors">About FEN1</Link></li>
+              <li><Link href="/careers" className="hover:text-[#1E2B45] transition-colors">Careers</Link></li>
+              <li><Link href="/contact#question" className="hover:text-[#1E2B45] transition-colors">Contact us</Link></li>
+              <li><Link href="/contact#demo" className="hover:text-[#1E2B45] transition-colors">Request a demo</Link></li>
+              <li className="pt-2 text-[13px] text-[#0067C0] font-medium">Legal</li>
+              <li><button type="button" onClick={() => setLegal("privacy")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Privacy policy</button></li>
+              <li><button type="button" onClick={() => setLegal("terms")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Terms of service</button></li>
+              <li><button type="button" onClick={() => setLegal("security")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Enterprise security</button></li>
             </ul>
           </div>
         </div>

@@ -16,10 +16,10 @@ describe("FEN1 logo", () => {
     expect(readFileSync(join("public", "brand", "fen1-logo.png")).readUInt8(25)).toBe(6);
   });
 
-  it("is the header's brand, linking back to the top", () => {
+  it("is the header's brand, linking to the home page", () => {
     render(<Navbar />);
-    const link = screen.getByRole("link", { name: /FEN1, back to the top/ });
-    expect(link).toHaveAttribute("href", "#home");
+    const link = screen.getByRole("link", { name: /FEN1, home/ });
+    expect(link).toHaveAttribute("href", "/");
     expect(within(link).getByRole("img", { name: "FEN1" })).toHaveAttribute("src", expect.stringContaining("fen1-logo.png"));
   });
 

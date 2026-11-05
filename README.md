@@ -48,16 +48,22 @@ Copy `.env.example` to `.env.local` and set:
 
 | Route           | Purpose                                                           |
 | --------------- | ----------------------------------------------------------------- |
-| `/`             | The whole site as one continuous page: Home, Solutions, About, Training, Careers, Contact, then the footer once |
+| `/`             | Home: the hero, the window drawing and the Workflow |
+| `/solutions`    | Windows & Doors, Glass Railing and Curtain Wall, as tabs |
+| `/about`        | About FEN1 |
+| `/training`     | Training by role |
+| `/careers`      | Careers: open roles and the job application |
+| `/contact`      | Contact us: the five-question enquiry |
 | `/api/enquiry`  | Receives the demo, question and careers forms; saves them to the admin inbox and forwards them to `ENQUIRY_WEBHOOK_URL` |
 | `/api/jobs`     | The open job openings, for the Careers section (public) |
 | `/admin`        | Password-protected: the enquiry inbox and job openings (not linked from the site, not indexed) |
 
-Within the page, the header links are `#home`, `#solutions`, `#about`, `#training`, `#careers` and `#contact`; the header
-highlights whichever part is in the middle of the screen and keeps the address in step. Deeper links:
-`#windows-doors`, `#glass-railing`, `#curtain-wall` (open that industry), `#modules`, `#roles`, and `#demo` / `#question`
-(scroll to the enquiry and pick the first answer, opening on the second question). The old page addresses (`/solutions`, `/about`, `/training`,
-`/careers`, `/request-demo`, `/contact`, `/products`) redirect to the matching part of the page.
+Each part is a page of its own (a folder in `src/app/(site)`), and the header and footer are shared (`src/app/(site)/layout.tsx`).
+The header links are `/`, `/solutions`, `/about`, `/training`, `/careers` and `/contact`; the current page is read from the
+address (`usePathname`), and each page has its own title. Links into the middle of a page keep their `#`: `/solutions#windows-doors`,
+`#glass-railing` and `#curtain-wall` open that industry, `/training#roles` scrolls to the roles, and `/contact#demo` or `#question`
+pick the first answer of the enquiry, opening on the second question. The old addresses `/request-demo` (to `/contact#demo`) and
+`/products` (to `/solutions`) redirect.
 
 ## Admin: job openings and the enquiry inbox
 
@@ -88,7 +94,7 @@ access, or you need to know who did what, move to individual accounts (see below
 
 All site copy that repeats lives in `src/data/`, so pages never hard-code lists:
 
-- `modules.ts`: the modules shown on Solutions and in the home hero demo
+- `modules.ts`: the 17 ERP modules. They are no longer listed on the page (the Solutions section does not show them); the data and the `ModuleList` component are kept for later
 - `solutions.ts`: the industry solutions
 - `roadmap.ts`: the 13 roadmap stages on the home page, in display order
 
@@ -124,6 +130,11 @@ tests/            Vitest + Testing Library
   splash. To change it, replace those files and keep the same names.
 - Clicking a link scrolls so a part's first line lands just under the header: each section's stop point is worked out from its own top
   padding (`--pad` in `sections.css`), so changing a section's padding does not bring back a big gap.
+- Design rules (from an Unslop design review, kept in `tests/theme.test.ts` so they do not drift): one accent, the brand blue, and no
+  hue gradients, gradient text or glows; surfaces alternate white and a cool near-white (`--surface`) with hairlines between parts;
+  labels are sentence case, weights are 400 and 500, font sizes come from one scale of eight steps, and spacing sits on 4px steps
+  (0.25rem). The one signature detail is the dimension line, a hairline with an end tick at each end: it opens every section
+  (`.tech-rule`) and draws the Workflow phases. Colour is left for the window drawing and the ERP screens.
 - Type: IBM Plex Sans for headings, Inter for text, the same Inter for the small uppercase labels (`font-mono` / `.tech`, which no longer use a monospace font), all
   through `next/font`. Weights are set in one block at the top of `globals.css`.
 - Technical-drawing details: `.tech-rule` (a measuring rule with end ticks) and `.tech-grid` (hairline blueprint grid),
@@ -144,13 +155,13 @@ tests/            Vitest + Testing Library
     underneath; about 1.3s, CSS only. It plays on the first visit in a tab only (a `sessionStorage` flag, checked by the
     script in `app/layout.tsx` before first paint), never when moving between pages, and the hero waits behind it.
   - **Hero**: header fade, mono eyebrow, heading lines rising through a mask (`KineticHeading`), paragraph, then the photo
-    wiping in by clip-path while it settles from 1.03 to 1. There are no buttons in the hero or the header: the header links reach everything, and the forms are in Contact and Careers.
+    wiping in by clip-path while it settles from 1.03 to 1. There are no buttons in the hero or the header: the header links reach every page, and the forms are in Contact and Careers.
   - **Scroll reveals** (`MotionProvider`): the top-most element of each group (a card, a heading, a paragraph, a list item) fades
     up in order; delay maths is in `src/lib/stagger.ts`. Route changes get a short fade with a few pixels of lift; header and
     footer stay put, and there is no loading screen between pages.
   - **Window drawing** (`WindowDrawing`): an aluminium window elevation, its width and height dimensions and a section through
     the profile are drawn in SVG strokes, then resolve into a photograph. The dimension labels are letters (W, H), not numbers.
-  - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`): driven by scrolling and nothing else, so there is nothing to click. It
+  - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`): driven by scrolling. The only things to click are the ERP screens: selecting one opens the stage in a dialog (`StageDialog`), with the screen larger and the stage's description, the module it is worked in and the record it leaves, plus Previous / Next step through all 13 stages, a switch between the stage's three screens, and Escape, Close or a click outside to close (the page behind does not scroll while it is open). It
     is a tall block (about four screens of scrolling in all, a quarter of a screen per stage) with one panel held in place
     (`position: sticky`) while you scroll past it; the stage changes as you go: scrolling down walks through stages 1 to 13, and coming back up from the next section (Solutions) shows step 1 at once and shrinks the block to one screen, so Home is one scroll away instead of four (it grows back once you are above it); this is the same on every screen size. The page scrolls as normal and nothing captures the
     wheel. The stage comes from 13 invisible markers and an `IntersectionObserver` (no scroll listener, and it re-renders only when
@@ -165,7 +176,7 @@ tests/            Vitest + Testing Library
     `src/data/gallery.ts`). The photos are stacked; choosing an industry wipes its photo in over the last one from alternating
     sides while it settles from 1.03 to 1, and the text enters after it. The industry tabs and an up / down arrow pair stay in
     view while you read (sticky), and choosing an industry from further down brings its photo back into view. Nothing is pinned,
-    there is no scroll engine, and the numbered module list follows.
+    there is no scroll engine. Each industry shows its workflow as one line of text with arrows. The first industry is called Windows & Doors, with "Aluminium and uPVC" in smaller letters.
   - **Careers** (`CareersSection`) follows what fenestration employers actually hire for (estimating, fabrication and production,
     glazing and installation, project management), plus software roles and early careers. It lists no vacancies, salaries or
     benefits it does not have, and its form posts to the same webhook as `careers`.

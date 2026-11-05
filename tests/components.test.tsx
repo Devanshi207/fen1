@@ -16,7 +16,7 @@ describe("Navbar", () => {
 });
 
 describe("Navbar menu", () => {
-  it("opens a menu of the six parts of the page and closes on Escape", async () => {
+  it("opens a menu of the six pages and closes on Escape", async () => {
     const user = userEvent.setup();
     render(<Navbar />);
     // the menu is not built until it is first opened
@@ -26,8 +26,8 @@ describe("Navbar menu", () => {
     expect(menu).toBeTruthy();
     expect(menu).toHaveAttribute("data-open", "true");
     expect(within(menu).getAllByRole("link")).toHaveLength(6);
-    // one continuous page: every entry is a link to a part of it
-    expect(within(menu).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["#home", "#solutions", "#about", "#training", "#careers", "#contact"]);
+    // every entry is a link to a page of its own
+    expect(within(menu).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/", "/solutions", "/about", "/training", "/careers", "/contact"]);
     await user.keyboard("{Escape}");
     expect(screen.getAllByRole("button")[0]).toHaveAttribute("aria-expanded", "false");
     // closed, it stays in the page (so it can wipe away) but is marked hidden
@@ -39,10 +39,12 @@ describe("Navbar menu", () => {
 describe("Footer", () => {
   it("has Solutions, Resources and Company columns but no Products column", () => {
     render(<Footer />);
-    expect(screen.getByText("SOLUTIONS")).toBeInTheDocument();
-    expect(screen.getByText("RESOURCES")).toBeInTheDocument();
-    expect(screen.getByText("COMPANY")).toBeInTheDocument();
-    expect(screen.queryByText("PRODUCTS")).not.toBeInTheDocument();
+    expect(screen.getByText("Solutions")).toBeInTheDocument();
+    expect(screen.getByText("Resources")).toBeInTheDocument();
+    expect(screen.getByText("Company")).toBeInTheDocument();
+    expect(screen.queryByText("Products")).not.toBeInTheDocument();
+    // sentence case, not shouting labels
+    expect(document.querySelector("footer")!.innerHTML).not.toMatch(/\buppercase\b/);
   });
 
   it("does not mention façades", () => {
@@ -53,7 +55,7 @@ describe("Footer", () => {
   it("opens each legal note in place and closes it with Escape", async () => {
     const user = userEvent.setup();
     render(<Footer />);
-    for (const name of ["Privacy Policy", "Terms of Service", "Enterprise Security"]) {
+    for (const name of ["Privacy policy", "Terms of service", "Enterprise security"]) {
       await user.click(screen.getByRole("button", { name }));
       expect(screen.getByRole("dialog", { name })).toBeInTheDocument();
       await user.keyboard("{Escape}");

@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import Page from "@/app/(site)/page";
 import SolutionsSection from "@/components/sections/SolutionsSection";
+import CareersSection from "@/components/sections/CareersSection";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
 import { SOLUTION_PHOTOS } from "@/data/gallery";
 
@@ -51,7 +52,7 @@ describe("numbering and type details", () => {
   });
 
   it("sets the careers role lines in the body font, not the technical mono face", () => {
-    render(<Page />);
+    render(<CareersSection />);
     const roles = document.querySelectorAll(".path-roles");
     expect(roles.length).toBeGreaterThan(0);
     roles.forEach((r) => expect(r).not.toHaveClass("tech"));

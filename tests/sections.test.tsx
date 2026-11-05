@@ -1,29 +1,53 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, render, screen, within } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import Page from "@/app/(site)/page";
+import SolutionsPage from "@/app/(site)/solutions/page";
+import AboutPage from "@/app/(site)/about/page";
+import TrainingPage from "@/app/(site)/training/page";
+import CareersPage from "@/app/(site)/careers/page";
+import ContactPage from "@/app/(site)/contact/page";
 import Navbar from "@/components/Navbar";
 import SolutionsSection from "@/components/sections/SolutionsSection";
 import AboutSection from "@/components/sections/AboutSection";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
-import { FEN1_MODULES } from "@/data/modules";
 import { PROBLEMS, PRINCIPLES } from "@/data/aboutContent";
 
-const SECTIONS = ["home", "solutions", "about", "training", "careers", "contact"];
+// the address the header reads the current page from
+const nav = vi.hoisted(() => ({ path: "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => nav.path }));
 
-describe("the one continuous page", () => {
-  it("holds Home, Solutions, About, Training, Careers and Contact in order", () => {
-    render(<Page />);
-    const ids = [...document.querySelectorAll("[data-section]")].map((s) => s.id);
-    expect(ids).toEqual(SECTIONS);
+const PAGES: [string, () => React.JSX.Element, string][] = [
+  ["/", Page, "home"],
+  ["/solutions", SolutionsPage, "solutions"],
+  ["/about", AboutPage, "about"],
+  ["/training", TrainingPage, "training"],
+  ["/careers", CareersPage, "careers"],
+  ["/contact", ContactPage, "contact"],
+];
+
+describe("the site's pages", () => {
+  it.each(PAGES)("%s is a page of its own, holding just its part", (_path, Component, id) => {
+    render(<Component />);
+    expect([...document.querySelectorAll("[data-section]")].map((s) => s.id)).toEqual([id]);
   });
 
-  it("has one public page (plus the admin area and the API): the old routes only redirect", () => {
+  it("has a folder for each page (plus the admin area and the API), and no redirect hides a real page", async () => {
     const app = readdirSync(join("src", "app"), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
     expect(app).toEqual(["(site)", "admin", "api"]);
+    const pages = readdirSync(join("src", "app", "(site)"), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
+    expect(pages.sort()).toEqual(["about", "careers", "contact", "solutions", "training"]);
+    for (const name of pages) expect(existsSync(join("src", "app", "(site)", name, "page.tsx"))).toBe(true);
     expect(existsSync(join("src", "components", "solutions"))).toBe(false);
+    const redirects = (await (await import("../next.config")).default.redirects?.()) ?? [];
+    for (const name of pages) expect(redirects.some((r) => r.source === `/${name}`)).toBe(false);
+  });
+
+  it("gives each page its own title", async () => {
+    const titles = await Promise.all(["solutions", "about", "training", "careers", "contact"].map(async (n) => (await import(`@/app/(site)/${n}/page`)).metadata.title));
+    expect(titles).toEqual(["Solutions", "About", "Training", "Careers", "Contact us"]);
   });
 
   it("shows no caption boxes over photos and no photo credit line", () => {
@@ -33,66 +57,30 @@ describe("the one continuous page", () => {
   });
 });
 
-describe("Navbar on one page", () => {
-  class IO {
-    static last: IO | null = null;
-    constructor(public cb: IntersectionObserverCallback) {
-      IO.last = this;
-    }
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  }
-  beforeEach(() => vi.stubGlobal("IntersectionObserver", IO));
+describe("Navbar across the pages", () => {
   afterEach(() => {
-    vi.unstubAllGlobals();
-    window.history.replaceState(null, "", "/");
+    nav.path = "/";
   });
 
-  it("highlights the part of the page in the middle of the screen and keeps the address in step", () => {
-    render(
-      <>
-        <Navbar />
-        {SECTIONS.map((id) => (
-          <section key={id} id={id} data-section={id} />
-        ))}
-      </>
-    );
-    const nav = screen.getByRole("navigation", { name: "Primary" });
-    expect(within(nav).getByRole("link", { name: "Home" })).toHaveAttribute("aria-current", "page");
-    act(() => {
-      // the observers are created in order; the one that watches the sections is the one with the centre band
-      IO.last!.cb([{ target: document.getElementById("careers")!, isIntersecting: true } as unknown as IntersectionObserverEntry], IO.last as unknown as IntersectionObserver);
-    });
-    expect(within(nav).getByRole("link", { name: "Careers" })).toHaveAttribute("aria-current", "page");
-    expect(within(nav).getByRole("link", { name: "Home" })).not.toHaveAttribute("aria-current");
-    expect(window.location.hash).toBe("#careers");
-  });
-
-  it("leaves a link into the middle of a part alone (#question stays #question while Contact is current)", () => {
-    document.body.innerHTML = "";
-    window.history.replaceState(null, "", "/#question");
-    render(
-      <>
-        <Navbar />
-        {SECTIONS.map((id) => (
-          <section key={id} id={id} data-section={id}>
-            {id === "contact" && <span id="question" />}
-          </section>
-        ))}
-      </>
-    );
-    act(() => {
-      IO.last!.cb([{ target: document.getElementById("contact")!, isIntersecting: true } as unknown as IntersectionObserverEntry], IO.last as unknown as IntersectionObserver);
-    });
-    expect(window.location.hash).toBe("#question");
-  });
-
-  it("links to every part, with no separate call-to-action button in the header", () => {
+  it("links to every page, with no separate call-to-action button in the header", () => {
     render(<Navbar />);
-    const nav = screen.getByRole("navigation", { name: "Primary" });
-    expect(within(nav).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["#home", "#solutions", "#about", "#training", "#careers", "#contact"]);
+    const links = within(screen.getByRole("navigation", { name: "Primary" })).getAllByRole("link");
+    expect(links.map((a) => a.getAttribute("href"))).toEqual(["/", "/solutions", "/about", "/training", "/careers", "/contact"]);
     expect(screen.queryByRole("link", { name: /get in touch/i })).toBeNull();
+  });
+
+  it.each([
+    ["/", "Home"],
+    ["/solutions", "Solutions"],
+    ["/about", "About"],
+    ["/training", "Training"],
+    ["/careers", "Careers"],
+    ["/contact", "Contact us"],
+  ])("marks %s as the current page", (path, name) => {
+    nav.path = path;
+    render(<Navbar />);
+    const current = within(screen.getByRole("navigation", { name: "Primary" })).getAllByRole("link").filter((a) => a.getAttribute("aria-current") === "page");
+    expect(current.map((a) => a.textContent)).toEqual([name]);
   });
 });
 
@@ -122,18 +110,30 @@ describe("SolutionsSection", () => {
     await vi.waitFor(() => expect(screen.getByRole("tabpanel")).toHaveTextContent("Curtain Wall"));
   });
 
-  it("has an anchor for every industry and for the modules, and lists every module", () => {
+  it("has an anchor for every industry, and no list of the ERP modules", () => {
     render(<SolutionsSection />);
     for (const s of INDUSTRY_SOLUTIONS) expect(document.getElementById(s.id)).toBeTruthy();
-    expect(document.getElementById("modules")).toBeTruthy();
-    expect(document.querySelectorAll(".mod-tile")).toHaveLength(FEN1_MODULES.length);
+    expect(document.getElementById("modules")).toBeNull();
+    expect(document.querySelectorAll(".mod-tile")).toHaveLength(0);
+    expect(screen.queryByText(/all \d+ modules/i)).toBeNull();
   });
 
-  it("shows the workflow as plain text with arrows, not boxes", () => {
+  it("calls the first industry Windows & Doors, with Aluminium and uPVC in smaller letters", () => {
+    expect(INDUSTRY_SOLUTIONS[0].title).toBe("Windows & Doors");
+    render(<SolutionsSection />);
+    const heading = screen.getByRole("heading", { level: 3, name: /Windows & Doors/ });
+    expect(heading.querySelector("small.sol-parts")).toHaveTextContent("Aluminium and uPVC");
+    expect(JSON.stringify(INDUSTRY_SOLUTIONS)).not.toContain("Aluminium Windows");
+  });
+});
+
+describe("Solutions workflow", () => {
+  it("shows the workflow as plain text with arrows, not boxes or screens", () => {
     render(<SolutionsSection />);
     const chain = document.querySelector(".sol-chain") as HTMLElement;
     expect(chain.textContent).toContain("CRM →");
     expect(chain.querySelector("button, li, [class*='rounded']")).toBeNull();
+    expect(document.querySelector(".sol-flow, .sol-flow-card, [role='dialog']")).toBeNull();
   });
 });
 

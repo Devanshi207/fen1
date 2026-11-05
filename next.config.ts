@@ -14,15 +14,10 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // The site is one continuous page; every old page address opens the matching part of it
-      { source: "/products", destination: "/#modules", permanent: true },
-      { source: "/products/:slug", destination: "/#modules", permanent: true },
-      { source: "/solutions", destination: "/#solutions", permanent: true },
-      { source: "/about", destination: "/#about", permanent: true },
-      { source: "/training", destination: "/#training", permanent: true },
-      { source: "/careers", destination: "/#careers", permanent: true },
-      { source: "/request-demo", destination: "/#demo", permanent: true },
-      { source: "/contact", destination: "/#question", permanent: true },
+      // Each part of the site is a page of its own; these old addresses go to the matching page
+      { source: "/products", destination: "/solutions", permanent: true },
+      { source: "/products/:slug", destination: "/solutions", permanent: true },
+      { source: "/request-demo", destination: "/contact#demo", permanent: true },
     ];
   },
 };

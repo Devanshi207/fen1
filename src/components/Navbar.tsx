@@ -2,21 +2,20 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { MENU_PHOTOS } from "@/data/gallery";
-import { watchCentre } from "@/lib/inview";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { name: "Home", href: "#home", note: "The FEN1 overview" },
-  { name: "Solutions", href: "#solutions", note: "Industries and every module" },
-  { name: "About", href: "#about", note: "Why FEN1 exists" },
-  { name: "Training", href: "#training", note: "Getting your team up to speed" },
-  { name: "Careers", href: "#careers", note: "Work with us" },
-  { name: "Contact us", href: "#contact", note: "Talk to the team" },
+  { name: "Home", href: "/", note: "The FEN1 overview" },
+  { name: "Solutions", href: "/solutions", note: "Windows and doors, glass railing, curtain wall" },
+  { name: "About", href: "/about", note: "Why FEN1 exists" },
+  { name: "Training", href: "/training", note: "Getting your team up to speed" },
+  { name: "Careers", href: "/careers", note: "Work with us" },
+  { name: "Contact us", href: "/contact", note: "Talk to the team" },
 ];
-const IDS = NAV_LINKS.map((l) => l.href.slice(1));
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -24,8 +23,8 @@ export default function Navbar() {
   // the menu (and its photos) is only built once someone opens it; after that it stays and is shown or hidden with CSS
   const [menuBuilt, setMenuBuilt] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
-  // the part of the page in the middle of the screen: the page is one continuous scroll, so this is the "current page"
-  const [current, setCurrent] = useState(IDS[0]);
+  // the page you are on comes from the address
+  const pathname = usePathname() ?? "/";
 
   // The header gains a shadow once the page has moved: a 1px marker near the top of the page tells us when it has
   // scrolled out of view (IntersectionObserver, so there is no scroll listener)
@@ -36,18 +35,6 @@ export default function Navbar() {
     const io = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting));
     io.observe(el);
     return () => io.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const els = IDS.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
-    return watchCentre(els, (el) => {
-      setCurrent(el.id);
-      // keep the address in step with where you are (a link into the middle of a part, like #glass or #question, is left alone)
-      const target = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
-      if (target && target.closest("[data-section]") === el) return;
-      const url = el.id === IDS[0] ? window.location.pathname + window.location.search : `#${el.id}`;
-      window.history.replaceState(window.history.state, "", url);
-    });
   }, []);
 
   // Escape closes the menu; the page behind does not scroll while it is open
@@ -71,14 +58,14 @@ export default function Navbar() {
       <header data-scrolled={scrolled} className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#DCE6F5] py-4">
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 flex items-center justify-between">
           {/* FEN1 Brand Logo */}
-          <Link href="#home" aria-label="FEN1, back to the top" className="flex items-center">
+          <Link href="/" aria-label="FEN1, home" className="flex items-center">
             <Image src="/brand/fen1-logo.png" alt="FEN1" width={900} height={294} priority sizes="120px" className="h-9 w-auto" />
           </Link>
 
           {/* Page links, one click away on wide screens (the full-screen menu is for smaller ones) */}
           <nav aria-label="Primary" className="hidden lg:flex items-center gap-6 xl:gap-8 mx-auto">
             {NAV_LINKS.map((link) => {
-              const isCurrentLink = link.href === `#${current}`;
+              const isCurrentLink = link.href === pathname;
               return (
                 <Link
                   key={link.name}
@@ -98,7 +85,7 @@ export default function Navbar() {
               setMenuBuilt(true);
               setMobileOpen(!mobileOpen);
             }}
-            className="menu-toggle lg:hidden ml-auto sm:ml-3 flex items-center gap-2.5 pl-3.5 pr-3 py-2 rounded-full bg-[#F3F7FF] border border-[#DCE6F5] text-[#1E2B45] hover:bg-[#FFFFFF] transition-colors"
+            className="menu-toggle lg:hidden ml-auto sm:ml-3 flex items-center gap-2.5 pl-3.5 pr-3 py-2 rounded-xl bg-[#F5F7FA] border border-[#DCE6F5] text-[#1E2B45] hover:bg-[#FFFFFF] transition-colors"
             aria-label="Toggle Navigation"
             aria-expanded={mobileOpen}
             data-open={mobileOpen}
@@ -130,7 +117,7 @@ export default function Navbar() {
                       <span className="text-xs font-semibold text-[#0067C0] tabular-nums w-6">0{i + 1}</span>
                       <span>
                         <span
-                          data-current={link.href === `#${current}`}
+                          data-current={link.href === pathname}
                           className="menu-link-text block text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-[#1E2B45]"
                         >
                           {link.name}
@@ -146,7 +133,7 @@ export default function Navbar() {
 
             <div className="hidden md:block relative overflow-hidden" aria-hidden="true">
               {NAV_LINKS.map((link, i) => {
-                const shown = (hovered ?? NAV_LINKS.find((l) => l.href === `#${current}`)?.name ?? NAV_LINKS[0].name) === link.name;
+                const shown = (hovered ?? NAV_LINKS.find((l) => l.href === pathname)?.name ?? NAV_LINKS[0].name) === link.name;
                 const slide = MENU_PHOTOS[i % MENU_PHOTOS.length];
                 return (
                   <Image
@@ -156,7 +143,7 @@ export default function Navbar() {
                     fill
                     sizes="50vw"
                     priority={i === 0}
-                    className="object-cover transition-all duration-700 ease-out"
+                    className="object-cover transition-[opacity,transform] duration-700 ease-out"
                     style={{ opacity: shown ? 1 : 0, transform: shown ? "scale(1)" : "scale(1.08)", objectPosition: slide.position }}
                   />
                 );

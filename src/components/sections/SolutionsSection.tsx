@@ -4,27 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
-import { FEN1_MODULES } from "@/data/modules";
 import { SOLUTION_PHOTOS } from "@/data/gallery";
 import { useOnScreen } from "@/lib/useOnScreen";
 import { prefersReducedMotion } from "@/lib/inview";
-import { MODULE_ICONS } from "@/components/moduleIcons";
-import ModuleList from "@/components/ModuleList";
 import SectionHead from "./SectionHead";
 
 /**
  * The industries as tabs across the top, which stay in view. Photo and content sit side by side, so the section is about one
  * screen tall. Each industry has its own photograph: the photos sit stacked, and choosing an industry wipes its photo
  * in over the last one while it settles from 1.03 to 1, then the text enters. Nothing is pinned and no scroll engine is
- * involved. Below the tabs, every module as a numbered list. A link to #glass-railing, #windows-doors and so on scrolls here and opens that industry.
+ * involved. A link to #glass-railing, #windows-doors and so on scrolls here and opens that industry.
  */
-/** One colour per industry, used for its tab, its number and the frame behind its photo. */
-const TONES: Record<string, { fill: string; text: string }> = {
-  "windows-doors": { fill: "var(--blue)", text: "var(--accent)" },
-  "glass-railing": { fill: "var(--teal)", text: "var(--teal-text)" },
-  "curtain-wall": { fill: "var(--indigo)", text: "var(--indigo)" },
-};
-const toneStyle = (id: string) => ({ ["--tone-fill" as string]: TONES[id].fill, ["--tone-text" as string]: TONES[id].text });
+/** The one accent, used for the tab, its number and the kicker of whichever industry is open. */
+const TONE = { fill: "var(--blue)", text: "var(--accent)" };
+const TONE_STYLE = { ["--tone-fill" as string]: TONE.fill, ["--tone-text" as string]: TONE.text };
 
 export default function SolutionsSection() {
   // `prev` is the industry that was showing, so its photo stays underneath while the new one wipes in
@@ -91,7 +84,7 @@ export default function SolutionsSection() {
                   aria-controls="sol-panel"
                   tabIndex={i === active ? 0 : -1}
                   className={`sol-tab ${i === active ? "is-active" : ""}`}
-                  style={toneStyle(x.id)}
+                  style={TONE_STYLE}
                   onClick={() => pick(i)}
                   onKeyDown={(e) => onKey(e, i)}
                 >
@@ -114,7 +107,7 @@ export default function SolutionsSection() {
           </div>
 
           {/* the photo on one side (it stays in view), the content on the other */}
-          <div className="sol-body" ref={body} style={toneStyle(s.id)}>
+          <div className="sol-body" ref={body} style={TONE_STYLE}>
             <div className="sol-media">
               <div className="sol-photo">
                 {INDUSTRY_SOLUTIONS.map((x, i) => {
@@ -163,11 +156,6 @@ export default function SolutionsSection() {
               </ul>
             </div>
           </div>
-        </div>
-
-        <div id="modules" className="mods">
-          <p className="sol-label tech">All {FEN1_MODULES.length} modules</p>
-          <ModuleList modules={FEN1_MODULES} icons={MODULE_ICONS} />
         </div>
       </div>
     </section>

@@ -237,18 +237,16 @@ describe("Contact and demo are one form", () => {
     expect(topicHref("question")).toBe("#question");
   });
 
-  it("sends every old page address to its part of the one page, for good", async () => {
+  it("sends the old addresses of removed pages to the right page, for good, and leaves the real pages alone", async () => {
     const redirects = (await nextConfig.redirects?.()) ?? [];
     for (const [source, destination] of [
-      ["/contact", "/#question"],
-      ["/request-demo", "/#demo"],
-      ["/solutions", "/#solutions"],
-      ["/about", "/#about"],
-      ["/training", "/#training"],
-      ["/careers", "/#careers"],
+      ["/products", "/solutions"],
+      ["/products/:slug", "/solutions"],
+      ["/request-demo", "/contact#demo"],
     ]) {
       expect(redirects).toContainEqual({ source, destination, permanent: true });
     }
+    for (const real of ["/", "/solutions", "/about", "/training", "/careers", "/contact"]) expect(redirects.some((r) => r.source === real)).toBe(false);
   });
 });
 

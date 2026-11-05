@@ -4,6 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import Page from "@/app/(site)/page";
+import SolutionsSection from "@/components/sections/SolutionsSection";
+import ContactSection from "@/components/sections/ContactSection";
 import KineticHeading from "@/components/KineticHeading";
 import ModuleList from "@/components/ModuleList";
 import { MODULE_ICONS } from "@/components/moduleIcons";
@@ -15,15 +17,17 @@ describe("hero", () => {
   it("carries the brief's headline and supporting text, in sentence case", () => {
     render(<Page />);
     const h1 = screen.getByRole("heading", { level: 1 });
-    expect(h1).toHaveAccessibleName("Engineering the business behind every window.");
+    expect(h1).toHaveAccessibleName("Engineering the business behind every window");
     expect(screen.getByText("FEN1 is an ERP product under Kyozon, built for aluminium windows, doors, façades, curtain walls and glass systems.")).toBeInTheDocument();
   });
 
-  it("sets the second line of the headline in the brand gradient", () => {
+  it("sets the second line of the headline in the solid brand blue, with no period and no gradient text", () => {
     render(<Page />);
     const accent = document.querySelector("h1 .kinetic-accent");
-    expect(accent?.textContent).toBe("behind every window.");
-    expect(/\.kinetic-accent \.kinetic-inner \{[^}]*\}/.exec(css("motion.css"))![0]).toMatch(/var\(--grad-brand\)/);
+    expect(accent?.textContent).toBe("behind every window");
+    const rule = /\.kinetic-accent \.kinetic-inner \{[^}]*\}/.exec(css("motion.css"))![0];
+    expect(rule).toMatch(/color: var\(--accent\)/);
+    expect(rule).not.toMatch(/gradient|background-clip|transparent/);
   });
 
   it("has no buttons: the header links reach every part of the page", () => {
@@ -33,8 +37,8 @@ describe("hero", () => {
     expect(within(hero).queryByText(/request a demo|explore the platform/i)).toBeNull();
   });
 
-  it("has a white-to-ice-blue background, and the photo has no border or outline", () => {
-    expect(/\.hero-bg \{[^}]*\}/.exec(css("sections.css"))![0]).toMatch(/#ffffff[^;]*var\(--ice\)/);
+  it("has a plain white background, and the photo has no border or outline", () => {
+    expect(/\.hero-bg \{[^}]*\}/.exec(css("sections.css"))![0]).toBe(".hero-bg { background: #ffffff; }");
     expect(css("motion.css")).not.toMatch(/\.hero-media::before/);
     expect(/\.hero-frame \{[^}]*\}/.exec(css("globals.css"))![0]).not.toMatch(/border:|box-shadow/);
     expect(/\.sol-photo \{[^}]*\}/.exec(css("sections.css"))![0]).not.toMatch(/border:|box-shadow/);
@@ -51,38 +55,37 @@ describe("KineticHeading accent", () => {
 });
 
 describe("section identities", () => {
-  it("gives each part of the page its own tone", () => {
+  it("keeps every part of the page in one neutral rhythm: white and a cool near-white in turn, with hairlines, and no tinted gradient", () => {
     render(<Page />);
-    expect(document.querySelector("#drawing.sec-blue")).toBeTruthy(); // manufacturing: soft blue
-    expect(document.querySelector("#roadmap.sec-teal")).toBeTruthy(); // workflow: blue and teal
-    expect(document.querySelector("#about.sec-lavender")).toBeTruthy(); // platform: lavender and indigo
-    expect(document.querySelector("#careers.sec-violet")).toBeTruthy();
+    for (const id of ["drawing", "roadmap"]) expect(document.getElementById(id)).toBeTruthy();
     const sections = css("sections.css");
-    expect(sections).toMatch(/\.sec-blue \{[^}]*var\(--soft-blue\)/);
-    expect(sections).toMatch(/\.sec-teal \{[^}]*var\(--soft-teal\)/);
-    expect(sections).toMatch(/\.sec-lavender \{[^}]*var\(--soft-lavender\)/);
+    expect(sections).toMatch(/#drawing, #solutions, #training, #contact \{ background: var\(--surface\); \}/);
+    expect(sections).toMatch(/#roadmap, #about, #careers \{ background: #ffffff; \}/);
+    expect(sections).not.toMatch(/linear-gradient|soft-lavender|soft-teal|soft-pink/);
+    expect(css("globals.css")).toMatch(/--surface: #f5f7fa/);
   });
 
-  it("does not make every section a gradient: Solutions, Training and the footer stay plain light", () => {
+  it("does not make any section a gradient", () => {
     const sections = css("sections.css");
-    for (const sel of [".page-sec"]) expect(new RegExp("\\" + sel + " \{[^}]*gradient").test(sections)).toBe(false);
-    expect(/\.page-sec-alt \{[^}]*\}/.exec(sections)![0]).not.toMatch(/gradient/);
+    for (const sel of [".page-sec", ".page-sec-alt"]) expect(new RegExp("\\" + sel + " \\{[^}]*gradient").test(sections)).toBe(false);
   });
 
-  it("colours the workflow in teal and blue, and the primary buttons in blue to indigo", () => {
-    expect(/^\.wf2-fill \{[^}]*\}/m.exec(css("motion.css"))![0]).toMatch(/var\(--grad-teal-blue\)/);
-    expect(/\[class~="bg-\[#0067C0\]"\] \{[^}]*\}/.exec(css("globals.css"))![0]).toMatch(/linear-gradient\(135deg, #0067c0[^)]*#4353d8/);
+  it("colours the workflow and the primary buttons in the one solid brand blue", () => {
+    expect(/^\.wf2-fill \{[^}]*\}/m.exec(css("motion.css"))![0]).toMatch(/background: var\(--accent\)/);
+    const button = /\[class~="bg-\[#0067C0\]"\] \{[^}]*\}/.exec(css("globals.css"))![0];
+    expect(button).toMatch(/background-color: var\(--accent\)/);
+    expect(button).not.toMatch(/gradient/);
   });
 
-  it("gives every industry its own colour", async () => {
+  it("gives every industry the same accent, not a colour each", async () => {
     const user = userEvent.setup();
-    render(<Page />);
+    render(<SolutionsSection />);
     const fills = new Set<string>();
     for (const tab of screen.getAllByRole("tab").filter((t) => t.id.startsWith("sol-tab-"))) {
       await user.click(tab);
       fills.add((document.querySelector(".sol-body") as HTMLElement).style.getPropertyValue("--tone-fill"));
     }
-    expect(fills.size).toBe(3);
+    expect(fills.size).toBe(1);
   });
 });
 
@@ -100,7 +103,7 @@ describe("module groups", () => {
 
 describe("contact section", () => {
   it("has no gradient call-to-action band: just the photo and the form, which carries the demo / question choice", () => {
-    render(<Page />);
+    render(<ContactSection />);
     expect(document.querySelector(".cta-band, .cta-title, .cta-actions")).toBeNull();
     const contact = document.getElementById("contact")!;
     expect(within(contact).getByRole("radio", { name: "I'd like a demo" })).toBeInTheDocument();

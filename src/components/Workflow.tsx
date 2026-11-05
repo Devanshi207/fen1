@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ROADMAP_STAGES } from "@/data/roadmap";
 import { STAGE_SCREENS } from "@/data/stageScreens";
+import StageDialog from "@/components/StageDialog";
 
 /** The four phases the 13 stages fall into: first and last stage of each (0-based, inclusive). */
 export const PHASES = [
@@ -17,25 +18,26 @@ export const STEP_SVH = 24;
 
 /**
  * Three ERP screens in a row: the first (the main one) big in the middle, one smaller on each side. Point at any of them and it
- * grows while the other two shrink and blur; move away and the row settles back. Pure CSS (see `.wf3-shots` in motion.css).
+ * grows while the other two shrink and blur; move away and the row settles back (pure CSS, see `.wf3-shots` in motion.css).
+ * Select one and it opens larger, with the details of the stage (see StageDialog).
  */
-function Screens({ step }: { step: string }) {
+function Screens({ step, title, onOpen }: { step: string; title: string; onOpen: (shot: number) => void }) {
   const shots = STAGE_SCREENS[step] ?? [];
   return (
     <div className="wf3-shots">
       {shots.map((s, i) => (
-        <div key={s.src} className={`wf3-shot s${i + 1}`}>
+        <button key={s.src} type="button" className={`wf3-shot s${i + 1}`} aria-haspopup="dialog" aria-label={`${title}, screen ${i + 1} of ${shots.length}: open details`} onClick={() => onOpen(i)}>
           {/* plain img: the screens are small SVGs now and can be any image type later */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={s.src} alt={s.alt} width={960} height={600} decoding="async" />
-        </div>
+          <img src={s.src} alt="" width={960} height={600} decoding="async" />
+        </button>
       ))}
     </div>
   );
 }
 
 /**
- * The enquiry-to-handover workflow, driven by scrolling and nothing else: there is nothing to click. The section is a tall
+ * The enquiry-to-handover workflow, driven by scrolling: the stage changes as the page moves, and the only things to click are the ERP screens, which open the stage's details. The section is a tall
  * block with one stage panel held in place (position: sticky) while you scroll past it, and the stage changes as you go,
  * about a quarter of a screen of scrolling for each of the 13 stages. Scrolling is never captured or slowed: the page moves
  * as normal and the panel simply stays put. Which stage is showing comes from 13 invisible markers and an
@@ -59,6 +61,7 @@ export default function Workflow() {
   }, []);
 
   const [short, setShort] = useState(false); // the block is one screen tall while you are on your way back up
+  const [opened, setOpened] = useState<{ index: number; shot: number } | null>(null);
   const markers = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const total = ROADMAP_STAGES.length;
@@ -113,16 +116,16 @@ export default function Workflow() {
   return (
     <section id="roadmap" className="wf3-section sec-teal" aria-labelledby="wf-title">
       <div ref={trackRef} className={`wf3-track${short ? " is-short" : ""}`} data-no-reveal style={{ ["--n" as string]: total, ["--step" as string]: `${STEP_SVH}svh`, ["--p" as string]: active / (total - 1) }}>
-        <div className="wf3-stage" aria-hidden="true">
+        <div className="wf3-stage">
           <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 wf3-inner">
-            <div className="wf-head">
+            <div className="wf-head" aria-hidden="true">
               <p className="wf-eyebrow tech">Workflow</p>
               <p className="wf3-heading">From enquiry to handover</p>
               <p className="wf-lede">{total} stages on one job record. Each stage starts from what the one before it recorded.</p>
             </div>
 
             {/* phones: one line for where you are, and a bar of 13 segments, instead of the row of 13 numbered circles */}
-            <div className="wf-m">
+            <div className="wf-m" aria-hidden="true">
               <div className="wf-m-row">
                 <span className="wf-m-phase">{phase.label}</span>
                 <span className="wf-m-count">
@@ -137,14 +140,14 @@ export default function Workflow() {
               </div>
             </div>
 
-            <div className="wf2-phases tech">
+            <div className="wf2-phases tech" aria-hidden="true">
               {PHASES.map((p) => (
                 <span key={p.label} className={active > p.to ? "is-done" : active >= p.from ? "is-active" : ""} style={{ gridColumn: `${p.from + 1} / ${p.to + 2}`, ["--f" as string]: active > p.to ? 1 : active >= p.from ? (active - p.from + 1) / (p.to - p.from + 1) : 0 }}>
                   {p.label}
                 </span>
               ))}
             </div>
-            <div className="wf2-rail">
+            <div className="wf2-rail" aria-hidden="true">
               <span className="wf2-line" />
               <span className="wf2-fill" />
               <ol className="wf2-nodes">
@@ -157,7 +160,7 @@ export default function Workflow() {
             </div>
 
             <div key={stage.step} className="wf3-panel">
-              <div className="wf3-copy">
+              <div className="wf3-copy" aria-hidden="true">
                 <p className="wf-sub tech">{stage.subtitle}</p>
                 <p className="wf-title wf3-title">{stage.title}</p>
                 <p className="wf-desc">{stage.desc}</p>
@@ -172,10 +175,25 @@ export default function Workflow() {
                   </div>
                 </dl>
               </div>
-              <Screens step={stage.step} />
+              <Screens step={stage.step} title={stage.title} onOpen={(shot) => setOpened({ index: active, shot })} />
             </div>
           </div>
         </div>
+
+        {opened && (
+          <StageDialog
+            stages={ROADMAP_STAGES}
+            index={opened.index}
+            startShot={opened.shot}
+            onMove={(index) => setOpened({ index, shot: 0 })}
+            onClose={() => {
+              const shot = opened.shot;
+              setOpened(null);
+              // focus goes back to the screen that was opened
+              queueMicrotask(() => document.querySelector<HTMLElement>(`.wf3-shot.s${shot + 1}`)?.focus());
+            }}
+          />
+        )}
 
         {/* the markers: 13 blocks of scrolling, one per stage, held below the middle of the screen when the panel is pinned */}
         <div ref={markers} className="wf3-markers" aria-hidden="true">

@@ -23,7 +23,7 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     id: "windows-doors",
     slug: "windows-doors",
     number: "01",
-    title: "Aluminium Windows & Doors",
+    title: "Windows & Doors",
     parts: "Aluminium and uPVC",
     subtitle: "High-volume & bespoke residential and commercial systems",
     challenge:

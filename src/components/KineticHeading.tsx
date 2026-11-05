@@ -21,7 +21,7 @@ export default function KineticHeading({
   return (
     <Tag className={cn("kinetic", className)} aria-label={text.replace(/~/g, "").replace(/\n/g, " ")}>
       {text.split("\n").map((line, li) => {
-        // a line that starts with "~" is the accent line: it is set in the brand gradient
+        // a line that starts with "~" is the accent line: it is set in the brand blue
         const accent = line.startsWith("~");
         return (
           <span key={li} className={cn("kinetic-line", accent && "kinetic-accent")} aria-hidden="true">

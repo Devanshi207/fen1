@@ -2,10 +2,9 @@
 
 /* ===================================================================
    FEN1 design tokens
-   A colourful light enterprise palette: white and ice-blue pages, a blue-indigo-violet brand range, teal and green for
-   the workflow and status, deep slate text. Every surface is light: there are no dark sections anywhere on the site.
-   Gradients are used on purpose and sparingly: the hero headline, primary buttons and a few
-   accent lines. They are never glows, orbs or backgrounds for every section.
+   A light enterprise palette with one accent: the brand blue. Surfaces are white and a cool near-white, separated by hairlines;
+   text is deep slate. There are no hue gradients, no gradient text and no glows: colour is kept for the brand blue, for the
+   window drawing and for the ERP screens, so those are what the eye goes to. Every surface is light: there are no dark sections.
    Text on white: slate #1E2B45 (13:1), reading text #55637A (6:1), brand blue #0067C0 (5.4:1, white on it likewise).
    =================================================================== */
 @layer base {
@@ -15,13 +14,13 @@
     --font-tech: var(--font-sans); /* small labels use the text font: there is no separate typewriter font */
 
     --bg: #ffffff;
-    --surface: #f3f7ff;
+    --surface: #f5f7fa;
     --card: #ffffff;
     --ink: #1e2b45;
     --muted: #55637a;
     --subtle: #6F7C93;
-    --line: #dce6f5;
-    --line-strong: #c7d4ec;
+    --line: rgba(30, 43, 69, 0.1);
+    --line-strong: rgba(30, 43, 69, 0.18);
     --accent: #0067c0;
     --accent-mark: #0078d4;
     --accent-strong: #005a9e;
@@ -33,28 +32,14 @@
 
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-    /* brand range */
+    /* the one accent, its darker and softer steps, and the two status colours */
     --blue: #0078d4;
     --blue-deep: #005a9e;
-    --indigo: #4353d8;
-    --violet: #7655d9;
-    --lavender: #b66ce0;
-    --teal: #00a6a6;
-    --teal-text: #007a7a;
-    --lavender-text: #9333b8;
     --green: #27a66b;
     --amber: #f2a23a;
-    /* soft section backgrounds */
-    --ice: #f3f7ff;
+    /* the near-white page tone and the soft blue used for selection */
+    --ice: #f5f7fa;
     --soft-blue: #dcebff;
-    --soft-lavender: #e9e7ff;
-    --soft-teal: #e0f5f4;
-    --soft-pink: #f5d8ec;
-    /* gradients */
-    --grad-blue-indigo: linear-gradient(135deg, #0078d4 0%, #4353d8 100%);
-    --grad-indigo-violet: linear-gradient(135deg, #4353d8 0%, #7655d9 100%);
-    --grad-brand: linear-gradient(120deg, #0878d1 0%, #7655d9 58%, #b66ce0 100%);
-    --grad-teal-blue: linear-gradient(135deg, #00a6a6 0%, #0078d4 100%);
   }
 
   html {
@@ -81,20 +66,20 @@
 
 ::selection { background: var(--soft-blue); color: var(--ink); }
 
-/* Type scale: one place sets the weight of every page. Headings are IBM Plex Sans, body is Inter, technical labels are IBM Plex Mono. */
-h1, h2, h3, h4 { font-weight: 600 !important; }
-h1[class], h2[class], .font-display[class] { font-weight: 600 !important; }
-h3[class], h4[class] { font-weight: 600 !important; }
+/* Type scale: one place sets the weight of every page. Headings are IBM Plex Sans, body is Inter, small labels are Inter in sentence case. */
+h1, h2, h3, h4 { font-weight: 500 !important; }
+h1[class], h2[class], .font-display[class] { font-weight: 500 !important; }
+h3[class], h4[class] { font-weight: 500 !important; }
 h1, h2 { letter-spacing: -0.025em; }
 h1[class], h2[class], h3[class], h4[class] { font-family: var(--font-display) !important; }
 .font-display { font-family: var(--font-display); }
 .font-light, .font-normal { font-weight: 400 !important; }
 .font-medium { font-weight: 500 !important; }
-.font-semibold { font-weight: 600 !important; }
-.font-bold { font-weight: 600 !important; }
+.font-semibold { font-weight: 500 !important; }
+.font-bold { font-weight: 500 !important; }
 .font-mono, .tech {
   font-family: var(--font-tech) !important;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.01em;
   font-weight: 500;
   font-feature-settings: "tnum";
 }
@@ -102,7 +87,7 @@ h1[class], h2[class], h3[class], h4[class] { font-family: var(--font-display) !i
 .tech.about-n, .tech.sol-tab-num, .tech.train-n, .tech.wf2-node {
   font-family: var(--font-display) !important;
   letter-spacing: 0;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* Hide Next.js dev indicator / badge */
@@ -132,17 +117,15 @@ a[class~="bg-[#FFFFFF]"]:hover, button[class~="bg-[#FFFFFF]"]:hover, [class~="gr
   box-shadow: var(--shadow-lift);
 }
 
-/* Primary buttons and chips: blue to indigo (white text), the gradient slides a little on hover */
+/* Primary buttons and chips: solid brand blue, a darker step on hover */
 [class~="bg-[#0067C0]"] {
-  background-image: linear-gradient(135deg, #0067c0 0%, #4353d8 100%);
-  background-size: 160% 100%;
-  background-position: 0 0;
+  background-color: var(--accent);
   color: #fff !important;
   box-shadow: none;
-  transition: background-position 0.5s var(--ease), box-shadow 0.3s var(--ease), transform 0.25s var(--ease);
+  transition: background-color 0.18s var(--ease), border-color 0.18s var(--ease);
 }
 [class~="bg-[#0067C0]"] * { color: inherit; }
-[class~="bg-[#0067C0]"]:hover { background-position: 100% 0; box-shadow: 0 10px 22px -14px rgba(67, 83, 216, 0.55); }
+[class~="bg-[#0067C0]"]:hover { background-color: var(--accent-strong); }
 
 /* Technical annotation: a hairline measuring rule with end ticks, used above section labels */
 .tech-rule { position: relative; display: block; height: 1px; background: var(--line-strong); }
@@ -188,7 +171,7 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 
 /* Touch devices: fingers need at least ~44px hit areas */
 @media (pointer: coarse) {
-  footer a { display: inline-block; padding-block: 0.6rem; }
+  footer a { display: inline-block; padding-block: 0.5rem; }
   footer ul { row-gap: 0; }
   #modules button, main button[type="button"] { min-height: 44px; }
   header button { min-height: 44px; min-width: 44px; }
@@ -222,7 +205,7 @@ footer { padding-bottom: env(safe-area-inset-bottom); }
 /* The side timeline and cursor furniture stay out of the way while the menu is open */
 
 /* Header links: an underline draws in on hover and stays on the current page */
-.nav-link { position: relative; padding-block: 0.4rem; }
+.nav-link { position: relative; padding-block: 0.5rem; }
 .nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease); }
 .nav-link:hover::after, .nav-link[aria-current="page"]::after { transform: scaleX(1); }
 
@@ -238,7 +221,7 @@ a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 0.375re
 }
 .mod-tile {
   position: relative; display: flex; align-items: center; gap: 1rem; outline: none; cursor: default;
-  padding: 0.85rem 0.25rem; border-bottom: 1px solid #dce6f5;
+  padding: 0.75rem 0.25rem; border-bottom: 1px solid #dce6f5;
   transition: transform 0.4s var(--ease);
 }
 .mod-tile::before {
@@ -247,8 +230,8 @@ a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 0.375re
 }
 .mod-tile[data-active="true"] { transform: translateX(8px); }
 .mod-tile[data-active="true"]::before { transform: none; }
-.mod-tile-num { min-width: 1.6rem; font-size: 0.75rem; font-weight: 700; color: var(--subtle); transition: color 0.3s; }
-.mod-tile-title { flex: 1; font-size: 0.95rem; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; color: var(--ink); transition: color 0.3s; }
+.mod-tile-num { min-width: 1.6rem; font-size: 0.75rem; font-weight: 500; color: var(--subtle); transition: color 0.3s; }
+.mod-tile-title { flex: 1; font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; line-height: 1.2; color: var(--ink); transition: color 0.3s; }
 .mod-tile-icon { order: 2; width: 1rem; height: 1rem; color: var(--muted); transition: color 0.3s, transform 0.5s var(--ease); }
 .mod-tile[data-active="true"] .mod-tile-num, .mod-tile[data-active="true"] .mod-tile-title, .mod-tile[data-active="true"] .mod-tile-icon { color: #0067c0; }
 .mod-tile[data-active="true"] .mod-tile-icon { transform: rotate(-12deg) scale(1.2); }
@@ -261,3 +244,12 @@ a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 0.375re
   .hz[data-ready] .hz-hero-body > *, .hz[data-ready] .hz-scroll-cue { animation: none; }
   .hz-mark-img, .hz-mark-photo, .hz-tilt { transition: none; }
 }
+
+/* numbers sit in columns: tabular figures wherever a count or a step number is shown */
+.wf-m-count, .wf2-node, .sol-tab-num, .about-n, .train-n, .wiz-kicker, .flow-dlg-kicker { font-variant-numeric: tabular-nums; }
+
+/* one icon set, one stroke */
+.lucide { stroke-width: 1.5; }
+
+/* a visible focus ring for keyboard users, in the brand blue */
+:where(a, button, input, select, textarea, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
