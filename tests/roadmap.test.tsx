@@ -182,6 +182,11 @@ describe("Workflow (scroll-driven)", () => {
     expect(css()).toMatch(/@media \(max-width: 760px\) \{[^@]*\.wf3-shots \{ display: grid; grid-template-columns: 1fr 1fr;[^@]*\.wf3-shot\.s1 \{ grid-column: 1 \/ -1/);
   });
 
+  it("keeps all three screens on every phone: short phones lose the 'Worked in' lines first, never the screens", () => {
+    expect(css()).not.toMatch(/\.wf3-shot\.s2, \.wf3-shot\.s3 \{ display: none; \}/);
+    expect(css()).toMatch(/@media \(max-width: 760px\) and \(max-height: 720px\) \{\s*\.wf2-meta \{ display: none; \}/);
+  });
+
   it("blurs the other screens only where there is a pointer to hover with, not after a tap on a phone", () => {
     expect(css()).toMatch(/@media \(hover: hover\) \{\s*\.wf3-shots:has\(\.wf3-shot:hover\) \.wf3-shot \{/);
   });
