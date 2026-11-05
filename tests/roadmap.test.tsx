@@ -126,6 +126,25 @@ describe("Workflow (scroll-driven)", () => {
     expect(document.querySelector(".wf2-node.is-active")).toHaveTextContent("01");
   });
 
+  it("fills each phase bar along with the numbers, and the last number of a phase completes it", () => {
+    const io = stubObserver();
+    render(<Workflow />);
+    const fill = () => [...document.querySelectorAll<HTMLElement>(".wf2-phases span")].map((el) => Number(el.style.getPropertyValue("--f")));
+    expect(fill()).toEqual([0.25, 0, 0, 0]); // step 1: a quarter of "Win the job"
+    io.cross(3); // step 4 completes "Win the job"
+    expect(fill()).toEqual([1, 0, 0, 0]);
+    io.cross(4); // step 5 starts "Define it"
+    expect(fill()).toEqual([1, 0.5, 0, 0]);
+    io.cross(5);
+    expect(fill()).toEqual([1, 1, 0, 0]);
+    io.cross(10); // step 11 completes "Make it"
+    expect(fill()).toEqual([1, 1, 1, 0]);
+    io.cross(11);
+    expect(fill()).toEqual([1, 1, 1, 0.5]);
+    io.cross(12); // step 13 completes "Deliver it"
+    expect(fill()).toEqual([1, 1, 1, 1]);
+  });
+
   it("groups the stages into phases that cover all of them exactly once", () => {
     const covered = PHASES.flatMap((p) => Array.from({ length: p.to - p.from + 1 }, (_, i) => p.from + i));
     expect(covered).toEqual(ROADMAP_STAGES.map((_, i) => i));
@@ -140,9 +159,9 @@ describe("Workflow (scroll-driven)", () => {
     expect(document.querySelector(".wf3-stage")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("stays short enough to fit under the header on a phone: one column, no phase labels", () => {
+  it("stays short enough to fit under the header on a phone: one column, and only the current phase label", () => {
     expect(css()).toMatch(/@media \(max-width: 899px\) \{[^@]*\.wf3-panel \{ grid-template-columns: minmax\(0, 1fr\)/);
-    expect(css()).toMatch(/@media \(max-width: 760px\) \{[^@]*\.wf2-phases \{ display: none/);
+    expect(css()).toMatch(/@media \(max-width: 760px\) \{[^@]*\.wf2-phases span \{ display: none; \}[^@]*\.wf2-phases span\.is-active \{ display: block/); // phones show only the phase you are in
   });
 });
 

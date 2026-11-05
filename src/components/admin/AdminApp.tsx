@@ -68,11 +68,6 @@ export default function AdminApp() {
         </button>
       </div>
 
-      {session.defaultPassword && (
-        <p role="alert" className="adm-warn">
-          You are using the starting password. Anyone who knows it can sign in. Open the Account tab and change it now.
-        </p>
-      )}
       {!session.storage && (
         <p role="alert" className="adm-warn">
           Nothing can be saved yet: no database is connected. Add an Upstash Redis database (UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN) and redeploy. Until then new enquiries only reach the webhook, and job openings cannot be added.

@@ -79,9 +79,7 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 /* The main hero photo is revealed by a clip that wipes down, while the picture settles from 1.03 to 1 */
 .hero-media { position: relative; }
 /* a window frame in the brand gradient, offset behind the photograph */
-.hero-media::before { content: ""; position: absolute; inset: 16px -16px -16px 16px; border-radius: 0.75rem; padding: 2px; background: var(--grad-brand); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); pointer-events: none; }
 .hero-media .hero-frame { position: relative; z-index: 1; }
-@media (max-width: 639px) { .hero-media::before { inset: 10px -8px -10px 10px; } }
 .hero-media .hero-frame { animation: media-clip 1s var(--ease) backwards; animation-delay: var(--hs, 0ms); }
 @keyframes media-clip { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
 .hero-media .hero-frame img { animation: media-settle 1.4s var(--ease) backwards; animation-delay: var(--hs, 0ms); }
@@ -97,28 +95,34 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 .wf3-markers { position: absolute; top: calc(50svh - 4.4rem); left: 0; right: 0; pointer-events: none; }
 .wf3-markers span { display: block; height: var(--step, 24svh); }
 .wf-head { display: grid; gap: 0.4rem; max-width: 40rem; }
-.wf-eyebrow { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-text); }
+.wf-eyebrow { font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-text); }
 .wf3-heading { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); }
-.wf-lede { margin: 0; font-size: 0.92rem; color: var(--muted); }
-.wf-sub { margin: 0; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-.wf-title { margin: 0.25rem 0 0; font-size: clamp(1.3rem, 2.4vw, 1.9rem); letter-spacing: -0.01em; color: var(--ink); }
+.wf-lede { margin: 0; font-size: 1.05rem; color: var(--muted); }
+.wf-sub { margin: 0; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.wf-title { margin: 0.25rem 0 0; font-size: clamp(1.6rem, 2.9vw, 2.4rem); letter-spacing: -0.01em; color: var(--ink); }
 .wf3-title { font-family: var(--font-display); font-weight: 600; }
-.wf-desc { margin: 0.5rem 0 0; max-width: 34rem; font-size: 0.95rem; line-height: 1.6; color: var(--muted); }
-.wf2-phases { display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-.wf2-phases span { padding: 0 0 0.45rem 0.35rem; border-left: 1px solid var(--line-strong); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wf-desc { margin: 0.5rem 0 0; max-width: 36rem; font-size: 1.05rem; line-height: 1.6; color: var(--muted); }
+.wf2-phases { display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); }
+.wf2-phases span { position: relative; padding: 0.7rem 0 0.55rem 0.3rem; font-family: var(--font-display); font-size: clamp(1rem, 1.5vw, 1.3rem); font-weight: 600; letter-spacing: -0.005em; text-transform: none; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.4s var(--ease); }
+.wf2-phases span::before, .wf2-phases span::after { content: ""; position: absolute; left: 0.3rem; right: 0.3rem; top: 0; height: 4px; border-radius: 9999px; }
+.wf2-phases span::before { background: var(--line-strong); }
+/* the bar fills along with the numbers: whole for a finished phase, and up to the end of the current number for the phase you are in (so the last number of a phase completes its bar) */
+.wf2-phases span::after { background: var(--grad-teal-blue); transform-origin: left; transform: scaleX(var(--f, 0)); transition: transform 0.5s var(--ease); }
+.wf2-phases span.is-done { color: var(--teal-text); }
+.wf2-phases span.is-active { color: var(--ink); }
 .wf2-rail { position: relative; }
 .wf2-line, .wf2-fill { position: absolute; left: calc(100% / 26); right: calc(100% / 26); top: 50%; }
 .wf2-line { height: 1px; background: var(--line-strong); }
 .wf2-fill { height: 2px; margin-top: -0.5px; background: var(--grad-teal-blue); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform 0.5s var(--ease); }
 .wf2-nodes { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); }
 .wf2-nodes li { display: flex; justify-content: center; }
-.wf2-node { display: grid; place-items: center; width: clamp(1.7rem, 3.2vw, 2.4rem); aspect-ratio: 1; border-radius: 9999px; border: 1px solid var(--line-strong); background: var(--card); color: var(--muted); font-size: 0.72rem; transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease), color 0.3s var(--ease), scale 0.3s var(--ease); }
+.wf2-node { display: grid; place-items: center; width: clamp(2rem, 3.8vw, 2.9rem); aspect-ratio: 1; border-radius: 9999px; border: 1px solid var(--line-strong); background: var(--card); color: var(--muted); font-size: clamp(0.8rem, 1.2vw, 1rem); transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease), color 0.3s var(--ease), scale 0.3s var(--ease); }
 .wf2-node.is-done { border-color: var(--teal); color: var(--teal-text); }
 .wf2-node.is-active { background: var(--grad-teal-blue); border-color: var(--blue); color: #fff; scale: 1.12; }
 .wf3-panel { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(1.5rem, 3.5vw, 3.5rem); align-items: center; padding-top: 0.6rem; animation: panel-in 0.45s var(--ease) both; }
 .wf2-meta { display: grid; gap: 0.8rem 2rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); margin: 1rem 0 0; padding-top: 0.8rem; border-top: 1px solid var(--line); }
-.wf2-meta dt { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-.wf2-meta dd { margin: 0.2rem 0 0; font-size: 0.9rem; color: var(--ink); }
+.wf2-meta dt { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.wf2-meta dd { margin: 0.2rem 0 0; font-size: 1rem; color: var(--ink); }
 
 /* three screens in a row: the main one big in the middle, one small on each side.
    Point at one and it grows while the other two shrink and blur (only while one is pointed at, so the gaps do nothing). */
@@ -137,8 +141,10 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
   .wf3-panel { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
 }
 @media (max-width: 760px) {
-  .wf2-phases { display: none; }
-  .wf2-node { width: 1.6rem; font-size: 0.7rem; }
+  .wf2-phases { display: block; }
+  .wf2-phases span { display: none; }
+  .wf2-phases span.is-active { display: block; grid-column: auto !important; }
+  .wf2-node { width: 1.7rem; font-size: 0.72rem; }
   .wf3-shots { gap: 0.4rem; }
 }
 /* short screens: the panel must still fit under the header */
@@ -202,7 +208,7 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
   html { scroll-behavior: auto; }
   .reveal, .reveal[data-reveal], .reveal.reveal-alt:not(.in) { translate: none; transition: opacity 0.4s linear, transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-color 0.2s; }
   #page.page-in { animation: fade-in 0.3s linear backwards; }
-  .sol-panel, .wf3-panel, .wf3-shot { animation-name: fade-in; }
+  .sol-panel, .wf3-panel, .wf3-shot, .wiz-step, .wiz-done { animation-name: fade-in; }
   .hero-seq, .hero-media .hero-frame, .hero-media .hero-frame img { animation-name: fade-in; animation-duration: 0.5s; }
   .kinetic-inner { animation: fade-in 0.5s linear backwards; animation-delay: 0ms; }
   .intro-logo { animation-name: fade-in; animation-duration: 0.5s; }

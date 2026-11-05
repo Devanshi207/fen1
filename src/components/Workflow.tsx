@@ -110,7 +110,7 @@ export default function Workflow() {
 
             <div className="wf2-phases tech">
               {PHASES.map((p) => (
-                <span key={p.label} style={{ gridColumn: `${p.from + 1} / ${p.to + 2}` }}>
+                <span key={p.label} className={active > p.to ? "is-done" : active >= p.from ? "is-active" : ""} style={{ gridColumn: `${p.from + 1} / ${p.to + 2}`, ["--f" as string]: active > p.to ? 1 : active >= p.from ? (active - p.from + 1) / (p.to - p.from + 1) : 0 }}>
                   {p.label}
                 </span>
               ))}

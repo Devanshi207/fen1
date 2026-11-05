@@ -41,7 +41,7 @@
 @media (min-width: 900px) { .sol-body { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2rem, 4vw, 3.5rem); align-items: start; } }
 .sol-media { min-width: 0; }
 @media (min-width: 900px) { .sol-media { position: sticky; top: 9.4rem; } }
-.sol-photo { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0.5rem; border: 1px solid var(--tone-fill, var(--line)); background: var(--surface); box-shadow: 10px 10px 0 -2px color-mix(in srgb, var(--tone-fill, var(--blue)) 20%, white); transition: border-color 0.5s var(--ease), box-shadow 0.5s var(--ease); }
+.sol-photo { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0.5rem; background: var(--surface); }
 @media (min-width: 900px) { .sol-photo { aspect-ratio: 4 / 5; max-height: calc(100svh - 12.5rem); } }
 .sol-shot { position: absolute; inset: 0; z-index: 1; visibility: hidden; }
 .sol-shot.is-prev { visibility: visible; z-index: 2; }
@@ -53,6 +53,8 @@
 .sol-panel > :nth-child(4) { animation-delay: 0.28s; }
 .sol-panel > :nth-child(5) { animation-delay: 0.36s; }
 .sol-kicker { margin: 0; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tone-text, var(--accent)); transition: color 0.5s var(--ease); }
+.sol-parts { font-size: 0.6em; font-weight: 400; letter-spacing: 0; color: var(--muted); }
+.sol-tab .sol-parts { display: block; font-size: 0.78rem; line-height: 1.3; }
 .sol-title { margin: 0; font-size: clamp(1.6rem, 2.8vw, 2.3rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
 .sol-cols { display: grid; gap: 1.1rem; }
 .sol-text { margin: 0; font-size: 0.93rem; line-height: 1.6; color: var(--muted); }
@@ -114,9 +116,50 @@
 
 /* ---------- Contact: an ordinary two-column block; nothing pinned, cropped or pushed against an edge ---------- */
 .contact-grid { display: grid; gap: 2.5rem; }
-@media (min-width: 1024px) { .contact-grid { grid-template-columns: 5fr 6fr; gap: 4.5rem; align-items: start; } }
-.contact-photo { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 0.5rem; border: 1px solid var(--line); background: var(--surface); }
+@media (min-width: 1024px) { .contact-grid { grid-template-columns: 5fr 6fr; gap: 4.5rem; align-items: start; } .contact-photo { aspect-ratio: 4 / 3; } }
+.contact-photo { position: relative; aspect-ratio: 16 / 8; overflow: hidden; border-radius: 0.5rem; border: 1px solid var(--line); background: var(--surface); }
 .contact-form-title { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.02em; color: var(--ink); }
+
+
+/* ---------- Contact: the enquiry as one question at a time, answered by clicking ---------- */
+.wiz { position: relative; display: grid; gap: 1.1rem; align-content: start; min-height: 29rem; }
+.wiz-kicker { margin: 0; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.wiz-progress { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
+.wiz-progress span { height: 4px; border-radius: 9999px; background: var(--line-strong); transition: background 0.4s var(--ease); }
+.wiz-progress span.is-done { background: var(--blue); }
+.wiz-progress span.is-now { background: var(--grad-teal-blue); }
+.wiz-step { display: grid; gap: 1rem; animation: panel-in 0.4s var(--ease) both; }
+.wiz-step h2:focus, .wiz-done h2:focus { outline: none; }
+.wiz-help { margin: -0.4rem 0 0; font-size: 0.95rem; color: var(--muted); }
+.wiz-options { display: grid; gap: 0.6rem; }
+.wiz-opt { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; padding: 0.95rem 1.1rem; text-align: left; border: 1px solid var(--line-strong); border-radius: 0.5rem; background: var(--card); color: var(--ink); cursor: pointer; transition: border-color 0.25s var(--ease), background-color 0.25s var(--ease), box-shadow 0.25s var(--ease), translate 0.25s var(--ease); }
+.wiz-opt:hover { border-color: var(--blue); translate: 0 -1px; box-shadow: var(--shadow-soft); }
+.wiz-opt:focus-visible { outline: 3px solid color-mix(in srgb, var(--blue) 35%, white); outline-offset: 2px; }
+.wiz-opt.is-on { border-color: var(--blue); background: var(--soft-blue); }
+.wiz-opt-text { display: grid; gap: 0.15rem; min-width: 0; }
+.wiz-opt-title { font-size: 1.05rem; font-weight: 500; }
+.wiz-opt-hint { font-size: 0.88rem; color: var(--muted); }
+.wiz-opt-mark { flex: none; display: grid; place-items: center; width: 1.4rem; height: 1.4rem; border-radius: 9999px; border: 1px solid var(--line-strong); background: var(--card); color: #fff; transition: background-color 0.25s var(--ease), border-color 0.25s var(--ease); }
+.wiz-opt.is-on .wiz-opt-mark { background: var(--blue); border-color: var(--blue); }
+[role="checkbox"].wiz-opt .wiz-opt-mark { border-radius: 0.3rem; }
+.wiz-actions { display: flex; gap: 0.8rem; align-items: center; }
+.wiz-next { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.7rem 1.6rem; border: 0; border-radius: 9999px; background: #0067C0; color: #fff; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+.wiz-next:disabled { opacity: 0.5; cursor: not-allowed; }
+.wiz-back { justify-self: start; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0; border: 0; background: none; color: var(--muted); font-size: 0.92rem; cursor: pointer; }
+.wiz-back:hover { color: var(--ink); }
+.wiz-form { display: grid; gap: 0.9rem; }
+.wiz-grid { display: grid; gap: 0.9rem 1rem; }
+@media (min-width: 640px) { .wiz-grid { grid-template-columns: 1fr 1fr; } }
+.wiz-field { display: grid; gap: 0.35rem; }
+.wiz-field label { font-size: 0.85rem; font-weight: 500; color: var(--muted); }
+.wiz-field input, .wiz-field textarea { width: 100%; padding: 0.65rem 0.8rem; border: 1px solid var(--line-strong); border-radius: 0.4rem; background: var(--card); color: var(--ink); font-size: 1rem; outline: none; transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease); }
+.wiz-field input:focus, .wiz-field textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 15%, transparent); }
+.wiz-field input[aria-invalid="true"] { border-color: #A85E55; }
+.wiz-error { margin: 0; font-size: 0.82rem; color: #A85E55; }
+.wiz-failed { margin: 0; padding: 0.7rem 0.9rem; border: 1px solid #E8B9B4; border-radius: 0.4rem; background: #FBEAE8; color: #A85E55; font-size: 0.9rem; }
+.wiz-done { justify-items: start; padding-block: 1rem; animation: panel-in 0.5s var(--ease) both; }
+.wiz-done-icon { display: grid; place-items: center; width: 3.2rem; height: 3.2rem; border-radius: 9999px; background: var(--grad-teal-blue); color: #fff; }
+.wiz-done-text { margin: 0; max-width: 32rem; font-size: 1.05rem; line-height: 1.6; color: var(--muted); }
 
 /* ===================================================================
    Colour identity: each part of the page has its own light tone, so the page has a rhythm instead of one flat colour

@@ -1,20 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import EnquiryPanel from "@/components/EnquiryPanel";
+import StepWizard from "@/components/StepWizard";
 import { CONTACT_PHOTO } from "@/data/gallery";
-import { useTopic } from "@/lib/topic";
+import { CONTACT_WIZARD } from "@/lib/wizards";
 
 const PHOTO = CONTACT_PHOTO;
 
 /**
- * The last section: the one enquiry form ("I'd like a demo" or "I have a question") with a photograph beside it.
- * #demo and #question scroll here and pick the choice. Both columns are ordinary blocks with room around them, so
+ * The last section: the enquiry as five short questions, one at a time (see StepWizard), with a photograph beside it.
+ * #demo and #question scroll here and pick the first answer. Both columns are ordinary blocks with room around them, so
  * nothing is cropped and no text sits against an edge.
  */
 export default function ContactSection() {
-  const [topic, setTopic] = useTopic();
-
   return (
     <section id="contact" data-section="contact" className="contact-sec">
       <span id="demo" className="sec-anchor" aria-hidden="true" />
@@ -24,7 +22,7 @@ export default function ContactSection() {
           <Image src={PHOTO.src} alt={PHOTO.alt} fill sizes="(min-width: 1024px) 42vw, 100vw" quality={85} className="object-cover" style={PHOTO.position ? { objectPosition: PHOTO.position } : undefined} />
         </div>
         <div className="contact-form">
-          <EnquiryPanel topic={topic} onTopic={setTopic} headingClass="contact-form-title" />
+          <StepWizard config={CONTACT_WIZARD} />
         </div>
       </div>
     </section>

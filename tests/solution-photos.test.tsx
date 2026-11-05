@@ -33,7 +33,7 @@ describe("Solutions photographs", () => {
     expect(shots[1]).toHaveClass("is-active");
     expect(shots[0]).toHaveClass("is-prev");
     expect(shots[1].getAttribute("data-dir")).not.toBe(shots[0].getAttribute("data-dir"));
-    await user.click(screen.getAllByRole("tab")[3]);
+    await user.click(screen.getAllByRole("tab")[2]);
     expect([...document.querySelectorAll(".sol-shot")][1]).toHaveClass("is-prev");
   });
 

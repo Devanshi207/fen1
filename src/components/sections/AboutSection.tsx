@@ -7,7 +7,7 @@ export default function AboutSection() {
     <section id="about" data-section="about" className="page-sec sec-lavender">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead eyebrow="About FEN1" title="Built around how fenestration work runs">
-          One job record from the first enquiry to final handover, shared by sales, design, purchasing, production and site teams.
+          FEN1 is a Kyozon ERP product made for the fenestration industry. One job record runs from the first enquiry to final handover.
         </SectionHead>
 
         <div className="about-cols">

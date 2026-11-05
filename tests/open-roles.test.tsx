@@ -50,7 +50,7 @@ describe("OpenRoles", () => {
 });
 
 describe("Careers with published roles", () => {
-  it("shows the roles, then pre-fills the form when one is applied for", async () => {
+  it("shows the roles, then starts the application for that role when one is applied for", async () => {
     window.HTMLElement.prototype.scrollIntoView = vi.fn();
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [role] }) }));
     const user = userEvent.setup();
@@ -58,7 +58,9 @@ describe("Careers with published roles", () => {
     expect(await screen.findByRole("heading", { name: role.title })).toBeInTheDocument();
     expect(screen.queryByText(/No roles are listed here right now/)).toBeNull();
     await user.click(screen.getByRole("button", { name: /apply/i }));
-    await waitFor(() => expect(screen.getByLabelText(/applying for/i)).toHaveValue(role.title));
-    expect(screen.queryByLabelText(/where you could help/i)).toBeNull();
+    await waitFor(() => expect(screen.getByText(`Applying for: ${role.title}`)).toBeInTheDocument());
+    expect(screen.getByText("Question 1 of 4")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Where could you help?" })).toBeNull();
+    expect(screen.getByRole("heading", { level: 2, name: "How much experience do you have?" })).toBeInTheDocument();
   });
 });

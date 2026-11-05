@@ -3,6 +3,8 @@ export interface IndustrySolution {
   slug: string;
   number: string;
   title: string;
+  /** The sub-parts of the heading, shown smaller beside it, e.g. the materials or system types. */
+  parts?: string;
   subtitle: string;
   challenge: string;
   solutionSummary: string;
@@ -22,6 +24,7 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     slug: "windows-doors",
     number: "01",
     title: "Aluminium Windows & Doors",
+    parts: "Aluminium and uPVC",
     subtitle: "High-volume & bespoke residential and commercial systems",
     challenge:
       "Manual profile takeoff errors, incorrect double-miter saw cutting angles, miscalculated corner crimping tolerances, and disconnected dealer pricing led to high scrap and margin leakage.",
@@ -54,138 +57,54 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     ],
   },
   {
-    id: "glass",
-    slug: "glass",
+    id: "glass-railing",
+    slug: "glass-railing",
     number: "02",
-    title: "Glass Processing & IGUs",
-    subtitle: "Architectural, toughened, laminated & insulated glass manufacturing",
+    title: "Glass Railing",
+    subtitle: "Balustrades, balconies, staircases and terraces",
     challenge:
-      "Furnace batching inefficiencies, unaccounted glass breakages during edging/toughening, untracked A-frame stillage returns, and complex DGU argon gas certification.",
+      "Each run is cut to the site: glass sizes, post and clamp positions and fixings depend on exact measurements, so one survey error means glass re-ordered and an installer waiting.",
     solutionSummary:
-      "FEN1 provides complete 2D glass sheet optimization, tempering furnace bed batching, automated Low-E coating sensor logs, and GPS-tagged A-frame stillage circulation.",
-    workflow: [
-      "ENQUIRY",
-      "GLASS ESTIMATION",
-      "2D CUTTING OPTIMIZATION",
-      "PROCESSING (EDGING / CNC)",
-      "TEMPERING FURNACE",
-      "DGU / IGU ASSEMBLY",
-      "QC / DEW POINT",
-      "A-FRAME DISPATCH",
-    ],
+      "FEN1 turns site measurements into shop drawings and a bill of materials, orders toughened or laminated glass to size, and tracks every panel from the order to its fixing on site.",
+    workflow: ["CRM", "ESTIMATION", "SURVEY", "DESIGN", "PURCHASE", "PRODUCTION", "QUALITY", "INSTALLATION"],
     operationalJourney: [
-      { step: "01. Glass Requisition", action: "Automatic glass cut-list extracted from window BOMs with edge polishing & hole allowances.", module: "ESTIMATION" },
-      { step: "02. 2D CNC Nesting", action: "Jumbo sheet nesting optimized to maximize yield and minimize off-cut waste.", module: "PRODUCTION" },
-      { step: "03. Furnace Bed Queue", action: "Batching by glass thickness and Low-E orientation for automated furnace cycle tracking.", module: "PRODUCTION" },
-      { step: "04. Stillage Logistics", action: "A-frame stillage loading matrix calculated with tare weight and digital customer sign-off.", module: "LOGISTICS & DISPATCH" },
+      { step: "01. Quote from the run", action: "Estimator prices each run by length, glass type and fixing system, and the quotation follows from it.", module: "ESTIMATION" },
+      { step: "02. Measure the site", action: "Surveyor records each run, level and fixing point on site, and the figures go straight to design.", module: "SURVEY" },
+      { step: "03. Order glass to size", action: "Glass and hardware are ordered to the drawn sizes and received against the order.", module: "PURCHASE MANAGEMENT" },
+      { step: "04. Fit and hand over", action: "Installers work from the panel list, and the job is handed over with its record.", module: "PROJECT MANAGEMENT" },
     ],
-    relevantModules: ["ESTIMATION", "STORE", "PRODUCTION", "QUALITY CONTROL", "LOGISTICS & DISPATCH"],
+    relevantModules: ["ESTIMATION", "SURVEY", "DESIGN", "PURCHASE MANAGEMENT", "STORE", "PROJECT MANAGEMENT"],
     keyBenefits: [
-      "Dynamic 2D glass sheet nesting reducing raw float waste",
-      "A-frame stillage lifecycle & return deposit tracking",
-      "Gas-fill and test records kept for each insulating glass unit",
-      "Furnace bed utilisation reporting",
+      "Quotes built from each run, glass type and fixing",
+      "Site measurements carried into the drawings without retyping",
+      "Glass and hardware ordered to the drawn sizes",
+      "Every panel traceable from order to installation",
     ],
   },
   {
-    id: "fabrication",
-    slug: "fabrication",
+    id: "curtain-wall",
+    slug: "curtain-wall",
     number: "03",
-    title: "Aluminium Fabrication & Job Shops",
-    subtitle: "Architectural metalwork, louvers, railings, partitions & bespoke frames",
+    title: "Curtain Wall",
+    parts: "Unitised, semi-unitised and stick-built",
+    subtitle: "Curtain wall systems for commercial and high-rise buildings",
     challenge:
-      "Tracking diverse custom job orders, managing mixed raw material remnants across multiple clients, unpredictable labor hours, and inaccurate job costing.",
+      "A curtain wall is thousands of parts and units that must arrive in order and fit tight tolerances, so one late or wrong component can hold up the programme.",
     solutionSummary:
-      "FEN1 equips custom fabrication shops with job-card routing, off-cut barcode tracking, machine hour logging, and automated job profitability analysis.",
-    workflow: [
-      "JOB ENQUIRY",
-      "PARAMETRIC ESTIMATE",
-      "MATERIAL REQUISITION",
-      "JOB CARD ISSUE",
-      "SAWING & TAPPING",
-      "WELDING & COATING",
-      "JOB QC",
-      "DISPATCH & INVOICE",
-    ],
+      "FEN1 breaks the curtain wall into units and components, plans purchasing and production against the installation programme, and tracks each unit from the factory to its place on the building.",
+    workflow: ["CRM", "ESTIMATION", "SURVEY", "DESIGN", "PROJECT", "PURCHASE", "PRODUCTION", "QUALITY", "LOGISTICS", "INSTALLATION"],
     operationalJourney: [
-      { step: "01. Job Card Generation", action: "Estimator converts bespoke client drawing into multi-step fabrication job card.", module: "ESTIMATION" },
-      { step: "02. Off-Cut Allocation", action: "Store system matches cut lengths with existing remnant warehouse stock before cutting full 6.5m bars.", module: "STORE" },
-      { step: "03. Touchscreen Job Logging", action: "Operators log setup and machining times at assembly tablets.", module: "PRODUCTION" },
-      { step: "04. Real-Time Job Margin", action: "Accounts review actual material & labor consumed vs quote before dispatch.", module: "ACCOUNT" },
+      { step: "01. Estimate by system", action: "Estimation prices unitised, semi-unitised and stick-built systems from the same elevations.", module: "ESTIMATION" },
+      { step: "02. Detail and release", action: "Design produces shop drawings and part lists, released in the order the site needs them.", module: "DESIGN" },
+      { step: "03. Build and check", action: "Units are assembled and checked in the factory, or components cut and packed for stick-built work.", module: "PRODUCTION" },
+      { step: "04. Deliver and install", action: "Each unit is dispatched in sequence and installed against the programme.", module: "LOGISTICS & DISPATCH" },
     ],
-    relevantModules: ["ESTIMATION", "STORE", "PRODUCTION", "ACCOUNT", "TASK MANAGEMENT"],
+    relevantModules: ["ESTIMATION", "DESIGN", "PROJECT MANAGEMENT", "PURCHASE MANAGEMENT", "PRODUCTION", "QUALITY CONTROL", "LOGISTICS & DISPATCH"],
     keyBenefits: [
-      "Off-cut matching, so usable remnants are used before new bars are cut",
-      "Accurate actual-vs-estimated job margin analytics",
-      "Tablet-based shop-floor job card time tracking",
-      "Complete inventory traceability per client work order",
-    ],
-  },
-  {
-    id: "contractors",
-    slug: "contractors",
-    number: "04",
-    title: "Glazing & Fenestration Contractors",
-    subtitle: "Specialist supply-and-install contractors & site project managers",
-    challenge:
-      "Coordinating multiple factory suppliers, site survey variations, subcontractor claims, weather delays, on-site snag lists, and retention money recovery.",
-    solutionSummary:
-      "FEN1 links architectural drawings, supplier purchase orders, site survey audits, mobile snagging and client progressive valuations in one job record.",
-    workflow: [
-      "CLIENT TENDER",
-      "SUPPLIER RFQS",
-      "SURVEY AUDIT",
-      "SITE MOBILIZATION",
-      "DELIVERY RECEIPT",
-      "INSTALLATION QA",
-      "CLIENT HANDOVER",
-      "RETENTION RELEASE",
-    ],
-    operationalJourney: [
-      { step: "01. Supplier RFQ Matrix", action: "Contractor issues RFQs to glass processors and aluminium fabricators with automated comparison.", module: "PURCHASE MANAGEMENT" },
-      { step: "02. Site Dimension Audit", action: "Survey team catches structural masonry deviations before suppliers commence production.", module: "SURVEY" },
-      { step: "03. Mobile Snag Tracking", action: "Site team marks snags with photos and auto-assigns corrective tasks to installers.", module: "TASK MANAGEMENT" },
-      { step: "04. Valuation & Retention", action: "Tracks submitted claims, certified amounts, retention release dates, and bank guarantees.", module: "ACCOUNT" },
-    ],
-    relevantModules: ["PROJECT MANAGEMENT", "SURVEY", "PURCHASE MANAGEMENT", "TASK MANAGEMENT", "ACCOUNT"],
-    keyBenefits: [
-      "Real-time site snagging and subcontractor defect management",
-      "Automated retention money tracking and bank guarantee register",
-      "Full audit trail from initial tender to final project closure",
-      "Mobile site engineer app with offline survey capabilities",
-    ],
-  },
-  {
-    id: "dealers",
-    slug: "dealers",
-    number: "05",
-    title: "Dealers & Franchise Networks",
-    subtitle: "Authorized retail fabricators, showroom distributors & franchise networks",
-    challenge:
-      "Outdated price books, delayed quotation turnaround for homeowners and architects, lack of visibility into central factory extrusion inventory, and manual order re-entry.",
-    solutionSummary:
-      "FEN1 gives dealer networks a branded, self-service estimation and quotation portal with real-time central stock checks and orders passed to the factory without re-keying.",
-    workflow: [
-      "RETAIL ENQUIRY",
-      "DEALER ESTIMATOR",
-      "QUOTATION TO CLIENT",
-      "DEALER ORDER SUBMISSION",
-      "CENTRAL FACTORY CONFIRMATION",
-      "PRODUCTION QUEUE",
-      "DISPATCH TRACKING",
-    ],
-    operationalJourney: [
-      { step: "01. Fast Retail Estimate", action: "Dealer inputs opening dimensions and generates customer quote with approved retail margin in under 3 minutes.", module: "ESTIMATION" },
-      { step: "02. Central Stock Check", action: "Portal checks parent manufacturer profile and hardware availability instantly.", module: "STORE" },
-      { step: "03. One-Click Order Placement", action: "Dealer converts quote to Sales Order, instantly feeding central factory production.", module: "CRM" },
-      { step: "04. Live Order Status", action: "Dealer tracks order from cutting to delivery truck without needing to phone the factory.", module: "LOGISTICS & DISPATCH" },
-    ],
-    relevantModules: ["CRM", "ESTIMATION", "STORE", "LOGISTICS & DISPATCH", "ADMIN & SETTINGS"],
-    keyBenefits: [
-      "Dedicated dealer portal with multi-tier pricing rules",
-      "Dealer quotations reach the plant without being re-keyed",
-      "Live order fabrication status visible to dealer network",
-      "Automated credit limit and payment gateway controls",
+      "One job record for unitised, semi-unitised and stick-built systems",
+      "Purchasing and production planned against the installation programme",
+      "Units and components tracked from the factory to their place on the building",
+      "Drawings, part lists and site changes kept on the same job",
     ],
   },
 ];

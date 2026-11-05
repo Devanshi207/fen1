@@ -99,7 +99,7 @@ describe("Navbar on one page", () => {
 describe("SolutionsSection", () => {
   afterEach(() => window.history.replaceState(null, "", "/"));
 
-  it("opens on the first industry and lists all five as tabs", () => {
+  it("opens on the first industry and lists the three industries as tabs", () => {
     render(<SolutionsSection />);
     const tabs = screen.getAllByRole("tab");
     expect(tabs).toHaveLength(INDUSTRY_SOLUTIONS.length);
@@ -110,16 +110,16 @@ describe("SolutionsSection", () => {
   it("switches the panel on click and with the arrow keys", async () => {
     const user = userEvent.setup();
     render(<SolutionsSection />);
-    await user.click(screen.getAllByRole("tab")[2]);
-    expect(screen.getByRole("tabpanel")).toHaveTextContent(INDUSTRY_SOLUTIONS[2].solutionSummary);
+    await user.click(screen.getAllByRole("tab")[1]);
+    expect(screen.getByRole("tabpanel")).toHaveTextContent(INDUSTRY_SOLUTIONS[1].solutionSummary);
     await user.keyboard("{ArrowDown}");
-    expect(screen.getByRole("tabpanel")).toHaveTextContent(INDUSTRY_SOLUTIONS[3].title);
+    expect(screen.getByRole("tabpanel")).toHaveTextContent(INDUSTRY_SOLUTIONS[2].title);
   });
 
-  it("opens an industry when a link points at it (#glass)", async () => {
-    window.history.replaceState(null, "", "/#glass");
+  it("opens an industry when a link points at it (#curtain-wall)", async () => {
+    window.history.replaceState(null, "", "/#curtain-wall");
     render(<SolutionsSection />);
-    await vi.waitFor(() => expect(screen.getByRole("tabpanel")).toHaveTextContent("Glass Processing"));
+    await vi.waitFor(() => expect(screen.getByRole("tabpanel")).toHaveTextContent("Curtain Wall"));
   });
 
   it("has an anchor for every industry and for the modules, and lists every module", () => {

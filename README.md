@@ -1,7 +1,7 @@
 # FEN1
 
 Marketing and product site for **FEN1**, an ERP built for glass, aluminium and window businesses. It presents the
-modules, the industry solutions and the enquiry-to-handover roadmap, and has one enquiry form where a visitor either asks for a demo or sends a question, and a careers section with its own form.
+modules, the industry solutions and the enquiry-to-handover roadmap, and has one enquiry where a visitor either asks for a demo or sends a question by clicking through five short questions, one at a time, and a careers section with its own form.
 
 Built with Next.js (App Router), React, TypeScript and Tailwind CSS v4.
 
@@ -54,14 +54,14 @@ Copy `.env.example` to `.env.local` and set:
 | `/admin`        | Password-protected: the enquiry inbox and job openings (not linked from the site, not indexed) |
 
 Within the page, the header links are `#home`, `#solutions`, `#about`, `#training`, `#careers` and `#contact`; the header
-highlights whichever part is in the middle of the screen and keeps the address in step. Deeper links: `#windows-doors`,
-`#glass`, `#fabrication`, `#contractors`, `#dealers` (open that industry), `#modules`, `#roles`, and `#demo` / `#question`
-(scroll to the enquiry form and pick that choice). The old page addresses (`/solutions`, `/about`, `/training`,
+highlights whichever part is in the middle of the screen and keeps the address in step. Deeper links:
+`#windows-doors`, `#glass-railing`, `#curtain-wall` (open that industry), `#modules`, `#roles`, and `#demo` / `#question`
+(scroll to the enquiry and pick the first answer, opening on the second question). The old page addresses (`/solutions`, `/about`, `/training`,
 `/careers`, `/request-demo`, `/contact`, `/products`) redirect to the matching part of the page.
 
 ## Admin: job openings and the enquiry inbox
 
-`/admin` is for the team. The starting password is `123456` (or `ADMIN_PASSWORD` if you set it); **change it straight away on the Account tab** (the page warns you until you do). Then:
+`/admin` is for the team. The starting password is `123456` (or `ADMIN_PASSWORD` if you set it); **change it straight away on the Account tab**. Then:
 
 - **Enquiries**: every demo request, question and job application, newest first. Filter by type and by waiting / handled,
   search, open one to see everything the visitor typed, reply by email, mark it handled, delete it, or export the filtered
@@ -124,7 +124,7 @@ tests/            Vitest + Testing Library
   splash. To change it, replace those files and keep the same names.
 - Clicking a link scrolls so a part's first line lands just under the header: each section's stop point is worked out from its own top
   padding (`--pad` in `sections.css`), so changing a section's padding does not bring back a big gap.
-- Type: IBM Plex Sans for headings, Inter for text, IBM Plex Mono for technical labels (`font-mono` / `.tech`), all
+- Type: IBM Plex Sans for headings, Inter for text, the same Inter for the small uppercase labels (`font-mono` / `.tech`, which no longer use a monospace font), all
   through `next/font`. Weights are set in one block at the top of `globals.css`.
 - Technical-drawing details: `.tech-rule` (a measuring rule with end ticks) and `.tech-grid` (hairline blueprint grid),
   plus the engineering-line animation of the opening FEN1 mark.
@@ -161,7 +161,7 @@ tests/            Vitest + Testing Library
   - **ERP screens** (`src/data/stageScreens.ts`): RIGHT NOW THESE ARE DEMO IMAGES, wireframe placeholders in `public/erp/` (three
     per stage, 39 in all, marked "Demo image" on the picture, showing no data). To use real FEN1 screenshots, drop them in
     `public/erp/` and change the file names in that one data file (three per stage, 16:10 works best).
-  - **Solutions** (`SolutionsSection`): the five industries as tabs, each with its own photograph (`SOLUTION_PHOTOS` in
+  - **Solutions** (`SolutionsSection`): the three industries (aluminium and uPVC windows and doors, glass railing, curtain wall) as tabs, each with its own photograph (`SOLUTION_PHOTOS` in
     `src/data/gallery.ts`). The photos are stacked; choosing an industry wipes its photo in over the last one from alternating
     sides while it settles from 1.03 to 1, and the text enters after it. The industry tabs and an up / down arrow pair stay in
     view while you read (sticky), and choosing an industry from further down brings its photo back into view. Nothing is pinned,

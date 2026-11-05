@@ -20,11 +20,9 @@ export const DRAWING_PHOTO: Photo = { src: U("photo-1787491581136-9aa210574b49")
 /** One photograph per industry on the Solutions section, keyed by the industry's id (see data/solutions.ts). */
 export const SOLUTION_PHOTOS: Record<string, Photo> = {
   "windows-doors": { src: U("photo-1783125127079-7cbd3bc4c468"), alt: "Floor-to-ceiling black aluminium window frames in a bright room" },
-  glass: { src: U("photo-1641787354718-46774dd8f94a"), alt: "A structural glass wall held by point-fixed fittings, with the sky reflected in it" },
-  fabrication: { src: U("photo-1738966523829-5d3c195abce3"), alt: "Aluminium profiles lying on blue steel racking in a workshop" },
-  contractors: { src: U("photo-1751486403820-7cf45ebec080"), alt: "A new window frame being installed, with protective film and tape, and scaffolding outside" },
-  dealers: { src: U("photo-1761714500078-1ffb601924c2"), alt: "A bright glazed entrance hall with long shadows on the floor" },
+  "glass-railing": { src: U("photo-1758862528822-b0094ae44705"), alt: "A glass balcony railing with steel posts along the face of a stone-clad building" },
+  "curtain-wall": { src: U("photo-1641787354718-46774dd8f94a"), alt: "A glass curtain-wall building with the sky reflected in its panels" },
 };
 
 /** The photographs on the full-screen menu, one per link, in the order of the links. */
-export const MENU_PHOTOS: Photo[] = [HERO_PHOTO, SOLUTION_PHOTOS["windows-doors"], SOLUTION_PHOTOS.glass, SOLUTION_PHOTOS.fabrication, SOLUTION_PHOTOS.contractors, CONTACT_PHOTO];
+export const MENU_PHOTOS: Photo[] = [HERO_PHOTO, SOLUTION_PHOTOS["windows-doors"], SOLUTION_PHOTOS["glass-railing"], SOLUTION_PHOTOS["curtain-wall"], DRAWING_PHOTO, CONTACT_PHOTO];

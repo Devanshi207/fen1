@@ -82,7 +82,7 @@ export default function Footer() {
               <Image src="/brand/fen1-logo.png" alt="FEN1" width={900} height={294} sizes="140px" className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-[#55637A] max-w-sm leading-relaxed">
-              ERP for aluminium fabrication, glass processing and glazing contractors: one job record from enquiry to handover.
+              An ERP by Kyozon for the fenestration industry: one job record from enquiry to handover.
             </p>
           </div>
 
@@ -93,10 +93,8 @@ export default function Footer() {
             </span>
             <ul className="space-y-1.5 text-xs">
               <li><Link href="#windows-doors" className="hover:text-[#1E2B45] transition-colors">Windows & Doors</Link></li>
-              <li><Link href="#glass" className="hover:text-[#1E2B45] transition-colors">Glass Processing & IGUs</Link></li>
-              <li><Link href="#fabrication" className="hover:text-[#1E2B45] transition-colors">Aluminium Fabrication</Link></li>
-              <li><Link href="#contractors" className="hover:text-[#1E2B45] transition-colors">Glazing Contractors</Link></li>
-              <li><Link href="#dealers" className="hover:text-[#1E2B45] transition-colors">Dealer Networks</Link></li>
+              <li><Link href="#glass-railing" className="hover:text-[#1E2B45] transition-colors">Glass Railing</Link></li>
+              <li><Link href="#curtain-wall" className="hover:text-[#1E2B45] transition-colors">Curtain Wall</Link></li>
               <li><Link href="#modules" className="hover:text-[#1E2B45] transition-colors">All Modules</Link></li>
             </ul>
           </div>

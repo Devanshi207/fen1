@@ -81,6 +81,6 @@ describe("light colourful theme", () => {
     const layout = readFileSync(join("src", "app", "layout.tsx"), "utf8");
     expect(layout).toMatch(/IBM_Plex_Sans/);
     expect(layout).toMatch(/\bInter\(/);
-    expect(layout).toMatch(/IBM_Plex_Mono/);
+    expect(layout).not.toMatch(/IBM_Plex_Mono/); // no typewriter font: labels use Inter
   });
 });

@@ -12,7 +12,7 @@
   :root {
     --font-sans: var(--font-inter), "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-display: var(--font-plex), "IBM Plex Sans", system-ui, sans-serif;
-    --font-tech: var(--font-plexmono), "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    --font-tech: var(--font-sans); /* small labels use the text font: there is no separate typewriter font */
 
     --bg: #ffffff;
     --surface: #f3f7ff;
@@ -255,7 +255,7 @@ a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 0.375re
 @media (prefers-reduced-motion: reduce) { .mod-tile, .mod-tile::before, .mod-tile-icon { transition: none; } }
 
 /* Hero photo frame: four project photos take turns (5s each, 20s loop) */
-.hero-frame { position: relative; margin: 0; aspect-ratio: 3 / 2; width: 100%; max-height: 70svh; border-radius: 0.5rem; overflow: hidden; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-lift); }
+.hero-frame { position: relative; margin: 0; aspect-ratio: 3 / 2; width: 100%; max-height: 70svh; border-radius: 0.5rem; overflow: hidden; background: var(--surface); }
 @media (prefers-reduced-motion: reduce) {
   .hz-loader { transition-duration: 0.01ms; }
   .hz[data-ready] .hz-hero-body > *, .hz[data-ready] .hz-scroll-cue { animation: none; }

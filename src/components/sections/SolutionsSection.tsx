@@ -13,18 +13,16 @@ import ModuleList from "@/components/ModuleList";
 import SectionHead from "./SectionHead";
 
 /**
- * The five industries as tabs across the top, which stay in view. Photo and content sit side by side, so the section is about one
+ * The industries as tabs across the top, which stay in view. Photo and content sit side by side, so the section is about one
  * screen tall. Each industry has its own photograph: the photos sit stacked, and choosing an industry wipes its photo
  * in over the last one while it settles from 1.03 to 1, then the text enters. Nothing is pinned and no scroll engine is
- * involved. Below the tabs, every module as a numbered list. A link to #glass, #windows-doors and so on scrolls here and opens that industry.
+ * involved. Below the tabs, every module as a numbered list. A link to #glass-railing, #windows-doors and so on scrolls here and opens that industry.
  */
 /** One colour per industry, used for its tab, its number and the frame behind its photo. */
 const TONES: Record<string, { fill: string; text: string }> = {
   "windows-doors": { fill: "var(--blue)", text: "var(--accent)" },
-  glass: { fill: "var(--teal)", text: "var(--teal-text)" },
-  fabrication: { fill: "var(--indigo)", text: "var(--indigo)" },
-  contractors: { fill: "var(--violet)", text: "var(--violet)" },
-  dealers: { fill: "var(--lavender)", text: "var(--lavender-text)" },
+  "glass-railing": { fill: "var(--teal)", text: "var(--teal-text)" },
+  "curtain-wall": { fill: "var(--indigo)", text: "var(--indigo)" },
 };
 const toneStyle = (id: string) => ({ ["--tone-fill" as string]: TONES[id].fill, ["--tone-text" as string]: TONES[id].text });
 
@@ -73,7 +71,7 @@ export default function SolutionsSection() {
       ))}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead eyebrow="Solutions" title="Set up for each part of the fenestration trade">
-          FEN1 is configured for glass processing plants, aluminium window fabricators, glazing contractors and dealer networks. Choose an industry to see how a job runs.
+          FEN1 is set up for aluminium and uPVC windows and doors, glass railing and curtain wall. Choose one to see how a job runs.
         </SectionHead>
 
         <div ref={ref} className={`sol ${seen ? "is-in" : ""}`} data-no-reveal>
@@ -98,7 +96,10 @@ export default function SolutionsSection() {
                   onKeyDown={(e) => onKey(e, i)}
                 >
                   <span className="tech sol-tab-num">{x.number}</span>
-                  <span className="sol-tab-title">{x.title}</span>
+                  <span className="sol-tab-title">
+                    {x.title}
+                    {x.parts && <small className="sol-parts"> ({x.parts})</small>}
+                  </span>
                 </button>
               ))}
             </div>
@@ -130,7 +131,10 @@ export default function SolutionsSection() {
               <p className="tech sol-kicker">
                 {s.number} &nbsp;{s.subtitle}
               </p>
-              <h3 className="sol-title">{s.title}</h3>
+              <h3 className="sol-title">
+                {s.title}
+                {s.parts && <small className="sol-parts"> ({s.parts})</small>}
+              </h3>
               <div className="sol-cols">
                 <div>
                   <p className="sol-label tech">The problem</p>

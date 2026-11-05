@@ -16,7 +16,7 @@ describe("hero", () => {
     render(<Page />);
     const h1 = screen.getByRole("heading", { level: 1 });
     expect(h1).toHaveAccessibleName("Engineering the business behind every window.");
-    expect(screen.getByText("One connected operating platform for aluminium, glass, windows, doors and façade manufacturers.")).toBeInTheDocument();
+    expect(screen.getByText("FEN1 is an ERP product under Kyozon, built for aluminium windows, doors, façades, curtain walls and glass systems.")).toBeInTheDocument();
   });
 
   it("sets the second line of the headline in the brand gradient", () => {
@@ -33,9 +33,11 @@ describe("hero", () => {
     expect(within(hero).queryByText(/request a demo|explore the platform/i)).toBeNull();
   });
 
-  it("has a white-to-ice-blue background and a window-frame outline in the brand gradient behind the photo", () => {
+  it("has a white-to-ice-blue background, and the photo has no border or outline", () => {
     expect(/\.hero-bg \{[^}]*\}/.exec(css("sections.css"))![0]).toMatch(/#ffffff[^;]*var\(--ice\)/);
-    expect(css("motion.css")).toMatch(/\.hero-media::before \{[^}]*var\(--grad-brand\)/);
+    expect(css("motion.css")).not.toMatch(/\.hero-media::before/);
+    expect(/\.hero-frame \{[^}]*\}/.exec(css("globals.css"))![0]).not.toMatch(/border:|box-shadow/);
+    expect(/\.sol-photo \{[^}]*\}/.exec(css("sections.css"))![0]).not.toMatch(/border:|box-shadow/);
   });
 });
 
@@ -80,7 +82,7 @@ describe("section identities", () => {
       await user.click(tab);
       fills.add((document.querySelector(".sol-body") as HTMLElement).style.getPropertyValue("--tone-fill"));
     }
-    expect(fills.size).toBe(5);
+    expect(fills.size).toBe(3);
   });
 });
 

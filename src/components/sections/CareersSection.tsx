@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import EnquiryForm from "@/components/EnquiryForm";
-import { CAREER_FIELDS, CAREER_FIELDS_FOR_ROLE, CAREER_INITIAL } from "@/data/enquiryForms";
+import { useEffect, useMemo, useState } from "react";
+import StepWizard from "@/components/StepWizard";
+import { careersWizard } from "@/lib/wizards";
 import OpenRoles, { loadOpenRoles, type OpenRole } from "./OpenRoles";
 import SectionHead from "./SectionHead";
 
@@ -30,7 +30,7 @@ const PATHS = [
   },
 ];
 
-const STEPS = ["Tell us about yourself below", "We read it and get back to you if there is a fit", "A conversation about the work, not a quiz"];
+const STEPS = ["Answer a few quick questions", "We read it and get back to you if there is a fit", "A conversation about the work, not a quiz"];
 
 export default function CareersSection() {
   const [roles, setRoles] = useState<OpenRole[]>([]);
@@ -43,6 +43,8 @@ export default function CareersSection() {
       live = false;
     };
   }, []);
+
+  const wizard = useMemo(() => careersWizard(role?.title), [role]);
 
   const apply = (r: OpenRole) => {
     setRole(r);
@@ -82,15 +84,7 @@ export default function CareersSection() {
             <p className="career-note">{roles.length > 0 ? "Do not see a fit? Send your details anyway and we will get in touch when one does." : "No roles are listed here right now. Send your details and we will get in touch when one fits."}</p>
           </div>
           <div className="career-form" id="apply">
-            <EnquiryForm
-              key={role?.id ?? "general"}
-              kind="careers"
-              fields={role ? CAREER_FIELDS_FOR_ROLE : CAREER_FIELDS}
-              initial={{ ...CAREER_INITIAL, role: role?.title ?? "" }}
-              submitLabel="Send my details"
-              doneTitle="Thank you"
-              doneText="We have your details. If there is a role that fits, we will get in touch."
-            />
+            <StepWizard key={role?.id ?? "general"} config={wizard} />
           </div>
         </div>
       </div>
