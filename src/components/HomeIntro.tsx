@@ -50,7 +50,7 @@ export default function HomeIntro() {
   return createPortal(
     <div className={`intro ${out ? "is-out" : ""}`} role="status" aria-label="Loading FEN1">
       <div className="intro-lockup">
-        <Image src="/brand/fen1-logo.png" alt="" width={900} height={294} priority sizes="22rem" className="intro-logo" />
+        <Image src="/brand/fen1-logo-2.png" alt="" width={1996} height={803} priority sizes="22rem" className="intro-logo" />
         <span className="intro-track" aria-hidden="true">
           <span className="intro-bar" />
         </span>

@@ -48,9 +48,9 @@ Copy `.env.example` to `.env.local` and set:
 
 | Route           | Purpose                                                           |
 | --------------- | ----------------------------------------------------------------- |
-| `/`             | Home: the hero with one enquiry button, the window drawing, and a table of what goes wrong without one system against the FEN1 way |
+| `/`             | Home: the hero with one enquiry button, and a table of what goes wrong without one system against the FEN1 way |
 | `/about`        | About FEN1: Why FEN1 (speed, simplicity, performance, industry expertise), the director's profile and the foundations underneath the modules |
-| `/solutions`    | What every solution includes, Windows & Doors, Glass Railing and Curtain Wall as tabs (each with the modules it uses), then the whole job from enquiry to handover, stage by stage (the Workflow) |
+| `/solutions`    | What every solution includes, Windows & Doors, Glass Railing and Curtain Wall as tabs (each with the modules it uses); above them, the whole job from enquiry to handover, stage by stage (the Workflow) |
 | `/training`     | Training by role |
 | `/careers`      | Careers: open roles and the job application |
 | `/contact`      | Contact us: the enquiry, with a demo, a question or a meeting request |
@@ -127,7 +127,7 @@ tests/            Vitest + Testing Library
   module icons are coloured by their module group, with a legend; Careers is ice blue with violet; the footer is ice blue. Gradients are used only for the hero headline accent, primary
   buttons, the window-frame outline and the workflow line: never as glows, orbs or glass, and not on every
   section. `tests/theme.test.ts` enforces the palette, no dark backgrounds and no radial or conic gradients.
-- The logo is `public/brand/fen1-logo.png` (the supplied artwork with a transparent background; `fen1-mark.png` is the window mark
+- The logo is `public/brand/fen1-logo-2.png` (the supplied artwork with a transparent background; `fen1-mark.png` is the window mark
   alone, and `src/app/icon.png` is the browser tab icon). It is used in the header, the footer, the admin header and the opening
   splash. To change it, replace those files and keep the same names.
 - Clicking a link scrolls so a part's first line lands just under the header: each section's stop point is worked out from its own top
@@ -160,9 +160,8 @@ tests/            Vitest + Testing Library
   - **Scroll reveals** (`MotionProvider`): the top-most element of each group (a card, a heading, a paragraph, a list item) fades
     up in order; delay maths is in `src/lib/stagger.ts`. Route changes get a short fade with a few pixels of lift; header and
     footer stay put, and there is no loading screen between pages.
-  - **Window drawing** (`WindowDrawing`): an aluminium window elevation, its width and height dimensions and a section through
-    the profile are drawn in SVG strokes, then resolve into a photograph. The dimension labels are letters (W, H), not numbers.
-  - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`; it is on the Solutions page, below the industry tabs): driven by scrolling. The only things to click are the ERP screens: selecting one opens the stage in a dialog (`StageDialog`), with the screen larger and the stage's description, the module it is worked in and the record it leaves, plus Previous / Next step through all 13 stages, a switch between the stage's three screens, and Escape, Close or a click outside to close (the page behind does not scroll while it is open). It
+  - There is no window drawing and no photograph on any page (only the images in the full-screen menu remain).
+  - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`; it is on the Solutions page, at the top, above the industry tabs): driven by scrolling. The only things to click are the ERP screens: selecting one opens the stage in a dialog (`StageDialog`), with the screen larger and the stage's description, the module it is worked in and the record it leaves, plus Previous / Next step through all 13 stages, a switch between the stage's three screens, and Escape, Close or a click outside to close (the page behind does not scroll while it is open). It
     is a tall block (about four screens of scrolling in all, a quarter of a screen per stage) with one panel held in place
     (`position: sticky`) while you scroll past it; the stage changes as you go: scrolling down walks through stages 1 to 13, and coming back up from the next section (Solutions) shows step 1 at once and shrinks the block to one screen, so Home is one scroll away instead of four (it grows back once you are above it); this is the same on every screen size. The page scrolls as normal and nothing captures the
     wheel. The stage comes from 13 invisible markers and an `IntersectionObserver` (no scroll listener, and it re-renders only when

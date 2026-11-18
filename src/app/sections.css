@@ -169,7 +169,6 @@
 .qr-title { margin: 0; font-size: 1rem; font-weight: 500; color: var(--ink); }
 .qr-text { margin: 0.25rem 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--muted); }
 .book-grid { display: block; }
-.contact-photo { position: relative; width: 100%; max-width: var(--photo-max); aspect-ratio: 3 / 2; overflow: hidden; border-radius: 0.5rem; background: var(--surface); }
 /* wide screens: a card-sized photo beside the form, both starting at the top like every other page */
 @media (min-width: 1024px) {
   .contact-grid { grid-template-columns: minmax(0, var(--photo-max)) minmax(0, 1fr); gap: 4.5rem; align-items: start; }
@@ -221,7 +220,7 @@
    One neutral rhythm: white and a cool near-white in turn, with a hairline between parts. The only colour is the brand blue.
    =================================================================== */
 .hero-bg { background: #ffffff; }
-#drawing, #solutions, #training, #contact { background: var(--surface); }
+#solutions, #training, #contact { background: var(--surface); }
 /* a page of its own: the section fills the screen under the header, and the header's own line is the only rule above it */
 #solutions, #about, #training, #careers, #contact { min-height: calc(100svh - 5rem); border-top: 0; }
 #roadmap, #about, #careers { background: #ffffff; }

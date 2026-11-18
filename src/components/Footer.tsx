@@ -82,7 +82,7 @@ export default function Footer() {
           {/* Brand Col */}
           <div className="col-span-2 md:col-span-6 space-y-4">
             <Link href="/" aria-label="FEN1, home" onClick={toTopIfHere("/", pathname)} className="inline-flex">
-              <Image src="/brand/fen1-logo.png" alt="FEN1" width={900} height={294} sizes="140px" className="h-10 w-auto" />
+              <Image src="/brand/fen1-logo-2.png" alt="FEN1" width={1996} height={803} sizes="140px" className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-[#55637A] max-w-sm leading-relaxed">
               An ERP by Kyozon for the fenestration industry: one job record from enquiry to handover.

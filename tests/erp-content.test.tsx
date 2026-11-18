@@ -120,10 +120,10 @@ describe("the notes on the pages", () => {
 });
 
 describe("each thing is said on one page only", () => {
-  it("Home: the hero, the window drawing and the table: no Workflow, no overview list, no summary of the table", () => {
+  it("Home: the hero and the table: no Workflow, no overview list, no summary of the table", () => {
     render(<HomeSection />);
     expect(document.getElementById("intro")).toBeTruthy();
-    expect(document.getElementById("drawing")).toBeTruthy();
+    expect(document.getElementById("drawing")).toBeNull();
     expect(document.getElementById("compare")).toBeTruthy();
     expect(document.getElementById("roadmap")).toBeNull();
     expect(document.getElementById("covers")).toBeNull();

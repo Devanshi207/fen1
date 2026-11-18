@@ -50,7 +50,7 @@ describe("the site's pages", () => {
     expect(titles).toEqual(["Solutions", "About", "Training", "Careers", "Contact us"]);
   });
 
-  it("has no small blue label above the heading of any page, and none above Workflow or the window drawing on Home", () => {
+  it("has no small blue label above the heading of any page, and none above Workflow on Home", () => {
     for (const [, Component] of PAGES) {
       const { unmount } = render(<Component />);
       expect(document.querySelector(".sec-eyebrow, .wd-eyebrow, .wf-eyebrow")).toBeNull();
@@ -240,12 +240,11 @@ describe("AboutSection", () => {
       expect(cells[1]).toHaveTextContent(PRINCIPLES[i].text);
     });
     expect(document.querySelector(".compare-closing")).toHaveTextContent(CLOSING.title);
-    const drawing = document.getElementById("drawing")!;
-    expect(drawing.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(document.getElementById("drawing")).toBeNull();
     expect(screen.getByRole("heading", { level: 2, name: "From scattered tools to one system" })).toBeInTheDocument();
   });
 
-  it("the Workflow is on Solutions and not on Home, so the whole job is told once, below the industry tabs", () => {
+  it("the Workflow is on Solutions and not on Home, so the whole job is told once, above the industry tabs", () => {
     const { unmount } = render(<Page />);
     expect(document.getElementById("roadmap")).toBeNull();
     expect(document.body).not.toHaveTextContent("From enquiry to handover");
@@ -254,7 +253,7 @@ describe("AboutSection", () => {
     const roadmap = document.getElementById("roadmap")!;
     expect(roadmap).toBeTruthy();
     expect(screen.getByText("From enquiry to handover", { selector: ".wf3-heading" })).toBeInTheDocument();
-    expect(document.getElementById("solutions")!.compareDocumentPosition(roadmap) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(roadmap.compareDocumentPosition(document.getElementById("solutions")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("has no Fen1 ERP page: the address redirects to Solutions, and the header and footer do not link to it", async () => {

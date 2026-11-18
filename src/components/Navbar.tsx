@@ -60,7 +60,7 @@ export default function Navbar() {
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 flex items-center justify-between">
           {/* FEN1 Brand Logo */}
           <Link href="/" aria-label="FEN1, home" onClick={toTopIfHere("/", pathname)} className="flex items-center">
-            <Image src="/brand/fen1-logo.png" alt="FEN1" width={900} height={294} priority sizes="120px" className="h-9 w-auto" />
+            <Image src="/brand/fen1-logo-2.png" alt="FEN1" width={1996} height={803} priority sizes="120px" className="h-9 w-auto" />
           </Link>
 
           {/* Page links, one click away on wide screens (the full-screen menu is for smaller ones) */}

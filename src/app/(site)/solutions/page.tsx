@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <div className="w-full bg-white text-[#1E2B45] font-sans">
-      <SolutionsSection />
       <Workflow />
+      <SolutionsSection />
     </div>
   );
 }

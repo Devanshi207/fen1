@@ -4,7 +4,6 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import MotionProvider from "@/components/MotionProvider";
 import HomeIntro, { INTRO_SEEN } from "@/components/HomeIntro";
-import WindowDrawing from "@/components/WindowDrawing";
 import { revealOnce, watchCentre } from "@/lib/inview";
 
 /** A controllable IntersectionObserver: tests decide when elements "scroll into view". */
@@ -202,33 +201,6 @@ describe("HomeIntro (opening splash)", () => {
   });
 });
 
-describe("WindowDrawing (signature animation)", () => {
-  beforeEach(() => {
-    FakeIO.all = [];
-    vi.stubGlobal("IntersectionObserver", FakeIO);
-  });
-  afterEach(() => vi.unstubAllGlobals());
-
-  it("holds the drawing, the labels and the finished photograph, with no invented measurements", () => {
-    render(<WindowDrawing />);
-    const svg = screen.getByRole("img", { name: "Technical drawing of an aluminium window" });
-    expect(svg.querySelectorAll(".wd-line").length).toBeGreaterThan(10);
-    expect(svg.querySelectorAll(".wd-dot")).toHaveLength(6);
-    const labels = [...svg.querySelectorAll("text")].map((t) => t.textContent);
-    expect(labels).toEqual(expect.arrayContaining(["W", "H", "SECTION A-A", "THERMAL BREAK", "GLAZING"]));
-    expect(labels.join(" ")).not.toMatch(/\d{3,}/);
-    expect(document.querySelector(".wd-photo img")).toBeTruthy();
-  });
-
-  it("starts drawing only once it scrolls into view, and only once", () => {
-    render(<WindowDrawing />);
-    const stage = document.querySelector(".wd") as HTMLElement;
-    expect(stage).not.toHaveClass("is-in");
-    act(() => FakeIO.all[0].show(stage));
-    expect(stage).toHaveClass("is-in");
-  });
-});
-
 describe("motion stylesheet", () => {
   const css = readFileSync(join("src", "app", "motion.css"), "utf8");
 
@@ -246,10 +218,9 @@ describe("motion stylesheet", () => {
     expect(Math.max(...travel)).toBeLessThanOrEqual(30);
   });
 
-  it("only hides content under (scripting: enabled), and respects reduced motion", () => {
-    expect(css).toContain("@media (scripting: enabled)");
+  it("hides nothing outside (scripting: enabled), and respects reduced motion", () => {
     expect(css).toContain("@media (prefers-reduced-motion: reduce)");
-    // the hidden start states of the workflow, features and drawing are all inside a scripting block
+    // the hidden start states of the workflow and features are all inside a scripting block
     const outside = css.replace(/@media \(scripting: enabled\) \{[\s\S]*?\n\}\n/g, "");
     expect(outside).not.toMatch(/\.wf-content \{[^}]*opacity: 0/);
     expect(outside).not.toMatch(/\.feat-media \{ clip-path/);

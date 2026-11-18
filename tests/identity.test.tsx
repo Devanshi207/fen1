@@ -48,10 +48,9 @@ describe("hero", () => {
     expect(within(hero).queryByText(/request a demo|explore the platform/i)).toBeNull();
   });
 
-  it("has a plain white background, and the photo has no border or outline", () => {
+  it("has a plain white background, and the hero has no photo", () => {
     expect(/\.hero-bg \{[^}]*\}/.exec(css("sections.css"))![0]).toBe(".hero-bg { background: #ffffff; }");
     expect(css("motion.css")).not.toMatch(/\.hero-media::before/);
-    expect(/\.hero-frame \{[^}]*\}/.exec(css("globals.css"))![0]).not.toMatch(/border:|box-shadow/);
   });
 });
 
@@ -67,10 +66,11 @@ describe("KineticHeading accent", () => {
 describe("section identities", () => {
   it("keeps every part of the page in one neutral rhythm: white and a cool near-white in turn, with hairlines, and no tinted gradient", () => {
     render(<Page />);
-    for (const id of ["drawing", "compare"]) expect(document.getElementById(id)).toBeTruthy();
+    expect(document.getElementById("compare")).toBeTruthy();
+    expect(document.getElementById("drawing")).toBeNull(); // no window drawing
     expect(document.getElementById("roadmap")).toBeNull(); // the Workflow is on the Solutions page
     const sections = css("sections.css");
-    expect(sections).toMatch(/#drawing, #solutions, #training, #contact \{ background: var\(--surface\); \}/);
+    expect(sections).toMatch(/#solutions, #training, #contact \{ background: var\(--surface\); \}/);
     expect(sections).toMatch(/#roadmap, #about, #careers \{ background: #ffffff; \}/);
     expect(sections).not.toMatch(/linear-gradient|soft-lavender|soft-teal|soft-pink/);
     expect(css("globals.css")).toMatch(/--surface: #f5f7fa/);

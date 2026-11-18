@@ -10,22 +10,22 @@ const css = (name: string) => readFileSync(join("src", "app", name), "utf8");
 
 describe("FEN1 logo", () => {
   it("ships the logo, a transparent version of the supplied artwork, and the tab icon", () => {
-    for (const f of [join("public", "brand", "fen1-logo.png"), join("public", "brand", "fen1-mark.png"), join("src", "app", "icon.png")]) expect(existsSync(f)).toBe(true);
+    for (const f of [join("public", "brand", "fen1-logo-2.png"), join("public", "brand", "fen1-mark.png"), join("src", "app", "icon.png")]) expect(existsSync(f)).toBe(true);
     expect(existsSync(join("src", "app", "icon.svg"))).toBe(false);
     // a PNG with an alpha channel (colour type 6)
-    expect(readFileSync(join("public", "brand", "fen1-logo.png")).readUInt8(25)).toBe(6);
+    expect(readFileSync(join("public", "brand", "fen1-logo-2.png")).readUInt8(25)).toBe(6);
   });
 
   it("is the header's brand, linking to the home page", () => {
     render(<Navbar />);
     const link = screen.getByRole("link", { name: /FEN1, home/ });
     expect(link).toHaveAttribute("href", "/");
-    expect(within(link).getByRole("img", { name: "FEN1" })).toHaveAttribute("src", expect.stringContaining("fen1-logo.png"));
+    expect(within(link).getByRole("img", { name: "FEN1" })).toHaveAttribute("src", expect.stringContaining("fen1-logo-2.png"));
   });
 
   it("is in the footer too", () => {
     render(<Footer />);
-    expect(screen.getByRole("img", { name: "FEN1" })).toHaveAttribute("src", expect.stringContaining("fen1-logo.png"));
+    expect(screen.getByRole("img", { name: "FEN1" })).toHaveAttribute("src", expect.stringContaining("fen1-logo-2.png"));
   });
 });
 
