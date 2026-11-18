@@ -9,33 +9,25 @@ import CareersSection from "@/components/sections/CareersSection";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
 import { SOLUTION_PHOTOS } from "@/data/gallery";
 
-describe("Solutions photographs", () => {
-  it("has a photograph for every industry, each different", () => {
-    for (const s of INDUSTRY_SOLUTIONS) expect(SOLUTION_PHOTOS[s.id]?.src).toMatch(/^https:\/\/images\.unsplash\.com\/photo-/);
-    const srcs = INDUSTRY_SOLUTIONS.map((s) => SOLUTION_PHOTOS[s.id].src);
-    expect(new Set(srcs).size).toBe(srcs.length);
-    for (const s of INDUSTRY_SOLUTIONS) expect(SOLUTION_PHOTOS[s.id].alt.length).toBeGreaterThan(5);
-  });
-
-  it("stacks the photos, with only the chosen industry's on top and described", () => {
+describe("Solutions layout", () => {
+  it("has no photograph: each industry opens as one wide, horizontal panel", () => {
     render(<SolutionsSection />);
-    const shots = [...document.querySelectorAll(".sol-shot")];
-    expect(shots).toHaveLength(INDUSTRY_SOLUTIONS.length);
-    expect(shots.filter((s) => s.classList.contains("is-active"))).toHaveLength(1);
-    expect(shots[0]).toHaveClass("is-active");
-    expect(screen.getAllByRole("img", { name: SOLUTION_PHOTOS["windows-doors"].alt })).toHaveLength(1);
+    expect(document.querySelector(".sol-media, .sol-photo, .sol-shot, img")).toBeNull();
+    const panel = screen.getByRole("tabpanel");
+    expect(panel.querySelector(".sol-head")).toBeTruthy();
+    expect(panel.querySelectorAll(".sol-journey-list li").length).toBeGreaterThan(2);
+    const css = readFileSync(join("src", "app", "sections.css"), "utf8");
+    expect(/\.sol-journey-list \{[^}]*\}/.exec(css)![0]).toMatch(/repeat\(auto-fit/);
+    expect(css).toMatch(/\.sol-head \{ grid-template-columns: minmax\(0, 5fr\) minmax\(0, 7fr\)/);
+    expect(/\.sol-mods/.test(css) && document.querySelector(".sol-mods .notes-4")).toBeTruthy();
   });
 
-  it("wipes the next photo in over the last one: the old photo stays underneath, and the side alternates", async () => {
+  it("changes the panel with the tab, and the photos stay for the menu only", async () => {
     const user = userEvent.setup();
     render(<SolutionsSection />);
     await user.click(screen.getAllByRole("tab")[1]);
-    const shots = [...document.querySelectorAll(".sol-shot")];
-    expect(shots[1]).toHaveClass("is-active");
-    expect(shots[0]).toHaveClass("is-prev");
-    expect(shots[1].getAttribute("data-dir")).not.toBe(shots[0].getAttribute("data-dir"));
-    await user.click(screen.getAllByRole("tab")[2]);
-    expect([...document.querySelectorAll(".sol-shot")][1]).toHaveClass("is-prev");
+    expect(screen.getByRole("tabpanel")).toHaveTextContent(INDUSTRY_SOLUTIONS[1].title);
+    for (const s of INDUSTRY_SOLUTIONS) expect(SOLUTION_PHOTOS[s.id]?.src).toMatch(/^https:\/\/images\.unsplash\.com\/photo-/);
   });
 
   it("is the only place the industry photos appear: the home page has no second photo block", () => {

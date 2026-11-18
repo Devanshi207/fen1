@@ -9,7 +9,7 @@ export default function HeroGallery() {
   const g = HERO_PHOTO;
   return (
     <figure className="hero-frame" aria-label={g.alt}>
-      <Image src={g.src} alt={g.alt} fill priority sizes="(min-width: 1024px) 45vw, 100vw" quality={85} className="object-cover" style={g.position ? { objectPosition: g.position } : undefined} />
+      <Image src={g.src} alt={g.alt} fill priority sizes="(max-width: 440px) 100vw, 440px" className="object-cover" style={g.position ? { objectPosition: g.position } : undefined} />
     </figure>
   );
 }

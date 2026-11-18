@@ -58,7 +58,7 @@ describe("Workflow (scroll-driven)", () => {
     expect(dlg).toHaveAttribute("aria-modal", "true");
     expect(within(dlg).getByRole("heading", { name: est.title })).toBeInTheDocument();
     expect(dlg).toHaveTextContent(est.desc);
-    expect(dlg).toHaveTextContent(est.module);
+    expect(dlg).not.toHaveTextContent("Worked in");
     expect(dlg).toHaveTextContent(est.record);
     expect(dlg).toHaveTextContent("Step 03 of 13");
     // it opens on the screen that was clicked
@@ -131,7 +131,8 @@ describe("Workflow (scroll-driven)", () => {
     io.cross(5);
     expect(document.querySelector(".wf3-title")).toHaveTextContent(ROADMAP_STAGES[5].title);
     expect(document.querySelector(".wf3-copy")).toHaveTextContent(ROADMAP_STAGES[5].desc);
-    expect(document.querySelector(".wf3-copy")).toHaveTextContent(ROADMAP_STAGES[5].module);
+    expect(document.querySelector(".wf3-copy")).not.toHaveTextContent("Worked in");
+    expect(document.querySelector(".wf3-copy")).toHaveTextContent(ROADMAP_STAGES[5].record);
     expect(document.querySelector(".wf2-node.is-active")).toHaveTextContent("06");
     expect(document.querySelectorAll(".wf2-node.is-done")).toHaveLength(5);
     expect((document.querySelector(".wf3-track") as HTMLElement).style.getPropertyValue("--p")).toBe(String(5 / 12));
@@ -197,8 +198,8 @@ describe("Workflow (scroll-driven)", () => {
     expect(bar().filter((s) => s.className === "is-done")).toHaveLength(6);
     expect(bar()[6]).toHaveClass("is-now");
     // on a phone the circles and the phase bars give way to it
-    expect(css()).toMatch(/@media \(max-width: 760px\) \{[^@]*\.wf2-phases, \.wf2-rail, \.wf-lede, \.wf-eyebrow \{ display: none; \}[^@]*\.wf-m \{ display: grid/);
-    expect(rule(".wf-m")).toMatch(/display: none/);
+    expect(css()).toMatch(/@media \(max-width: 760px\) \{[^@]*\.wf2-phases, \.wf2-rail, \.wf-lede \{ display: none; \}[^@]*\.wf-m \{ display: grid/);
+    expect(rule(".wf-m, .wf-tap")).toMatch(/display: none/);
   });
 
 
@@ -241,9 +242,17 @@ describe("Workflow (scroll-driven)", () => {
     expect(css()).toMatch(/@media \(max-width: 760px\) \{[^@]*\.wf3-shots \{ display: grid; grid-template-columns: 1fr 1fr;[^@]*\.wf3-shot\.s1 \{ grid-column: 1 \/ -1/);
   });
 
-  it("keeps all three screens on every phone: short phones lose the 'Worked in' lines first, never the screens", () => {
+  it("shows the stage's text once on a phone: the panel keeps the title and the screens, and the details are in the window a screen opens", () => {
+    const phone = /@media \(max-width: 760px\) \{[^@]*\}\n/.exec(css())![0];
+    expect(phone).toMatch(/\.wf-desc, \.wf2-meta \{ display: none; \}/);
+    expect(phone).toMatch(/\.wf-tap \{ display: block;/);
+    expect(rule(".wf-m, .wf-tap")).toMatch(/display: none/);
+    // the screens are 16:10, so they are not cropped, and all three stay on every phone
+    expect(phone).toMatch(/\.wf3-shot\.s1, \.wf3-shot\.s2, \.wf3-shot\.s3 \{ aspect-ratio: 16 \/ 10; \}/);
     expect(css()).not.toMatch(/\.wf3-shot\.s2, \.wf3-shot\.s3 \{ display: none; \}/);
-    expect(css()).toMatch(/@media \(max-width: 760px\) and \(max-height: 720px\) \{\s*\.wf2-meta \{ display: none; \}/);
+    expect(css()).not.toMatch(/aspect-ratio: 16 \/ 7|aspect-ratio: 2 \/ 1/);
+    render(<Workflow />);
+    expect(document.querySelector(".wf-tap")).toHaveTextContent("Tap a screen to open the details");
   });
 
   it("blurs the other screens only where there is a pointer to hover with, not after a tap on a phone", () => {

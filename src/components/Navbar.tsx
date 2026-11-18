@@ -7,14 +7,15 @@ import Image from "next/image";
 import { MENU_PHOTOS } from "@/data/gallery";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toTopIfHere } from "@/lib/toTop";
 
 const NAV_LINKS = [
   { name: "Home", href: "/", note: "The FEN1 overview" },
-  { name: "Solutions", href: "/solutions", note: "Windows and doors, glass railing, curtain wall" },
-  { name: "About", href: "/about", note: "Why FEN1 exists" },
+  { name: "About", href: "/about", note: "Why FEN1, and who is behind it" },
+  { name: "Solutions", href: "/solutions", note: "Windows and doors, glass railing, curtain wall, and the whole job" },
   { name: "Training", href: "/training", note: "Getting your team up to speed" },
   { name: "Careers", href: "/careers", note: "Work with us" },
-  { name: "Contact us", href: "/contact", note: "Talk to the team" },
+  { name: "Contact us", href: "/contact", note: "Enquire or book a meeting" },
 ];
 
 export default function Navbar() {
@@ -58,7 +59,7 @@ export default function Navbar() {
       <header data-scrolled={scrolled} className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#DCE6F5] py-4">
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 flex items-center justify-between">
           {/* FEN1 Brand Logo */}
-          <Link href="/" aria-label="FEN1, home" className="flex items-center">
+          <Link href="/" aria-label="FEN1, home" onClick={toTopIfHere("/", pathname)} className="flex items-center">
             <Image src="/brand/fen1-logo.png" alt="FEN1" width={900} height={294} priority sizes="120px" className="h-9 w-auto" />
           </Link>
 
@@ -70,6 +71,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
+                  onClick={toTopIfHere(link.href, pathname)}
                   aria-current={isCurrentLink ? "page" : undefined}
                   className={cn("nav-link text-sm font-medium", isCurrentLink ? "text-[#0067C0]" : "text-[#55637A] hover:text-[#1E2B45]")}
                 >
@@ -109,7 +111,10 @@ export default function Navbar() {
                   <li key={link.name} style={{ "--i": i } as React.CSSProperties} data-dim={hovered !== null && hovered !== link.name}>
                     <Link
                       href={link.href}
-                      onClick={() => setMobileOpen(false)}
+                      onClick={(e) => {
+                        toTopIfHere(link.href, pathname)(e);
+                        setMobileOpen(false);
+                      }}
                       onMouseEnter={() => setHovered(link.name)}
                       onFocus={() => setHovered(link.name)}
                       className="flex items-center gap-4 py-2.5 sm:py-4 border-b border-[#DCE6F5] group"

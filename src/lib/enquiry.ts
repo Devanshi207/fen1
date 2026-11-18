@@ -1,4 +1,4 @@
-export type EnquiryKind = "contact" | "demo" | "careers";
+export type EnquiryKind = "contact" | "demo" | "careers" | "meeting";
 
 export interface Enquiry {
   kind: EnquiryKind;
@@ -27,7 +27,7 @@ export function validateEnquiry(input: unknown): EnquiryResult {
   const raw = (typeof input === "object" && input !== null ? input : {}) as Record<string, unknown>;
   const errors: Record<string, string> = {};
 
-  const kind = raw.kind === "demo" ? "demo" : raw.kind === "contact" ? "contact" : raw.kind === "careers" ? "careers" : null;
+  const kind = raw.kind === "demo" || raw.kind === "contact" || raw.kind === "careers" || raw.kind === "meeting" ? raw.kind : null;
   if (!kind) errors.kind = "Unknown form";
 
   const name = text(raw.name, MAX.short);

@@ -6,15 +6,16 @@ export function resolveTopic(param: string | null): Topic {
   return param === "question" ? "question" : "demo";
 }
 
-/** The part of the page a link opens: "#question" and "#demo" both scroll to the enquiry form and pick that choice. */
+/** The part of the page a link opens: "#question", "#demo" and "#meeting" scroll to the enquiry form and pick that choice. */
 export function topicHref(topic: Topic): string {
-  return topic === "question" ? "#question" : "#demo";
+  return topic === "question" ? "#question" : topic === "meeting" ? "#meeting" : "#demo";
 }
 
 /** What a page address asks for: the hash (#question, #demo) first, then an old ?topic=question; null when it asks for nothing. */
 export function topicFromLocation(hash: string, search: string): Topic | null {
   if (hash === "#question") return "question";
   if (hash === "#demo") return "demo";
+  if (hash === "#meeting") return "meeting";
   return new URLSearchParams(search).get("topic") === "question" ? "question" : null;
 }
 

@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { toTopIfHere } from "@/lib/toTop";
 import Image from "next/image";
 import { ArrowRight, X } from "lucide-react";
 
@@ -69,6 +71,7 @@ function LegalDialog({ id, onClose }: { id: LegalKey; onClose: () => void }) {
 }
 
 export default function Footer() {
+  const pathname = usePathname();
   const [legal, setLegal] = useState<LegalKey | null>(null);
   const close = () => setLegal(null);
   return (
@@ -78,7 +81,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-12 gap-8 pb-14 border-b border-[#DCE6F5]">
           {/* Brand Col */}
           <div className="col-span-2 md:col-span-6 space-y-4">
-            <Link href="/" aria-label="FEN1, home" className="inline-flex">
+            <Link href="/" aria-label="FEN1, home" onClick={toTopIfHere("/", pathname)} className="inline-flex">
               <Image src="/brand/fen1-logo.png" alt="FEN1" width={900} height={294} sizes="140px" className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-[#55637A] max-w-sm leading-relaxed">
@@ -121,6 +124,7 @@ export default function Footer() {
               <li><Link href="/careers" className="hover:text-[#1E2B45] transition-colors">Careers</Link></li>
               <li><Link href="/contact#question" className="hover:text-[#1E2B45] transition-colors">Contact us</Link></li>
               <li><Link href="/contact#demo" className="hover:text-[#1E2B45] transition-colors">Request a demo</Link></li>
+              <li><Link href="/contact#meeting" className="hover:text-[#1E2B45] transition-colors">Book a meeting</Link></li>
               <li className="pt-2 text-[13px] text-[#0067C0] font-medium">Legal</li>
               <li><button type="button" onClick={() => setLegal("privacy")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Privacy policy</button></li>
               <li><button type="button" onClick={() => setLegal("terms")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Terms of service</button></li>

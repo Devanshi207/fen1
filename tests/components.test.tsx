@@ -27,7 +27,7 @@ describe("Navbar menu", () => {
     expect(menu).toHaveAttribute("data-open", "true");
     expect(within(menu).getAllByRole("link")).toHaveLength(6);
     // every entry is a link to a page of its own
-    expect(within(menu).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/", "/solutions", "/about", "/training", "/careers", "/contact"]);
+    expect(within(menu).getAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/", "/about", "/solutions", "/training", "/careers", "/contact"]);
     await user.keyboard("{Escape}");
     expect(screen.getAllByRole("button")[0]).toHaveAttribute("aria-expanded", "false");
     // closed, it stays in the page (so it can wipe away) but is marked hidden

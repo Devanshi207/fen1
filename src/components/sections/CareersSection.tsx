@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import StepWizard from "@/components/StepWizard";
 import { careersWizard } from "@/lib/wizards";
+import { CAREERS_WORK } from "@/data/erpContent";
+import ModuleNotes from "./ModuleNotes";
 import OpenRoles, { loadOpenRoles, type OpenRole } from "./OpenRoles";
 import SectionHead from "./SectionHead";
 
@@ -54,7 +56,7 @@ export default function CareersSection() {
   return (
     <section id="careers" data-section="careers" className="page-sec page-sec-alt sec-violet">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="Careers" title="Work where software meets the shop floor">
+        <SectionHead title="Work where software meets the shop floor">
           FEN1 is built for the people who make windows, glass and aluminium work. We want to hear from them, and from people who build good software.
         </SectionHead>
 
@@ -68,6 +70,11 @@ export default function CareersSection() {
               <p className="path-roles">{p.roles}</p>
             </div>
           ))}
+        </div>
+
+        <div className="career-build">
+          <p className="sol-label tech">What you would work on</p>
+          <ModuleNotes notes={CAREERS_WORK} cols={2} />
         </div>
 
         <div className="career-apply">

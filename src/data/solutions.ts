@@ -43,10 +43,10 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
       "INSTALLATION",
     ],
     operationalJourney: [
-      { step: "01. Enquiry & Takeoff", action: "Estimator imports DWG elevations, selects sliding/casement series, and calculates cost BOM in minutes.", module: "ESTIMATION" },
-      { step: "02. Millimetrical Survey", action: "Site surveyor records laser plumb levels and masonry tolerance checks via mobile app.", module: "SURVEY" },
-      { step: "03. Direct CNC Saws", action: "Production scheduler pushes 1D linear nested cutting lists directly to double-miter saws.", module: "PRODUCTION" },
-      { step: "04. Quality & QR Barcoding", action: "Each assembled sash and outer frame receives a QR tracking tag for dispatch and warranty.", module: "QUALITY CONTROL" },
+      { step: "01. Enquiry and takeoff", action: "The estimator reviews the drawings, picks the product series and prepares the cost estimate for the quotation.", module: "ESTIMATION" },
+      { step: "02. Site survey", action: "The surveyor records the measurements and photos of every opening on site and files the survey report.", module: "SURVEY" },
+      { step: "03. Cutting lists", action: "Design approves the sizes, optimises the profile lengths and produces the cutting list for the saws.", module: "DESIGN" },
+      { step: "04. Quality and dispatch", action: "Each unit is inspected before it leaves, and the delivery challan and packing list go out with the load.", module: "QUALITY CONTROL" },
     ],
     relevantModules: ["ESTIMATION", "DESIGN", "STORE", "PRODUCTION", "QUALITY CONTROL", "LOGISTICS & DISPATCH"],
     keyBenefits: [

@@ -22,6 +22,10 @@ export interface WizardStep {
   multi?: boolean;
   /** With multi: an answer that stands alone and clears the others ("Not sure yet") */
   exclusive?: string;
+  /** Adds an "Other" choice that opens a box to write your own answer (the label above the box). Single-answer questions only. */
+  other?: string;
+  /** Asked only when this is true for the answers so far (a meeting asks for a day and a time; a demo does not) */
+  show?: (answers: Answers) => boolean;
 }
 
 export interface DetailField {
@@ -47,6 +51,11 @@ export interface WizardConfig {
   /** Opens the form with answers already made, e.g. from a link. Called once the form is on the page; returns its cleanup. */
   link?: (open: (answers: Answers, step: number) => void, currentStep: () => number) => () => void;
 }
+
+/** The choice added by `other`; what the person wrote follows it, as "Other: ...". */
+export const OTHER = "Other";
+const OTHER_PREFIX = `${OTHER}: `;
+const isOther = (v?: string) => v === OTHER || !!v?.startsWith(OTHER_PREFIX);
 
 /** The options of one question, as big buttons. One answer (radio) or several (checkbox). */
 function Options({ label, options, selected, multi, onPick }: { label: string; options: StepOption[]; selected: string[]; multi?: boolean; onPick: (value: string) => void }) {
@@ -87,11 +96,13 @@ function Options({ label, options, selected, multi, onPick }: { label: string; o
  * (see lib/wizards.ts), so the contact enquiry and the job application are the same component.
  */
 export default function StepWizard({ config }: { config: WizardConfig }) {
-  const { steps, fields } = config;
-  const last = steps.length; // the details question comes after the option questions
-  const total = steps.length + 1;
+  const { fields } = config;
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
+  // the questions that apply to the answers so far
+  const steps = config.steps.filter((s) => !s.show || s.show(answers));
+  const last = steps.length; // the details question comes after the option questions
+  const total = steps.length + 1;
   const [details, setDetails] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<SubmitState>("idle");
@@ -138,6 +149,12 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
     const to = step + 1;
     timer.current = setTimeout(() => goTo(to), ADVANCE_MS);
   };
+  /** "Other" opens the box and waits for the words; it never moves on by itself. */
+  const pickOther = (key: string) => {
+    if (timer.current) clearTimeout(timer.current);
+    setAnswers((a) => (isOther(a[key]?.[0]) ? a : { ...a, [key]: [OTHER] }));
+  };
+  const writeOther = (key: string, text: string) => setAnswers((a) => ({ ...a, [key]: [text.trim() ? `${OTHER_PREFIX}${text}` : OTHER] }));
   const toggle = (s: WizardStep, value: string) =>
     setAnswers((a) => {
       const now = a[s.key] ?? [];
@@ -217,7 +234,40 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
         {current && (
           <>
             {current.help && <p className="wiz-help">{current.help}</p>}
-            <Options label={question} options={current.options} selected={answers[current.key] ?? []} multi={current.multi} onPick={(value) => (current.multi ? toggle(current, value) : pick(current.key, value))} />
+            <Options
+              label={question}
+              options={current.other ? [...current.options, { value: OTHER, hint: "Not in the list? Write your own" }] : current.options}
+              selected={(answers[current.key] ?? []).map((v) => (isOther(v) ? OTHER : v))}
+              multi={current.multi}
+              onPick={(value) => (value === OTHER && current.other ? pickOther(current.key) : current.multi ? toggle(current, value) : pick(current.key, value))}
+            />
+            {current.other && isOther(answers[current.key]?.[0]) && (
+              <div className="wiz-field wiz-other">
+                <label htmlFor="wiz-other">{current.other}</label>
+                <input
+                  id="wiz-other"
+                  type="text"
+                  autoFocus
+                  autoComplete="off"
+                  value={(answers[current.key]?.[0] ?? "").slice(OTHER_PREFIX.length)}
+                  onChange={(e) => writeOther(current.key, e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && (answers[current.key]?.[0] ?? "").startsWith(OTHER_PREFIX)) {
+                      e.preventDefault();
+                      goTo(step + 1);
+                    }
+                  }}
+                />
+              </div>
+            )}
+            {current.other && isOther(answers[current.key]?.[0]) && (
+              <div className="wiz-actions">
+                <button type="button" className="wiz-next" disabled={!(answers[current.key]?.[0] ?? "").startsWith(OTHER_PREFIX)} onClick={() => goTo(step + 1)}>
+                  <span>Continue</span>
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </div>
+            )}
             {current.multi && (
               <div className="wiz-actions">
                 <button type="button" className="wiz-next" disabled={(answers[current.key] ?? []).length === 0} onClick={() => goTo(step + 1)}>

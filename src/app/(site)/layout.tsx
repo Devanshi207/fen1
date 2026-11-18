@@ -7,7 +7,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <Navbar />
-      <main id="page" className="flex-1 w-full pt-16 sm:pt-20">
+      <main id="page" className="flex-1 w-full pt-[4.4rem]">
         {children}
       </main>
       <Footer />

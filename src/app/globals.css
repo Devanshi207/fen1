@@ -32,6 +32,9 @@
 
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
+    /* photographs are card-sized: about 440px wide, 3:2, inside the layout (they never fill half a screen) */
+    --photo-max: 27.5rem;
+
     /* the one accent, its darker and softer steps, and the two status colours */
     --blue: #0078d4;
     --blue-deep: #005a9e;
@@ -126,12 +129,6 @@ a[class~="bg-[#FFFFFF]"]:hover, button[class~="bg-[#FFFFFF]"]:hover, [class~="gr
 }
 [class~="bg-[#0067C0]"] * { color: inherit; }
 [class~="bg-[#0067C0]"]:hover { background-color: var(--accent-strong); }
-
-/* Technical annotation: a hairline measuring rule with end ticks, used above section labels */
-.tech-rule { position: relative; display: block; height: 1px; background: var(--line-strong); }
-.tech-rule::before, .tech-rule::after { content: ""; position: absolute; top: -3px; width: 1px; height: 7px; background: var(--line-strong); }
-.tech-rule::before { left: 0; }
-.tech-rule::after { right: 0; }
 
 /* Blueprint grid: fine lines behind a hero, faded out at the edges */
 .tech-grid {
@@ -238,7 +235,8 @@ a[class~="rounded-full"], button[class~="rounded-full"] { border-radius: 0.375re
 @media (prefers-reduced-motion: reduce) { .mod-tile, .mod-tile::before, .mod-tile-icon { transition: none; } }
 
 /* Hero photo frame: four project photos take turns (5s each, 20s loop) */
-.hero-frame { position: relative; margin: 0; aspect-ratio: 3 / 2; width: 100%; max-height: 70svh; border-radius: 0.5rem; overflow: hidden; background: var(--surface); }
+.hero-frame { position: relative; margin: 0; aspect-ratio: 3 / 2; width: 100%; max-width: var(--photo-max); border-radius: 0.5rem; overflow: hidden; background: var(--surface); }
+@media (min-width: 1024px) { .hero-frame { margin-left: auto; } }
 @media (prefers-reduced-motion: reduce) {
   .hz-loader { transition-duration: 0.01ms; }
   .hz[data-ready] .hz-hero-body > *, .hz[data-ready] .hz-scroll-cue { animation: none; }

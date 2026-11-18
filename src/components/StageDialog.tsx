@@ -94,10 +94,6 @@ export default function StageDialog({ stages, index, startShot = 0, onMove, onCl
             <p className="flow-dlg-desc">{stage.desc}</p>
             <dl className="flow-dlg-meta">
               <div>
-                <dt className="tech">Worked in</dt>
-                <dd>{stage.module}</dd>
-              </div>
-              <div>
                 <dt className="tech">Leaves in the record</dt>
                 <dd>{stage.record}</dd>
               </div>

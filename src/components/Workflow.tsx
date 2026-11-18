@@ -119,7 +119,6 @@ export default function Workflow() {
         <div className="wf3-stage">
           <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 wf3-inner">
             <div className="wf-head" aria-hidden="true">
-              <p className="wf-eyebrow tech">Workflow</p>
               <p className="wf3-heading">From enquiry to handover</p>
               <p className="wf-lede">{total} stages on one job record. Each stage starts from what the one before it recorded.</p>
             </div>
@@ -164,11 +163,8 @@ export default function Workflow() {
                 <p className="wf-sub tech">{stage.subtitle}</p>
                 <p className="wf-title wf3-title">{stage.title}</p>
                 <p className="wf-desc">{stage.desc}</p>
+                <p className="wf-tap">Tap a screen to open the details</p>
                 <dl className="wf2-meta">
-                  <div>
-                    <dt className="tech">Worked in</dt>
-                    <dd>{stage.module}</dd>
-                  </div>
                   <div>
                     <dt className="tech">Leaves in the record</dt>
                     <dd>{stage.record}</dd>
@@ -212,7 +208,7 @@ export default function Workflow() {
                   {s.step} {s.title}: {s.subtitle}
                 </h3>
                 <p>{s.desc}</p>
-                <p>Worked in: {s.module}. Leaves in the record: {s.record}.</p>
+                <p>Leaves in the record: {s.record}.</p>
               </li>
             ))}
           </ol>

@@ -217,6 +217,78 @@ describe("Sending an enquiry", () => {
   });
 });
 
+describe("Booking a meeting", () => {
+  /** Walks a meeting request up to its last question: the topic, the business, the size, what to talk about, a day and a time. */
+  async function reachMeetingDetails(user: User) {
+    await answer(user, "I'd like a meeting", "What do you make or install?");
+    await answer(user, "Curtain wall", "How big is your team?");
+    await answer(user, "20 to 50 people", "What would you like to talk about?");
+    await user.click(screen.getByRole("checkbox", { name: "Estimation and quotes" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await answer(user, "Wednesday or Thursday", "What time of day?");
+    await answer(user, "Afternoon", "Where can we reach you?");
+  }
+
+  it("is a third choice on the first question", () => {
+    render(<RequestDemoPage />);
+    expect(radio("I'd like a meeting")).toBeInTheDocument();
+    expect(screen.getAllByRole("radio")).toHaveLength(3);
+  });
+
+  it("asks for a day and a time, so it is seven questions where a demo is five", async () => {
+    const user = userEvent.setup();
+    render(<RequestDemoPage />);
+    await answer(user, "I'd like a meeting", "What do you make or install?");
+    expect(screen.getByText("Question 2 of 7")).toBeInTheDocument();
+  });
+
+  it("sends the request tagged as a meeting, with the day and time asked for, and says the team will confirm it", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<RequestDemoPage />);
+    await reachMeetingDetails(user);
+    expect(screen.getByText("Question 7 of 7")).toBeInTheDocument();
+    await fillDetails(user);
+    await user.click(screen.getByRole("button", { name: /^request meeting$/i }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    const body = sentBody(fetchMock);
+    expect(body.kind).toBe("meeting");
+    expect(body.details).toMatchObject({ industry: "Curtain wall", preferredDay: "Wednesday or Thursday", preferredTime: "Afternoon", interestedModules: "Estimation and quotes" });
+    expect(await screen.findByRole("heading", { level: 2, name: "Meeting request sent" })).toBeInTheDocument();
+    expect(screen.getByText(/will confirm a time/)).toBeInTheDocument();
+  });
+
+  it("does not ask a demo or a question for a day and a time, and sends no meeting details with them", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<RequestDemoPage />);
+    await reachDetails(user);
+    expect(screen.getByText("Question 5 of 5")).toBeInTheDocument();
+    await fillDetails(user);
+    await user.click(screen.getByRole("button", { name: /^request demo$/i }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(sentBody(fetchMock).details).not.toHaveProperty("preferredDay");
+  });
+
+  it("opens on the second question with the meeting chosen when the address is #meeting", async () => {
+    window.history.replaceState(null, "", "/#meeting");
+    render(<RequestDemoPage />);
+    await question("What do you make or install?");
+    expect(screen.getByText("Question 2 of 7")).toBeInTheDocument();
+  });
+
+  it("is a kind of enquiry the server accepts and the admin names", async () => {
+    const { validateEnquiry } = await import("@/lib/enquiry");
+    const { KIND_LABEL } = await import("@/lib/inbox");
+    expect(validateEnquiry({ kind: "meeting", name: "A", company: "B", email: "a@b.co", phone: "", message: "", details: { preferredDay: "Friday" } }).ok).toBe(true);
+    expect(KIND_LABEL.meeting).toBe("Meeting request");
+    expect(topicHref("meeting")).toBe("#meeting");
+    expect(topicFromLocation("#meeting", "")).toBe("meeting");
+  });
+});
+
 describe("Contact and demo are one form", () => {
   it("works out the choice from an old link: only ?topic=question is a question", () => {
     expect(resolveTopic("question")).toBe("question");
@@ -299,6 +371,36 @@ describe("Job application", () => {
     expect(body.company).toBe("");
     expect(body.details).toMatchObject({ area: "Training", experience: "3 to 7 years", currentWork: "Working in the trade", canStart: "Within a month", location: "Pune" });
     expect(await screen.findByRole("heading", { level: 2, name: "Application sent" })).toBeInTheDocument();
+  });
+
+  it("offers 'Other' on the area and 'what do you do now' questions, opens a box to write your own, and sends what was written", async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => (url === "/api/jobs" ? { ok: true, json: async () => ({ jobs: [] }) } : { ok: true }));
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<CareersSection />);
+    expect(screen.queryByLabelText("Which area?")).toBeNull();
+    await user.click(screen.getByRole("radio", { name: /^Other/ }));
+    const box = screen.getByLabelText("Which area?");
+    expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+    await user.type(box, "Glass design");
+    expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    expect(await screen.findByText("Question 2 of 5")).toBeInTheDocument();
+    await user.click(screen.getByRole("radio", { name: "7 to 15 years" }));
+    await screen.findByText("Question 3 of 5");
+    await user.click(screen.getByRole("radio", { name: /^Other/ }));
+    await user.type(screen.getByLabelText("What do you do?"), "Run my own shop{Enter}");
+    await screen.findByText("Question 4 of 5");
+    await user.click(screen.getByRole("radio", { name: "Right away" }));
+    await screen.findByText("Question 5 of 5");
+    await user.type(screen.getByLabelText(/your name/i), "Dev Patel");
+    await user.type(screen.getByLabelText(/^email$/i), "dev@example.com");
+    await user.type(screen.getByLabelText(/^phone$/i), "12345");
+    await user.type(screen.getByLabelText(/where are you based/i), "Pune");
+    await user.click(screen.getByRole("button", { name: /send my application/i }));
+    await waitFor(() => expect(fetchMock.mock.calls.some((c) => c[0] === "/api/enquiry")).toBe(true));
+    const body = JSON.parse(fetchMock.mock.calls.filter((c) => c[0] === "/api/enquiry")[0][1].body);
+    expect(body.details).toMatchObject({ area: "Other: Glass design", currentWork: "Other: Run my own shop" });
   });
 
   it("does not advertise vacancies it does not have", () => {

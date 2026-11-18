@@ -1,35 +1,34 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
-import { SOLUTION_PHOTOS } from "@/data/gallery";
 import { useOnScreen } from "@/lib/useOnScreen";
 import { prefersReducedMotion } from "@/lib/inview";
+import { SOLUTIONS_INCLUDED, SOLUTION_MODULES } from "@/data/erpContent";
+import { sentenceCase } from "@/lib/text";
+import ModuleNotes from "./ModuleNotes";
 import SectionHead from "./SectionHead";
 
 /**
- * The industries as tabs across the top, which stay in view. Photo and content sit side by side, so the section is about one
- * screen tall. Each industry has its own photograph: the photos sit stacked, and choosing an industry wipes its photo
- * in over the last one while it settles from 1.03 to 1, then the text enters. Nothing is pinned and no scroll engine is
- * involved. A link to #glass-railing, #windows-doors and so on scrolls here and opens that industry.
+ * The industries as tabs across the top, which stay in view. Each industry opens as one wide, horizontal panel (the problem and
+ * the answer side by side, the job as a row of steps, the modules and the benefits in columns), so there is little to scroll.
+ * A link to #glass-railing, #windows-doors and so on scrolls here and opens that industry.
  */
 /** The one accent, used for the tab, its number and the kicker of whichever industry is open. */
 const TONE = { fill: "var(--blue)", text: "var(--accent)" };
 const TONE_STYLE = { ["--tone-fill" as string]: TONE.fill, ["--tone-text" as string]: TONE.text };
 
 export default function SolutionsSection() {
-  // `prev` is the industry that was showing, so its photo stays underneath while the new one wipes in
-  const [{ active, prev }, setShown] = useState({ active: 0, prev: 0 });
+  const [active, setActive] = useState(0);
   const [ref, seen] = useOnScreen<HTMLDivElement>({ threshold: 0.2, rootMargin: "0px" });
-  const show = (i: number) => setShown((cur) => (cur.active === i ? cur : { active: i, prev: cur.active }));
+  const show = (i: number) => setActive(i);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const body = useRef<HTMLDivElement>(null);
   const total = INDUSTRY_SOLUTIONS.length;
   const s = INDUSTRY_SOLUTIONS[active];
 
-  // Choosing an industry from further down the page brings its photo back into view, so there is no scrolling up to check
+  // Choosing an industry from further down the page brings its panel back into view, so there is no scrolling up to check
   const pick = (i: number) => {
     show(i);
     const top = body.current?.getBoundingClientRect().top ?? 0;
@@ -63,9 +62,15 @@ export default function SolutionsSection() {
         <span key={x.id} id={x.id} className="sec-anchor" aria-hidden="true" />
       ))}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead eyebrow="Solutions" title="Set up for each part of the fenestration trade">
+        <SectionHead title="Set up for each part of the fenestration trade">
           FEN1 is set up for aluminium and uPVC windows and doors, glass railing and curtain wall. Choose one to see how a job runs.
         </SectionHead>
+
+        {/* above the industries, because it belongs to all of them */}
+        <div className="sol-common">
+          <p className="sol-label tech">Included in every solution</p>
+          <ModuleNotes notes={SOLUTIONS_INCLUDED} cols={2} level={3} />
+        </div>
 
         <div ref={ref} className={`sol ${seen ? "is-in" : ""}`} data-no-reveal>
           {/* the industry tabs stay at the top of the screen while you read, so changing industry never means scrolling up */}
@@ -89,10 +94,7 @@ export default function SolutionsSection() {
                   onKeyDown={(e) => onKey(e, i)}
                 >
                   <span className="tech sol-tab-num">{x.number}</span>
-                  <span className="sol-tab-title">
-                    {x.title}
-                    {x.parts && <small className="sol-parts"> ({x.parts})</small>}
-                  </span>
+                  <span className="sol-tab-title">{x.title}</span>
                 </button>
               ))}
             </div>
@@ -106,46 +108,57 @@ export default function SolutionsSection() {
             </div>
           </div>
 
-          {/* the photo on one side (it stays in view), the content on the other */}
+          {/* one wide panel */}
           <div className="sol-body" ref={body} style={TONE_STYLE}>
-            <div className="sol-media">
-              <div className="sol-photo">
-                {INDUSTRY_SOLUTIONS.map((x, i) => {
-                  const photo = SOLUTION_PHOTOS[x.id];
-                  return (
-                    <div key={x.id} className={`sol-shot ${i === active ? "is-active" : i === prev ? "is-prev" : ""}`} data-dir={i % 2 ? "r" : "l"} aria-hidden={i === active ? undefined : true}>
-                      <Image src={photo.src} alt={i === active ? photo.alt : ""} fill sizes="(min-width: 900px) 42vw, 100vw" quality={85} className="object-cover" style={photo.position ? { objectPosition: photo.position } : undefined} />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
             <div id="sol-panel" role="tabpanel" aria-labelledby={`sol-tab-${s.id}`} key={s.id} className="sol-panel">
-              <p className="tech sol-kicker">
-                {s.number} &nbsp;{s.subtitle}
-              </p>
-              <h3 className="sol-title">
-                {s.title}
-                {s.parts && <small className="sol-parts"> ({s.parts})</small>}
-              </h3>
-              <div className="sol-cols">
+              <div className="sol-head">
                 <div>
-                  <p className="sol-label tech">The problem</p>
-                  <p className="sol-text">{s.challenge}</p>
+                  <p className="tech sol-kicker">
+                    {s.number} &nbsp;{s.subtitle}
+                  </p>
+                  <h3 className="sol-title">
+                    {s.title}
+                    {s.parts && <small className="sol-parts">({s.parts})</small>}
+                  </h3>
                 </div>
-                <div>
-                  <p className="sol-label tech">How FEN1 handles it</p>
-                  <p className="sol-text">{s.solutionSummary}</p>
+                <div className="sol-cols">
+                  <div>
+                    <p className="sol-label tech">The problem</p>
+                    <p className="sol-text">{s.challenge}</p>
+                  </div>
+                  <div>
+                    <p className="sol-label tech">How FEN1 handles it</p>
+                    <p className="sol-text">{s.solutionSummary}</p>
+                  </div>
                 </div>
               </div>
-              <p className="sol-chain" aria-label={`Workflow: ${s.workflow.join(", ")}`}>
-                {s.workflow.map((w, i) => (
-                  <span key={w}>
-                    {w}
-                    {i < s.workflow.length - 1 && <span aria-hidden="true"> → </span>}
-                  </span>
+              <ol className="sol-chain" aria-label="Stages of a job">
+                {s.workflow.map((w) => (
+                  <li key={w}>{sentenceCase(w)}</li>
                 ))}
-              </p>
+              </ol>
+              <div className="sol-journey">
+                <p className="sol-label tech">How a job runs</p>
+                <ol className="sol-journey-list">
+                  {s.operationalJourney.map((j) => {
+                    const [, num = "", title = j.step] = /^(\d+)\.\s*(.*)$/.exec(j.step) ?? [];
+                    return (
+                      <li key={j.step}>
+                        <span className="tech sol-j-n">{num}</span>
+                        <span>
+                          <strong className="sol-j-title">{title}</strong>
+                          <span className="sol-j-text">{j.action}</span>
+                          <span className="sol-j-mod">{sentenceCase(j.module)}</span>
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+              <div className="sol-mods">
+                <p className="sol-label tech">Modules it uses</p>
+                <ModuleNotes notes={SOLUTION_MODULES[s.id] ?? []} cols={4} level={4} />
+              </div>
               <ul className="sol-benefits">
                 {s.keyBenefits.map((b) => (
                   <li key={b}>

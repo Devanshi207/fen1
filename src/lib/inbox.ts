@@ -15,6 +15,7 @@ export const KIND_LABEL: Record<EnquiryKind, string> = {
   demo: "Demo request",
   contact: "Question",
   careers: "Job application",
+  meeting: "Meeting request",
 };
 
 export async function saveEnquiry(store: Store, data: Enquiry, now = new Date()): Promise<StoredEnquiry> {
@@ -25,7 +26,7 @@ export async function saveEnquiry(store: Store, data: Enquiry, now = new Date())
 
 export function asEnquiry(record: Record<string, unknown>): StoredEnquiry | null {
   const kind = record.kind;
-  if (typeof record.id !== "string" || (kind !== "demo" && kind !== "contact" && kind !== "careers")) return null;
+  if (typeof record.id !== "string" || (kind !== "demo" && kind !== "contact" && kind !== "careers" && kind !== "meeting")) return null;
   const str = (v: unknown) => (typeof v === "string" ? v : "");
   const details: Record<string, string> = {};
   if (typeof record.details === "object" && record.details !== null) {

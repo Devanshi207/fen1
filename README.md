@@ -48,22 +48,23 @@ Copy `.env.example` to `.env.local` and set:
 
 | Route           | Purpose                                                           |
 | --------------- | ----------------------------------------------------------------- |
-| `/`             | Home: the hero, the window drawing and the Workflow |
-| `/solutions`    | Windows & Doors, Glass Railing and Curtain Wall, as tabs |
-| `/about`        | About FEN1 |
+| `/`             | Home: the hero with one enquiry button, the window drawing, and a table of what goes wrong without one system against the FEN1 way |
+| `/about`        | About FEN1: Why FEN1 (speed, simplicity, performance, industry expertise), the director's profile and the foundations underneath the modules |
+| `/solutions`    | What every solution includes, Windows & Doors, Glass Railing and Curtain Wall as tabs (each with the modules it uses), then the whole job from enquiry to handover, stage by stage (the Workflow) |
 | `/training`     | Training by role |
 | `/careers`      | Careers: open roles and the job application |
-| `/contact`      | Contact us: the five-question enquiry |
+| `/contact`      | Contact us: the enquiry, with a demo, a question or a meeting request |
+| `/book`        | Reached by scanning the QR code on the Contact page: a day, a time and the visitor's details, sent as a demo request marked `source: QR code`. Not indexed, not in the menu |
 | `/api/enquiry`  | Receives the demo, question and careers forms; saves them to the admin inbox and forwards them to `ENQUIRY_WEBHOOK_URL` |
 | `/api/jobs`     | The open job openings, for the Careers section (public) |
 | `/admin`        | Password-protected: the enquiry inbox and job openings (not linked from the site, not indexed) |
 
 Each part is a page of its own (a folder in `src/app/(site)`), and the header and footer are shared (`src/app/(site)/layout.tsx`).
-The header links are `/`, `/solutions`, `/about`, `/training`, `/careers` and `/contact`; the current page is read from the
+The header links are `/`, `/about`, `/solutions`, `/training`, `/careers` and `/contact`; the current page is read from the
 address (`usePathname`), and each page has its own title. Links into the middle of a page keep their `#`: `/solutions#windows-doors`,
-`#glass-railing` and `#curtain-wall` open that industry, `/training#roles` scrolls to the roles, and `/contact#demo` or `#question`
+`#glass-railing` and `#curtain-wall` open that industry, `/training#roles` scrolls to the roles, and `/contact#demo`, `#meeting` or `#question`
 pick the first answer of the enquiry, opening on the second question. The old addresses `/request-demo` (to `/contact#demo`) and
-`/products` (to `/solutions`) redirect.
+`/products` and the former `/erp` page (both to `/solutions`), and the former `/why-fen1` page (to `/about`) redirect.
 
 ## Admin: job openings and the enquiry inbox
 
@@ -94,6 +95,7 @@ access, or you need to know who did what, move to individual accounts (see below
 
 All site copy that repeats lives in `src/data/`, so pages never hard-code lists:
 
+- `erpContent.ts`: short notes (a name and two or three sentences) for the pages, taken from the ERP's own module and submodule names. Each fact is told once, on the page it belongs to: Home has the problems-against-answers table (`aboutContent.ts`), Solutions has what every solution includes, each industry's modules and the Workflow (`roadmap.ts`), About has Why FEN1 (speed, simplicity, performance and industry expertise), the director's profile and the foundations, Training has what each role does (`trainingContent.ts`), and Careers has the product areas people would work on. The only figure is the director's "over 25 years", as given by the company; the director has no name or photo on the site because none was supplied. `tests/erp-content.test.tsx` keeps every note at two or three sentences and fails if any sentence, or any run of seven words, appears in two blocks.
 - `modules.ts`: the 17 ERP modules. They are no longer listed on the page (the Solutions section does not show them); the data and the `ModuleList` component are kept for later
 - `solutions.ts`: the industry solutions
 - `roadmap.ts`: the 13 roadmap stages on the home page, in display order
@@ -133,12 +135,11 @@ tests/            Vitest + Testing Library
 - Design rules (from an Unslop design review, kept in `tests/theme.test.ts` so they do not drift): one accent, the brand blue, and no
   hue gradients, gradient text or glows; surfaces alternate white and a cool near-white (`--surface`) with hairlines between parts;
   labels are sentence case, weights are 400 and 500, font sizes come from one scale of eight steps, and spacing sits on 4px steps
-  (0.25rem). The one signature detail is the dimension line, a hairline with an end tick at each end: it opens every section
-  (`.tech-rule`) and draws the Workflow phases. Colour is left for the window drawing and the ERP screens.
+  (0.25rem). The one signature detail is the dimension line, a hairline with an end tick at each end: it draws the Workflow phases
+  and nothing else (there is no rule above the section labels). Colour is left for the window drawing and the ERP screens.
 - Type: IBM Plex Sans for headings, Inter for text, the same Inter for the small uppercase labels (`font-mono` / `.tech`, which no longer use a monospace font), all
   through `next/font`. Weights are set in one block at the top of `globals.css`.
-- Technical-drawing details: `.tech-rule` (a measuring rule with end ticks) and `.tech-grid` (hairline blueprint grid),
-  plus the engineering-line animation of the opening FEN1 mark.
+- Technical-drawing details: `.tech-grid` (hairline blueprint grid), plus the engineering-line animation of the opening FEN1 mark.
 - Navigation is one full-screen menu on small screens (links in the header from 1024px): a MENU / CLOSE button wipes a
   light panel down from the top, then the five pages slide in one after another (`Navbar.tsx`, CSS only). It locks page
   scroll and closes on Escape or a route change.
@@ -161,7 +162,7 @@ tests/            Vitest + Testing Library
     footer stay put, and there is no loading screen between pages.
   - **Window drawing** (`WindowDrawing`): an aluminium window elevation, its width and height dimensions and a section through
     the profile are drawn in SVG strokes, then resolve into a photograph. The dimension labels are letters (W, H), not numbers.
-  - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`): driven by scrolling. The only things to click are the ERP screens: selecting one opens the stage in a dialog (`StageDialog`), with the screen larger and the stage's description, the module it is worked in and the record it leaves, plus Previous / Next step through all 13 stages, a switch between the stage's three screens, and Escape, Close or a click outside to close (the page behind does not scroll while it is open). It
+  - **Workflow** (`Workflow`, data in `src/data/roadmap.ts`; it is on the Solutions page, below the industry tabs): driven by scrolling. The only things to click are the ERP screens: selecting one opens the stage in a dialog (`StageDialog`), with the screen larger and the stage's description, the module it is worked in and the record it leaves, plus Previous / Next step through all 13 stages, a switch between the stage's three screens, and Escape, Close or a click outside to close (the page behind does not scroll while it is open). It
     is a tall block (about four screens of scrolling in all, a quarter of a screen per stage) with one panel held in place
     (`position: sticky`) while you scroll past it; the stage changes as you go: scrolling down walks through stages 1 to 13, and coming back up from the next section (Solutions) shows step 1 at once and shrinks the block to one screen, so Home is one scroll away instead of four (it grows back once you are above it); this is the same on every screen size. The page scrolls as normal and nothing captures the
     wheel. The stage comes from 13 invisible markers and an `IntersectionObserver` (no scroll listener, and it re-renders only when
@@ -234,3 +235,17 @@ Vercel, redeploy. Photos are served from Unsplash through `next/image`; the allo
 `npm test` checks the data (unique ids, roadmap order, wording rules), the Solutions page (search, group filter, no
 card links), key components (Navbar, Footer, workflow), the motion system (observers, splash, drawing, no polling) and the light theme and the enquiry flow (validation, the `/api/enquiry`
 route, and how both forms behave on success and failure).
+
+### Meeting requests
+
+The first question of the Contact enquiry has three choices: a demo, a meeting, or a question. A meeting adds two questions (a day and a time of day) and is sent as its own kind of enquiry, "Meeting request", which the admin shows and counts separately. It is a request, not a calendar booking: nothing is reserved, and the team confirms the exact time by email or phone. A real booking calendar would need a scheduling service to be connected.
+
+### Photograph sizes
+
+Photographs are card-sized, like the small captioned images on a trade software site: about 440px wide and 3:2, set by one token, `--photo-max` in `globals.css`, and used by the hero, the Solutions and the Contact photos. None of them grows with the screen or fills half a page, and the `sizes` of each `next/image` match, so the browser downloads a card-sized file. The window drawing is a little larger (34rem), because its lettering needs the room. The photos themselves are still the wide architectural ones named in `src/data/gallery.ts`; closer, sample-style shots of window and glass products can be swapped in there.
+
+## Demo QR code, "Other" answers, wide Solutions panels
+
+- The Contact page shows a QR code (drawn as SVG by `qrcode-generator`, no outside service) that opens `/book`. The address comes from `NEXT_PUBLIC_SITE_URL` if set, otherwise from the address the site is being viewed at, so set `NEXT_PUBLIC_SITE_URL` in production if the code is shown on a screen that is not the public address. The booking is a request: the team confirms the exact slot, nothing is written to a calendar.
+- A wizard question can set `other: "label"` to add an "Other" choice that opens a box to write your own answer. The Careers application uses it on "Where could you help?" and "What do you do now?"; the answer is sent as `Other: what they wrote`.
+- On Solutions each industry opens as one wide panel with no photograph: the problem and the answer side by side, the job as a row of steps, the modules in four columns and the benefits in a row.

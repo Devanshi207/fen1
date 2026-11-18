@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
       { source: "/products", destination: "/solutions", permanent: true },
       { source: "/products/:slug", destination: "/solutions", permanent: true },
       { source: "/request-demo", destination: "/contact#demo", permanent: true },
+      { source: "/erp", destination: "/solutions", permanent: true },
+      { source: "/why-fen1", destination: "/about", permanent: true },
     ];
   },
 };

@@ -35,7 +35,7 @@ describe("space above a part of the page", () => {
     expect(/\[data-section\] \{[^}]*\}/.exec(sections)![0]).toMatch(/--pad: clamp\([^)]*\);\s*scroll-margin-top: calc\(4\.4rem - var\(--pad\) \+ 1\.25rem\)/);
     expect(/\.page-sec \{[^}]*\}/.exec(sections)![0]).toMatch(/padding-block: var\(--pad\)/);
     expect(/\.sec-anchor \{[^}]*\}/.exec(sections)![0]).toMatch(/scroll-margin-top: calc\(4\.4rem - var\(--pad/);
-    expect(sections).toMatch(/#contact \{ --pad:/);
+    expect(sections).toMatch(/#solutions, #about, #training, #careers, #contact \{ --pad: clamp\(1\.5rem, 3vw, 2\.5rem\); \}/);
   });
 
   it("keeps the home hero compact: no screen-high minimum and no stacked top padding", () => {

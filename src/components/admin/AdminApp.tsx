@@ -187,7 +187,7 @@ function Account({ canSave, onExpired, onChanged }: { canSave: boolean; onExpire
 }
 
 /* ------------------------------------------------------------- enquiries */
-const KINDS: (EnquiryKind | "all")[] = ["all", "demo", "contact", "careers"];
+const KINDS: (EnquiryKind | "all")[] = ["all", "demo", "meeting", "contact", "careers"];
 
 function Enquiries({ onExpired }: { onExpired: () => void }) {
   const [rows, setRows] = useState<StoredEnquiry[] | null>(null);
@@ -243,7 +243,7 @@ function Enquiries({ onExpired }: { onExpired: () => void }) {
   return (
     <section aria-label="Enquiries">
       <dl className="adm-counts">
-        {(["demo", "contact", "careers"] as EnquiryKind[]).map((k) => (
+        {(["demo", "meeting", "contact", "careers"] as EnquiryKind[]).map((k) => (
           <div key={k}>
             <dt>{KIND_LABEL[k]}s waiting</dt>
             <dd>{rows ? count(k) : "-"}</dd>

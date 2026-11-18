@@ -24,7 +24,6 @@ export default function WindowDrawing() {
     <section id="drawing" className="sec-blue py-16 sm:py-24">
       <div className="wd-wrap max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid gap-4">
-          <p className="wd-eyebrow tech">Profile to product</p>
           <h2 className="text-3xl sm:text-4xl leading-[1.1] tracking-tight text-[#1E2B45]">From profile drawing to finished window</h2>
           <p className="text-base text-[#55637A] max-w-md leading-relaxed">
             Profile sections, frame dimensions and joint details are defined once, then carried through estimation, cutting lists and production to the finished unit.
@@ -34,7 +33,7 @@ export default function WindowDrawing() {
         <div ref={ref} className={`wd ${seen ? "is-in" : ""}`} data-no-reveal>
           <figure className="wd-stage" aria-label="An aluminium window drawing that resolves into a photograph of a finished frame">
             <div className="wd-photo">
-              <Image src={PHOTO.src} alt={PHOTO.alt} fill sizes="(min-width: 900px) 58vw, 100vw" className="object-cover" quality={85} />
+              <Image src={PHOTO.src} alt={PHOTO.alt} fill sizes="(max-width: 544px) 100vw, 544px" className="object-cover" />
             </div>
             <svg className="wd-svg" viewBox="0 0 600 400" role="img" aria-label="Technical drawing of an aluminium window">
               {/* frame elevation: outer frame, inner frame, mullion, two sashes with their glass */}

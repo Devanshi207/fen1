@@ -9,6 +9,7 @@ export interface StepOption {
 /** The questions of the enquiry, asked one at a time. The last step is the only one that needs typing. */
 export const TOPIC_OPTIONS: (StepOption & { topic: Topic })[] = [
   { topic: "demo", value: "I'd like a demo", hint: "We walk you through FEN1 for your business." },
+  { topic: "meeting", value: "I'd like a meeting", hint: "Pick a day and a time, and we confirm it." },
   { topic: "question", value: "I have a question", hint: "Ask the team anything about FEN1." },
 ];
 
@@ -41,6 +42,7 @@ export const NOT_SURE = "Not sure yet";
 
 export const INTEREST_QUESTION: Record<Topic, string> = {
   demo: "What would you like to see?",
+  meeting: "What would you like to talk about?",
   question: "What is your question about?",
 };
 
@@ -53,6 +55,15 @@ export const EXPERIENCE_OPTIONS: StepOption[] = [
   { value: "More than 15 years" },
 ];
 
-export const NOW_OPTIONS: StepOption[] = [{ value: "Working in the trade" }, { value: "Working in software" }, { value: "Studying or training" }, { value: "Between jobs" }, { value: "Something else" }];
+export const NOW_OPTIONS: StepOption[] = [{ value: "Working in the trade" }, { value: "Working in software" }, { value: "Studying or training" }, { value: "Between jobs" }];
 
 export const START_OPTIONS: StepOption[] = [{ value: "Right away" }, { value: "Within a month" }, { value: "In one to three months" }, { value: "Just looking for now" }];
+
+/** A meeting request: a day and a time of day that suit the visitor. The team confirms the exact time; nothing is booked on a calendar. */
+export const MEETING_DAY_OPTIONS: StepOption[] = [
+  { value: "Monday or Tuesday" },
+  { value: "Wednesday or Thursday" },
+  { value: "Friday" },
+  { value: "Any weekday" },
+];
+export const MEETING_TIME_OPTIONS: StepOption[] = [{ value: "Morning" }, { value: "Afternoon" }, { value: "Either" }];

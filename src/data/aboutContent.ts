@@ -7,6 +7,7 @@ export const PROBLEMS = [
   { n: "06", name: "Untracked Production", issue: "There is no live view of which jobs are cut, assembled, glazed or ready to ship." },
 ];
 
+/** The FEN1 answer to each problem above, in the same order: one row of the comparison on the About page. */
 export const PRINCIPLES = [
   {
     label: "ENQUIRY TO DRAWINGS",
@@ -14,13 +15,34 @@ export const PRINCIPLES = [
     text: "Enquiry, follow-ups, drawings, estimation and quotation stay in one record, and the survey and design teams pick up from it.",
   },
   {
-    label: "STORE TO SHOP FLOOR",
-    title: "Stock and machines connected",
-    text: "Purchase, store and job work feed production, and machine integration sends cutting lists straight to the saws.",
+    label: "SITE TO OFFICE",
+    title: "Measurements stay with the job",
+    text: "Site measurements and photos are saved against the job from the site itself, so the design office works from them directly.",
   },
   {
-    label: "QC TO HANDOVER",
-    title: "Every job closed properly",
-    text: "Quality checks, installation and handover are recorded on the same job, ready for billing and reports.",
+    label: "DESIGN TO SAWS",
+    title: "Machines connected",
+    text: "Machine integration sends the cutting lists straight to the saws, so operators do not type dimensions in again.",
+  },
+  {
+    label: "JOB TO ACCOUNTS",
+    title: "Finance on the same job",
+    text: "Invoices, payments and project costs sit on the job record, so finance sees cost and billing status as the work goes on.",
+  },
+  {
+    label: "STORE TO PURCHASE",
+    title: "Stock checked before buying",
+    text: "Purchase requests are raised against what the store already holds, including bars and off-cuts.",
+  },
+  {
+    label: "SHOP FLOOR",
+    title: "A live view of production",
+    text: "Job cards and production tracking show where every job stands on the floor, from the first cut to the last pack.",
   },
 ];
+
+/** After the comparison: the part of the job the table does not cover. */
+export const CLOSING = {
+  title: "Every job closed properly",
+  text: "Quality checks, installation and handover are recorded on the same job, ready for billing and reports.",
+};

@@ -1,7 +1,7 @@
 import type { EnquiryKind } from "@/lib/enquiry";
 
-/** What the visitor wants from the one enquiry page: a demo, or to ask the team a question. */
-export type Topic = "demo" | "question";
+/** What the visitor wants from the one enquiry page: a demo, a meeting, or to ask the team a question. */
+export type Topic = "demo" | "question" | "meeting";
 
 interface TopicCopy {
   /** The tag stored with the enquiry, so the team can tell the two apart */
@@ -18,6 +18,12 @@ export const TOPICS: Record<Topic, TopicCopy> = {
     submit: "Request demo",
     doneTitle: "Demo request sent",
     doneText: "We have received your request and will be in touch to arrange a demonstration for your team.",
+  },
+  meeting: {
+    kind: "meeting",
+    submit: "Request meeting",
+    doneTitle: "Meeting request sent",
+    doneText: "We have your request and will confirm a time that suits you by email or phone.",
   },
   question: {
     kind: "contact",

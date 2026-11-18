@@ -6,7 +6,8 @@
 /* Clicking a link scrolls to a part of the page. The part has its own space above its first line (--pad), so the stop
    point is worked out from it: the first line lands a little under the header, not a screenful below it. */
 [data-section] { --pad: clamp(4rem, 9vw, 7rem); scroll-margin-top: calc(4.4rem - var(--pad) + 1.25rem); }
-#contact { --pad: clamp(3rem, 6vw, 5rem); }
+/* a page of its own starts a little under the header (the main area already clears the header's height), not a screenful below it */
+#solutions, #about, #training, #careers, #contact { --pad: clamp(1.5rem, 3vw, 2.5rem); }
 #home { scroll-margin-top: 5rem; }
 .sec-anchor { position: absolute; top: 0; left: 0; width: 1px; height: 1px; scroll-margin-top: calc(4.4rem - var(--pad, 5rem) + 1.25rem); pointer-events: none; }
 
@@ -14,7 +15,6 @@
 .page-sec-alt { background: var(--surface); }
 
 .sec-head { display: grid; gap: 0.75rem; max-width: 44rem; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
-.sec-eyebrow { font-size: 0.75rem; letter-spacing: 0.01em; color: var(--accent); }
 .sec-title { font-size: clamp(1.9rem, 4vw, 3rem); line-height: 1.08; letter-spacing: -0.02em; color: var(--ink); }
 .sec-lede { font-size: 1rem; line-height: 1.6; color: var(--muted); }
 .sol-label { margin: 0 0 0.5rem; font-size: 0.75rem; letter-spacing: 0.01em; color: var(--muted); }
@@ -37,15 +37,7 @@
 @media (min-width: 900px) { .sol-nav { display: flex; } }
 .sol-arrow { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 9999px; border: 1px solid var(--line-strong); background: var(--card); color: var(--ink); cursor: pointer; }
 .sol-arrow:hover { border-color: var(--accent-mark); color: var(--accent); }
-.sol-body { display: grid; gap: 1.5rem; min-width: 0; }
-@media (min-width: 900px) { .sol-body { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(2rem, 4vw, 3.5rem); align-items: start; } }
-.sol-media { min-width: 0; }
-@media (min-width: 900px) { .sol-media { position: sticky; top: 9.4rem; } }
-.sol-photo { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0.5rem; background: var(--surface); }
-@media (min-width: 900px) { .sol-photo { aspect-ratio: 4 / 5; max-height: calc(100svh - 12.5rem); } }
-.sol-shot { position: absolute; inset: 0; z-index: 1; visibility: hidden; }
-.sol-shot.is-prev { visibility: visible; z-index: 2; }
-.sol-shot.is-active { visibility: visible; z-index: 3; }
+.sol-body { display: grid; min-width: 0; }
 .sol-panel { display: grid; gap: 1.25rem; align-content: start; }
 .sol-panel > * { animation: panel-in 0.5s var(--ease) both; }
 .sol-panel > :nth-child(2) { animation-delay: 0.12s; }
@@ -53,12 +45,22 @@
 .sol-panel > :nth-child(4) { animation-delay: 0.28s; }
 .sol-panel > :nth-child(5) { animation-delay: 0.36s; }
 .sol-kicker { margin: 0; font-size: 0.75rem; letter-spacing: 0.01em; color: var(--tone-text, var(--accent)); transition: color 0.5s var(--ease); }
-.sol-parts { font-size: 0.6em; font-weight: 400; letter-spacing: 0; color: var(--muted); }
-.sol-tab .sol-parts { display: block; font-size: 0.75rem; line-height: 1.3; }
+.sol-parts { display: block; margin-top: 0.4rem; white-space: nowrap; font-size: 0.5em; font-weight: 400; letter-spacing: 0; color: var(--muted); }
 .sol-title { margin: 0; font-size: clamp(1.6rem, 2.8vw, 2.3rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
+.sol-head { display: grid; gap: 1.25rem; align-items: start; }
+@media (min-width: 900px) { .sol-head { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 4vw, 3.5rem); } }
 .sol-cols { display: grid; gap: 1rem; }
+@media (min-width: 640px) { .sol-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; } }
 .sol-text { margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--muted); }
-.sol-chain { margin: 0; padding: 0.75rem 0; border-block: 1px solid var(--line); font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.05em; line-height: 1.9; color: var(--ink); }
+.sol-journey-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem 1.5rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+.sol-journey-list li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--line-strong); }
+.sol-j-n { font-size: 0.75rem; color: var(--tone-text, var(--accent)); padding-top: 0.2rem; }
+.sol-j-title { display: block; font-size: 0.9375rem; font-weight: 500; color: var(--ink); }
+.sol-j-text { display: block; margin-top: 0.25rem; font-size: 0.8125rem; line-height: 1.5; color: var(--muted); }
+.sol-j-mod { display: block; margin-top: 0.25rem; font-size: 0.75rem; color: var(--muted); }
+.sol-chain { list-style: none; margin: 0; padding: 0.875rem 0; border-block: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 0.5rem 0; font-size: 0.875rem; line-height: 1.4; color: var(--ink); }
+.sol-chain li { display: flex; align-items: center; }
+.sol-chain li + li::before { content: "→"; margin-inline: 0.625rem; color: var(--accent); font-size: 0.9375rem; line-height: 1; }
 
 /* a workflow stage opened over the page (opened from the home page Workflow screens) */
 .flow-overlay { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 1rem; background: rgba(30, 43, 69, 0.55); animation: fade-in 0.25s var(--ease) both; }
@@ -86,16 +88,34 @@
 .flow-nav { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--line-strong); border-radius: 0.5rem; background: var(--card); color: var(--ink); font-size: 0.875rem; cursor: pointer; }
 .flow-nav:hover:not(:disabled) { border-color: var(--blue); color: var(--accent); }
 .flow-nav:disabled { opacity: 0.4; cursor: not-allowed; }
-.sol-benefits { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.sol-benefits { list-style: none; margin: 0; padding: 1rem 0 0; border-top: 1px solid var(--line-strong); display: grid; gap: 0.75rem 2rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
 .sol-benefits li { display: flex; gap: 0.75rem; align-items: flex-start; font-size: 0.875rem; line-height: 1.5; color: var(--ink); }
 .sol-benefits svg { margin-top: 0.25rem; color: var(--tone-text, var(--accent)); }
 @keyframes panel-in { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: none; } }
 
 /* ---------- About, Training: plain rows divided by hairlines, no cards ---------- */
-.about-cols { display: grid; gap: 2.5rem; }
-@media (min-width: 900px) { .about-cols { grid-template-columns: 1fr 1fr; gap: 4.5rem; } }
-.about-list { list-style: none; margin: 0; padding: 0; }
-.about-list li { display: flex; gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--line-strong); }
+.compare { display: grid; gap: 1.5rem; }
+/* the difference, as a table (on Home): the area, what happens without one system, and the FEN1 way. On a phone each row is a short stack. */
+.compare-table { width: 100%; border-collapse: collapse; text-align: left; }
+.compare-table th, .compare-table td { padding: 1rem 1.5rem 1rem 0; vertical-align: top; font-size: 1rem; line-height: 1.55; color: var(--muted); border-top: 1px solid var(--line-strong); }
+.compare-table thead th { padding-top: 0; padding-bottom: 0.75rem; font-size: 0.875rem; font-weight: 500; color: var(--muted); border-top: 0; border-bottom: 1px solid var(--ink); }
+.compare-table thead th:last-child, .compare-table td:last-child { padding-right: 0; }
+.compare-table tbody th { width: 22%; font-weight: 500; color: var(--ink); }
+.compare-table td:nth-child(2) { width: 32%; }
+.compare-table td strong { display: block; margin-bottom: 0.25rem; font-weight: 500; color: var(--ink); }
+.compare-table td:last-child { color: var(--ink); }
+.compare-table td:last-child span { color: var(--muted); }
+.compare-table tbody th .about-n { display: inline-block; min-width: 1.75rem; padding-top: 0; }
+.compare-closing { margin: 0; padding-top: 1rem; border-top: 1px solid var(--line-strong); display: grid; gap: 0.25rem; font-size: 1rem; line-height: 1.55; color: var(--muted); }
+.compare-closing strong { font-weight: 500; color: var(--ink); }
+@media (max-width: 760px) {
+  .compare-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .compare-table, .compare-table tbody, .compare-table tr, .compare-table th, .compare-table td { display: block; width: auto !important; }
+  .compare-table tr { padding: 1rem 0; border-top: 1px solid var(--line-strong); }
+  .compare-table th, .compare-table td { padding: 0 0 0.5rem; border-top: 0; }
+  .compare-table td::before { content: attr(data-label); display: block; font-size: 0.75rem; color: var(--muted); }
+  .compare-table td:last-child { padding-bottom: 0; }
+}
 .about-n { min-width: 1.6rem; padding-top: 0.25rem; font-size: 0.75rem; color: var(--accent); }
 .about-list strong { display: block; font-weight: 500; font-size: 1rem; color: var(--ink); }
 .about-sub { display: block; margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.55; color: var(--muted); }
@@ -142,12 +162,17 @@
 
 /* ---------- Contact: an ordinary two-column block; nothing pinned, cropped or pushed against an edge ---------- */
 .contact-grid { display: grid; gap: 2.5rem; }
-.contact-photo { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 0.5rem; background: var(--surface); }
-/* wide screens: the photo runs the full height of the page beside the form, and the form sits in the middle of that height */
+.contact-side { display: grid; gap: 1.5rem; align-content: start; min-width: 0; max-width: var(--photo-max); }
+.qr-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: center; padding-top: 1.25rem; border-top: 1px solid var(--line-strong); }
+.qr-box { width: 7rem; height: 7rem; border: 1px solid var(--line-strong); border-radius: 0.4rem; overflow: hidden; background: #fff; }
+.qr-box svg { display: block; width: 100%; height: 100%; }
+.qr-title { margin: 0; font-size: 1rem; font-weight: 500; color: var(--ink); }
+.qr-text { margin: 0.25rem 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--muted); }
+.book-grid { display: block; }
+.contact-photo { position: relative; width: 100%; max-width: var(--photo-max); aspect-ratio: 3 / 2; overflow: hidden; border-radius: 0.5rem; background: var(--surface); }
+/* wide screens: a card-sized photo beside the form, both starting at the top like every other page */
 @media (min-width: 1024px) {
-  .contact-grid { grid-template-columns: 5fr 6fr; gap: 4.5rem; align-items: stretch; min-height: calc(100svh - 5rem); }
-  .contact-photo { aspect-ratio: auto; min-height: 24rem; }
-  .contact-form { align-self: center; }
+  .contact-grid { grid-template-columns: minmax(0, var(--photo-max)) minmax(0, 1fr); gap: 4.5rem; align-items: start; }
 }
 .contact-form-title { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.02em; color: var(--ink); }
 
@@ -201,9 +226,7 @@
 #solutions, #about, #training, #careers, #contact { min-height: calc(100svh - 5rem); border-top: 0; }
 #roadmap, #about, #careers { background: #ffffff; }
 .sec-blue, .sec-teal, .sec-lavender, .sec-violet { border-top: 1px solid var(--line); }
-.sec-blue .wd-eyebrow, .sec-teal .wf-eyebrow, .sec-lavender .sec-eyebrow, .sec-violet .sec-eyebrow { color: var(--accent); }
 .sec-lavender .about-n, .sec-violet .role-meta { color: var(--accent); }
-.sec-lavender .about-list li { border-top-color: var(--line-strong); }
 .train-item { border-top-width: 1px; border-top-color: var(--line-strong); }
 .train-n { color: var(--accent); }
 
@@ -224,3 +247,25 @@
 /* the contact section: the photo and the form, on white */
 .contact-sec { position: relative; border-top: 1px solid var(--line); }
 .contact-grid { padding-block: var(--pad); }
+
+/* short notes: a name and two or three sentences, as open rows with a hairline above (no cards) */
+.notes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 3rem; }
+@media (min-width: 700px) { .notes-2, .notes-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .notes-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 700px) { .notes-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .notes-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 2rem; } }
+.note { padding: 1.25rem 0 1.5rem; border-top: 1px solid var(--line-strong); }
+.note-name { margin: 0; font-size: 1.125rem; font-weight: 500; letter-spacing: -0.01em; color: var(--ink); }
+.note-text { margin: 0.5rem 0 0; font-size: 1rem; line-height: 1.6; color: var(--muted); }
+.sol-mods { display: grid; gap: 0.25rem; }
+.sol-mods .note { padding: 1rem 0 1rem; }
+.sol-mods .note-name { font-size: 1rem; }
+.sol-mods .note-text { font-size: 0.875rem; margin-top: 0.25rem; }
+.about-inside, .career-build { margin-top: clamp(2.5rem, 6vw, 4rem); display: grid; gap: 1rem; }
+.train-text { margin: 0.75rem 0 0; font-size: 0.875rem; line-height: 1.6; color: var(--muted); }
+.sol-common { display: grid; gap: 1rem; margin-bottom: clamp(2rem, 5vw, 3rem); }
+.about-why { margin-top: clamp(2rem, 5vw, 3rem); display: grid; gap: 1rem; }
+.about-director { margin-top: clamp(2.5rem, 6vw, 4rem); display: grid; gap: 1rem; }
+.about-director-title { margin: 0; font-size: clamp(1.5rem, 2.8vw, 2.25rem); font-weight: 500; letter-spacing: -0.02em; color: var(--ink); }
+.about-director-intro { margin: 0; max-width: 46rem; font-size: 1.125rem; line-height: 1.6; color: var(--muted); }
+.about-quote { margin: 0.5rem 0 0; padding: 0 0 0 1.25rem; border-left: 2px solid var(--accent); max-width: 46rem; font-family: var(--font-display); font-size: 1.25rem; line-height: 1.5; font-weight: 400; color: var(--ink); }

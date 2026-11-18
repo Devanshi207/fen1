@@ -30,10 +30,21 @@ describe("hero", () => {
     expect(rule).not.toMatch(/gradient|background-clip|transparent/);
   });
 
-  it("has no buttons: the header links reach every part of the page", () => {
+  it("opens on the headline: no label above it, and the Kyozon line is not in the hero", () => {
     render(<Page />);
     const hero = document.getElementById("intro")!;
-    expect(hero.querySelector("a, button")).toBeNull();
+    expect(hero.querySelector(".hero-eyebrow")).toBeNull();
+    expect(hero).not.toHaveTextContent("An ERP by Kyozon for the fenestration industry");
+    expect(hero.querySelector("h1")).toBeInTheDocument();
+    expect(hero.querySelector("h1")!.compareDocumentPosition(hero.querySelector("p")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("has one button, to enquire: the header links reach every page, and no demo or explore buttons come back", () => {
+    render(<Page />);
+    const hero = document.getElementById("intro")!;
+    const controls = hero.querySelectorAll("a, button");
+    expect(controls).toHaveLength(1);
+    expect(within(hero).getByRole("link", { name: "Make an enquiry" })).toHaveAttribute("href", "/contact");
     expect(within(hero).queryByText(/request a demo|explore the platform/i)).toBeNull();
   });
 
@@ -41,7 +52,6 @@ describe("hero", () => {
     expect(/\.hero-bg \{[^}]*\}/.exec(css("sections.css"))![0]).toBe(".hero-bg { background: #ffffff; }");
     expect(css("motion.css")).not.toMatch(/\.hero-media::before/);
     expect(/\.hero-frame \{[^}]*\}/.exec(css("globals.css"))![0]).not.toMatch(/border:|box-shadow/);
-    expect(/\.sol-photo \{[^}]*\}/.exec(css("sections.css"))![0]).not.toMatch(/border:|box-shadow/);
   });
 });
 
@@ -57,7 +67,8 @@ describe("KineticHeading accent", () => {
 describe("section identities", () => {
   it("keeps every part of the page in one neutral rhythm: white and a cool near-white in turn, with hairlines, and no tinted gradient", () => {
     render(<Page />);
-    for (const id of ["drawing", "roadmap"]) expect(document.getElementById(id)).toBeTruthy();
+    for (const id of ["drawing", "compare"]) expect(document.getElementById(id)).toBeTruthy();
+    expect(document.getElementById("roadmap")).toBeNull(); // the Workflow is on the Solutions page
     const sections = css("sections.css");
     expect(sections).toMatch(/#drawing, #solutions, #training, #contact \{ background: var\(--surface\); \}/);
     expect(sections).toMatch(/#roadmap, #about, #careers \{ background: #ffffff; \}/);
