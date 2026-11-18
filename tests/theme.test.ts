@@ -92,8 +92,10 @@ describe("light theme with one accent", () => {
 
   it("keeps the approved fonts", () => {
     const layout = readFileSync(join("src", "app", "layout.tsx"), "utf8");
-    expect(layout).toMatch(/IBM_Plex_Sans/);
-    expect(layout).toMatch(/\bInter\(/);
+    // served from the project's own font packages, so a build never has to download them
+    expect(layout).toMatch(/ibm-plex-sans-latin-400-normal/);
+    expect(layout).toMatch(/inter-latin-wght-normal/);
+    expect(layout).not.toMatch(/next\/font\/google/);
     expect(layout).not.toMatch(/IBM_Plex_Mono/); // no typewriter font: labels use Inter
   });
 });

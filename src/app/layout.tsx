@@ -1,12 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import "./motion.css";
 import "./sections.css";
 
-// Headings: IBM Plex Sans. Body and small labels: Inter.
-const display = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-plex", display: "swap" });
-const body = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+// Headings: IBM Plex Sans. Body and small labels: Inter. Both are served from the project's own packages, so the build never downloads fonts.
+const display = localFont({
+  src: [
+    { path: "../../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-500-normal.woff2", weight: "500", style: "normal" },
+    { path: "../../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-600-normal.woff2", weight: "600", style: "normal" },
+    { path: "../../node_modules/@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-700-normal.woff2", weight: "700", style: "normal" }
+  ],
+  variable: "--font-plex",
+  display: "swap",
+});
+const body = localFont({
+  src: "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
+  weight: "100 900",
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   themeColor: "#FFFFFF",
