@@ -66,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`h-full antialiased ${display.variable} ${body.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning className={`h-full antialiased ${display.variable} ${body.variable}`}>
       <head>
         {/* Runs at once, before anything paints (next/script's beforeInteractive waits for the site's JavaScript, which is too late): on a first visit to the top of the page it marks the document (data-intro) and puts a cover over it, so the home page never shows before the opening splash (components/HomeIntro). The cover is built here, not in a CSS file, because a stylesheet can arrive after the first paint. */}
         <script dangerouslySetInnerHTML={{ __html: HOME_FLAG }} />
