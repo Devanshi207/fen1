@@ -60,7 +60,6 @@ export default function Workflow() {
     }
   }, []);
 
-  const [short, setShort] = useState(false); // the block is one screen tall while you are on your way back up
   const [opened, setOpened] = useState<{ index: number; shot: number } | null>(null);
   const markers = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -68,41 +67,28 @@ export default function Workflow() {
   const stage = ROADMAP_STAGES[active];
   const phase = PHASES.find((p) => active >= p.from && active <= p.to) ?? PHASES[0];
 
-  // the stage whose marker is crossing the middle of the screen is the one to show. Scrolling down walks through every stage.
-  // Coming back up from the next section (past the end of the block) does not make you scroll through the stages again: the panel
-  // shows step 1 at once, and the block shrinks to one screen so Home is one scroll away; it grows back once you are above it.
+  // the stage whose marker is crossing the middle of the screen is the one to show, in both directions: scrolling down walks
+  // through 1 to 13, and coming back up from the next section walks through 13 to 1 before leaving the block at the top.
   useEffect(() => {
     const box = markers.current;
     const track = trackRef.current;
     if (!box || typeof IntersectionObserver === "undefined") return;
-    let last = 0; // the marker crossed most recently, to tell down from up
-    let returning = false; // came back up from below the block
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          const i = Number((e.target as HTMLElement).dataset.i);
-          const up = i < last;
-          last = i;
-          if (returning && up) continue;
-          returning = false;
-          setActive(i);
+          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.i));
         }
       },
       { rootMargin: "-50% 0px -50% 0px" }
     );
     box.querySelectorAll("[data-i]").forEach((el) => io.observe(el));
 
-    // the whole block leaving the screen: below it means the reader went on to the next section, above it means they have not started
+    // the whole block leaving the screen (a jump, or a fast scroll that skips markers): above it is stage 1, below it is the last
     const edge = track
       ? new IntersectionObserver((entries) => {
           for (const e of entries) {
             if (e.isIntersecting) continue;
-            const wentOn = e.boundingClientRect.bottom <= 0;
-            returning = wentOn;
-            last = wentOn ? ROADMAP_STAGES.length : 0;
-            setActive(0);
-            setShort(wentOn);
+            setActive(e.boundingClientRect.bottom <= 0 ? ROADMAP_STAGES.length - 1 : 0);
           }
         })
       : null;
@@ -115,7 +101,7 @@ export default function Workflow() {
 
   return (
     <section id="roadmap" className="wf3-section sec-teal" aria-labelledby="wf-title">
-      <div ref={trackRef} className={`wf3-track${short ? " is-short" : ""}`} data-no-reveal style={{ ["--n" as string]: total, ["--step" as string]: `${STEP_SVH}svh`, ["--p" as string]: active / (total - 1) }}>
+      <div ref={trackRef} className="wf3-track" data-no-reveal style={{ ["--n" as string]: total, ["--step" as string]: `${STEP_SVH}svh`, ["--p" as string]: active / (total - 1) }}>
         <div className="wf3-stage">
           <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 wf3-inner">
             <div className="wf-head" aria-hidden="true">

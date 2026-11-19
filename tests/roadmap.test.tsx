@@ -150,31 +150,25 @@ describe("Workflow (scroll-driven)", () => {
     });
   });
 
-  it("coming back up from the next section goes straight to step 1, without scrolling through the stages", () => {
+  it("coming back up from the next section walks through the stages 13 to 1, the same as going down", () => {
     const io = stubObserver();
     render(<Workflow />);
     for (let i = 0; i < ROADMAP_STAGES.length; i++) io.cross(i);
     io.leave("below"); // on to Solutions
-    expect(document.querySelector(".wf2-node.is-active")).toHaveTextContent("01");
+    expect(document.querySelector(".wf3-title")).toHaveTextContent(ROADMAP_STAGES[ROADMAP_STAGES.length - 1].title);
     for (let i = ROADMAP_STAGES.length - 1; i >= 0; i--) {
       io.cross(i); // scrolling back up through the block
-      expect(document.querySelector(".wf2-node.is-active")).toHaveTextContent("01");
+      expect(document.querySelector(".wf3-title")).toHaveTextContent(ROADMAP_STAGES[i].title);
     }
-    io.cross(1); // and scrolling down again picks the stages up again
-    expect(document.querySelector(".wf3-title")).toHaveTextContent(ROADMAP_STAGES[1].title);
-    io.cross(2);
-    expect(document.querySelector(".wf3-title")).toHaveTextContent(ROADMAP_STAGES[2].title);
   });
 
-  it("shrinks the block to one screen on the way back up, so Home is one scroll away, and grows it back above", () => {
+  it("never changes the height of the block (no shrinking on the way back up)", () => {
     const io = stubObserver();
     render(<Workflow />);
     const track = document.querySelector(".wf3-track") as HTMLElement;
     io.leave("below");
-    expect(track).toHaveClass("is-short");
-    expect(rule(".wf3-track.is-short")).toMatch(/height: calc\(100svh - 4\.4rem\)/);
-    io.leave("above");
-    expect(track).not.toHaveClass("is-short");
+    expect(track.className).toBe("wf3-track");
+    expect(css()).not.toContain("is-short");
   });
 
   it("is on step 1 when the block is left off the top too", () => {
