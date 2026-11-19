@@ -2,6 +2,7 @@
 
 import QrCode from "@/components/QrCode";
 import StepWizard from "@/components/StepWizard";
+import { CONTACT } from "@/data/contact";
 import { CONTACT_WIZARD } from "@/lib/wizards";
 
 /**
@@ -22,6 +23,16 @@ export default function ContactSection() {
               <p className="qr-text">Scan the code, choose a day and a time, and leave your details. The request comes straight to the team.</p>
             </div>
           </div>
+          <ul className="contact-direct" aria-label="Contact details">
+            <li>
+              <span>Phone</span>
+              <a href={`tel:${CONTACT.phoneTel}`}>{CONTACT.phone}</a>
+            </li>
+            <li>
+              <span>Email</span>
+              <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+            </li>
+          </ul>
         </div>
         <div className="contact-form">
           <StepWizard config={CONTACT_WIZARD} />

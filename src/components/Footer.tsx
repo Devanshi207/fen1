@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { toTopIfHere } from "@/lib/toTop";
 import Image from "next/image";
 import { ArrowRight, X } from "lucide-react";
+import { CONTACT } from "@/data/contact";
 
 const LEGAL = {
   privacy: {
@@ -80,12 +81,12 @@ export default function Footer() {
         {/* Main Columns */}
         <div className="grid grid-cols-2 md:grid-cols-12 gap-8 pb-14 border-b border-[#DCE6F5]">
           {/* Brand Col */}
-          <div className="col-span-2 md:col-span-6 space-y-4">
+          <div className="col-span-2 md:col-span-4 space-y-4">
             <Link href="/" aria-label="FEN1, home" onClick={toTopIfHere("/", pathname)} className="inline-flex">
               <Image src="/brand/fen1-logo-2.png" alt="FEN1" width={1996} height={803} sizes="140px" className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-[#55637A] max-w-sm leading-relaxed">
-              An ERP by Kyozon for the fenestration industry: one job record from enquiry to handover.
+              A purpose-built ERP solution by Kyozon for the fenestration industry.
             </p>
           </div>
 
@@ -114,21 +115,32 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Company & Legal */}
+          {/* Column 4: About us & Legal */}
           <div className="col-span-1 md:col-span-2 space-y-3">
             <span className="text-[13px] text-[#0067C0] block font-medium">
-              Company
+              About us
             </span>
             <ul className="space-y-1.5 text-xs">
               <li><Link href="/about" className="hover:text-[#1E2B45] transition-colors">About FEN1</Link></li>
               <li><Link href="/careers" className="hover:text-[#1E2B45] transition-colors">Careers</Link></li>
-              <li><Link href="/contact#question" className="hover:text-[#1E2B45] transition-colors">Contact us</Link></li>
-              <li><Link href="/contact#demo" className="hover:text-[#1E2B45] transition-colors">Request a demo</Link></li>
-              <li><Link href="/contact#meeting" className="hover:text-[#1E2B45] transition-colors">Book a meeting</Link></li>
               <li className="pt-2 text-[13px] text-[#0067C0] font-medium">Legal</li>
               <li><button type="button" onClick={() => setLegal("privacy")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Privacy policy</button></li>
               <li><button type="button" onClick={() => setLegal("terms")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Terms of service</button></li>
               <li><button type="button" onClick={() => setLegal("security")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Enterprise security</button></li>
+            </ul>
+          </div>
+
+          {/* Column 5: Contact us */}
+          <div className="col-span-1 md:col-span-2 space-y-3">
+            <span className="text-[13px] text-[#0067C0] block font-medium">
+              Contact us
+            </span>
+            <ul className="space-y-1.5 text-xs">
+              <li><Link href="/contact#question" className="hover:text-[#1E2B45] transition-colors">Contact us</Link></li>
+              <li><Link href="/contact#demo" className="hover:text-[#1E2B45] transition-colors">Request a demo</Link></li>
+              <li><Link href="/contact#meeting" className="hover:text-[#1E2B45] transition-colors">Book a meeting</Link></li>
+              <li><a href={`tel:${CONTACT.phoneTel}`} className="hover:text-[#1E2B45] transition-colors">{CONTACT.phone}</a></li>
+              <li><a href={`mailto:${CONTACT.email}`} className="hover:text-[#1E2B45] transition-colors">{CONTACT.email}</a></li>
             </ul>
           </div>
         </div>

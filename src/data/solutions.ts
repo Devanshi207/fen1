@@ -29,7 +29,7 @@ export const INDUSTRY_SOLUTIONS: IndustrySolution[] = [
     challenge:
       "Manual profile takeoff errors, incorrect double-miter saw cutting angles, miscalculated corner crimping tolerances, and disconnected dealer pricing led to high scrap and margin leakage.",
     solutionSummary:
-      "FEN1 standardizes your entire window and door operation—from parametric CAD dimensioning and dynamic wind-load validation to automated G-code saw file export and progressive dealer billing.",
+      "FEN1 standardizes your entire window and door operation, from parametric CAD dimensioning and dynamic wind-load validation to automated G-code saw file export and progressive dealer billing.",
     workflow: [
       "CRM",
       "ESTIMATION",

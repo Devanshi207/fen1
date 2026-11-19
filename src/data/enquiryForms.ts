@@ -35,7 +35,7 @@ export const TOPICS: Record<Topic, TopicCopy> = {
 
 /** The kinds of work people can say they could help with on the job application (and the areas the admin tags roles with). Areas, not advertised vacancies. */
 export const CAREER_AREAS = [
-  "Product & engineering",
+  "Data entry",
   "Implementation & rollout",
   "Customer support",
   "Training",

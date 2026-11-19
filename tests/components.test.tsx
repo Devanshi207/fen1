@@ -37,11 +37,12 @@ describe("Navbar menu", () => {
 });
 
 describe("Footer", () => {
-  it("has Solutions, Resources and Company columns but no Products column", () => {
+  it("has Solutions, Resources, About us and Contact us columns but no Products column", () => {
     render(<Footer />);
     expect(screen.getByText("Solutions")).toBeInTheDocument();
     expect(screen.getByText("Resources")).toBeInTheDocument();
-    expect(screen.getByText("Company")).toBeInTheDocument();
+    expect(screen.getByText("About us")).toBeInTheDocument();
+    expect(screen.getAllByText("Contact us")).toHaveLength(2);
     expect(screen.queryByText("Products")).not.toBeInTheDocument();
     // sentence case, not shouting labels
     expect(document.querySelector("footer")!.innerHTML).not.toMatch(/\buppercase\b/);

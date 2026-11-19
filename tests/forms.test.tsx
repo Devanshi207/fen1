@@ -20,8 +20,7 @@ async function answer(user: User, option: string | RegExp, next: string | RegExp
 /** Walks the four option questions of a demo request, up to the last one (who to reply to). */
 async function reachDetails(user: User, topic: "demo" | "question" = "demo") {
   await answer(user, topic === "demo" ? "I'd like a demo" : "I have a question", "What do you make or install?");
-  await answer(user, "Glass railing", "How big is your team?");
-  await answer(user, "50 to 200 people", topic === "demo" ? "What would you like to see?" : "What is your question about?");
+  await answer(user, "Glass railing", topic === "demo" ? "What would you like to see?" : "What is your question about?");
   await user.click(screen.getByRole("checkbox", { name: "Estimation and quotes" }));
   await user.click(screen.getByRole("checkbox", { name: "Production and quality" }));
   await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -48,9 +47,9 @@ afterEach(() => {
 });
 
 describe("The enquiry, one question at a time", () => {
-  it("opens on the first of five questions, answered by clicking, with nothing to type", () => {
+  it("opens on the first of four questions, answered by clicking, with nothing to type", () => {
     render(<RequestDemoPage />);
-    expect(screen.getByText("Question 1 of 5")).toBeInTheDocument();
+    expect(screen.getByText("Question 1 of 4")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "What would you like to do?" })).toBeInTheDocument();
     expect(radio("I'd like a demo")).toBeInTheDocument();
     expect(radio("I have a question")).toBeInTheDocument();
@@ -62,7 +61,7 @@ describe("The enquiry, one question at a time", () => {
     const user = userEvent.setup();
     render(<RequestDemoPage />);
     await answer(user, "I have a question", "What do you make or install?");
-    expect(screen.getByText("Question 2 of 5")).toBeInTheDocument();
+    expect(screen.getByText("Question 2 of 4")).toBeInTheDocument();
     for (const o of ["Aluminium and uPVC windows and doors", "Glass railing", "Curtain wall", "More than one of these", "Something else"]) expect(radio(new RegExp(o))).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Back" }));
@@ -74,8 +73,7 @@ describe("The enquiry, one question at a time", () => {
     const user = userEvent.setup();
     render(<RequestDemoPage />);
     await answer(user, "I'd like a demo", "What do you make or install?");
-    await answer(user, "Curtain wall", "How big is your team?");
-    await answer(user, "20 to 50 people", "What would you like to see?");
+    await answer(user, "Curtain wall", "What would you like to see?");
     expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
     await user.click(screen.getByRole("checkbox", { name: "Site survey and design" }));
     await user.click(screen.getByRole("checkbox", { name: "Purchase and store" }));
@@ -93,8 +91,7 @@ describe("The enquiry, one question at a time", () => {
     const user = userEvent.setup();
     render(<RequestDemoPage />);
     await answer(user, "I have a question", "What do you make or install?");
-    await answer(user, "Glass railing", "How big is your team?");
-    await answer(user, "Under 20 people", "What is your question about?");
+    await answer(user, "Glass railing", "What is your question about?");
   });
 
   it("opens on the second question with the choice made when the address asks for it (#question, #demo, or an old ?topic=question link)", async () => {
@@ -118,7 +115,7 @@ describe("The enquiry, one question at a time", () => {
 
   it("follows a Request a demo or Ask a question link clicked while the form is still on its first question", async () => {
     render(<RequestDemoPage />);
-    expect(screen.getByText("Question 1 of 5")).toBeInTheDocument();
+    expect(screen.getByText("Question 1 of 4")).toBeInTheDocument();
     window.history.replaceState(null, "", "/#demo");
     window.dispatchEvent(new HashChangeEvent("hashchange"));
     await question("What do you make or install?");
@@ -139,7 +136,7 @@ describe("Sending an enquiry", () => {
     const user = userEvent.setup();
     render(<RequestDemoPage />);
     await reachDetails(user);
-    expect(screen.getByText("Question 5 of 5")).toBeInTheDocument();
+    expect(screen.getByText("Question 4 of 4")).toBeInTheDocument();
     expect(screen.queryByText(/optional/i)).toBeNull();
     await user.click(screen.getByRole("button", { name: /^request demo$/i }));
     expect(screen.getByText("Please enter your name")).toBeInTheDocument();
@@ -167,7 +164,7 @@ describe("Sending an enquiry", () => {
     expect(body.company).toBe("Rao Glazing");
     expect(body.email).toBe("asha@raoglazing.com");
     expect(body.website).toBe("");
-    expect(body.details).toMatchObject({ industry: "Glass railing", companySize: "50 to 200 people", interestedModules: "Estimation and quotes, Production and quality" });
+    expect(body.details).toMatchObject({ industry: "Glass railing", interestedModules: "Estimation and quotes, Production and quality" });
     expect(await screen.findByRole("heading", { level: 2, name: "Demo request sent" })).toBeInTheDocument();
     expect(screen.getByText(/Thank you, Asha/)).toBeInTheDocument();
   });
@@ -221,8 +218,7 @@ describe("Booking a meeting", () => {
   /** Walks a meeting request up to its last question: the topic, the business, the size, what to talk about, a day and a time. */
   async function reachMeetingDetails(user: User) {
     await answer(user, "I'd like a meeting", "What do you make or install?");
-    await answer(user, "Curtain wall", "How big is your team?");
-    await answer(user, "20 to 50 people", "What would you like to talk about?");
+    await answer(user, "Curtain wall", "What would you like to talk about?");
     await user.click(screen.getByRole("checkbox", { name: "Estimation and quotes" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await answer(user, "Wednesday or Thursday", "What time of day?");
@@ -235,11 +231,11 @@ describe("Booking a meeting", () => {
     expect(screen.getAllByRole("radio")).toHaveLength(3);
   });
 
-  it("asks for a day and a time, so it is seven questions where a demo is five", async () => {
+  it("asks for a day and a time, so it is six questions where a demo is four", async () => {
     const user = userEvent.setup();
     render(<RequestDemoPage />);
     await answer(user, "I'd like a meeting", "What do you make or install?");
-    expect(screen.getByText("Question 2 of 7")).toBeInTheDocument();
+    expect(screen.getByText("Question 2 of 6")).toBeInTheDocument();
   });
 
   it("sends the request tagged as a meeting, with the day and time asked for, and says the team will confirm it", async () => {
@@ -248,7 +244,7 @@ describe("Booking a meeting", () => {
     const user = userEvent.setup();
     render(<RequestDemoPage />);
     await reachMeetingDetails(user);
-    expect(screen.getByText("Question 7 of 7")).toBeInTheDocument();
+    expect(screen.getByText("Question 6 of 6")).toBeInTheDocument();
     await fillDetails(user);
     await user.click(screen.getByRole("button", { name: /^request meeting$/i }));
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
@@ -265,7 +261,7 @@ describe("Booking a meeting", () => {
     const user = userEvent.setup();
     render(<RequestDemoPage />);
     await reachDetails(user);
-    expect(screen.getByText("Question 5 of 5")).toBeInTheDocument();
+    expect(screen.getByText("Question 4 of 4")).toBeInTheDocument();
     await fillDetails(user);
     await user.click(screen.getByRole("button", { name: /^request demo$/i }));
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
@@ -276,7 +272,7 @@ describe("Booking a meeting", () => {
     window.history.replaceState(null, "", "/#meeting");
     render(<RequestDemoPage />);
     await question("What do you make or install?");
-    expect(screen.getByText("Question 2 of 7")).toBeInTheDocument();
+    expect(screen.getByText("Question 2 of 6")).toBeInTheDocument();
   });
 
   it("is a kind of enquiry the server accepts and the admin names", async () => {

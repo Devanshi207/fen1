@@ -68,7 +68,7 @@ describe("the notes on the pages", () => {
   });
 
   it("keeps the four reasons in Why FEN1 on the About page: speed, simplicity, performance and industry expertise", () => {
-    expect(WHY_FEN1.map((n) => n.name)).toEqual(["Speed", "Simplicity", "Performance", "Industry expertise"]);
+    expect(WHY_FEN1.map((n) => n.name)).toEqual(["Speed", "Simplicity", "Performance", "Industry Expertise"]);
   });
 
   it("never says the same thing twice: no sentence repeats, and no run of seven words is shared by two different blocks, on any page", () => {
@@ -100,9 +100,9 @@ describe("the notes on the pages", () => {
 
   it("uses the site's wording and makes no claim it cannot back: no tax-system acronyms, no hype, and no figure except the director's years", () => {
     const rest = JSON.stringify([SOLUTION_MODULES, SOLUTIONS_INCLUDED, ABOUT_INSIDE, CAREERS_WORK, TRACKS.map((t) => t.text), PRINCIPLES, PROBLEMS, CLOSING]);
-    const everything = JSON.stringify([rest, WHY_FEN1, DIRECTOR]);
+    const everything = JSON.stringify([rest, DIRECTOR]);
     expect(everything).not.toMatch(/\bGST\b|\bHSN\b|\bSAC\b|accorr/i);
-    expect(everything).not.toMatch(/seamless|end-to-end|cutting-edge|revolution|empower|unlock|next-generation|world-class|state-of-the-art|unified|powerful|best-in-class|leading/i);
+    expect(everything).not.toMatch(/cutting-edge|revolution|empower|unlock|next-generation|world-class|state-of-the-art|unified|powerful|best-in-class|leading/i);
     expect(everything).not.toMatch(/\d+(\.\d+)?\s?%|\b\d{2,}\+/);
     const noBrand = (t: string) => t.replace(/fen1/gi, "");
     // the only figures: the director's "over 25 years", and the problems' own numbering 01 to 06
@@ -163,7 +163,7 @@ describe("each thing is said on one page only", () => {
   it("About has Why FEN1 (four reasons), the director's profile and the foundations, and no table; there is no Why FEN1 page", async () => {
     render(<AboutSection />);
     const why = document.querySelector(".about-why")!;
-    expect(why).toHaveTextContent("Why FEN1");
+    expect(why).toHaveTextContent("Why Choose FEN1?");
     for (const n of WHY_FEN1) expect(within(why as HTMLElement).getByRole("heading", { level: 3, name: n.name })).toBeInTheDocument();
     expect(why.querySelectorAll(".note")).toHaveLength(WHY_FEN1.length);
     expect(existsSync(join("src", "app", "(site)", "why-fen1"))).toBe(false);

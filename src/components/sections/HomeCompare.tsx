@@ -9,12 +9,12 @@ export default function HomeCompare() {
         <SectionHead title="From scattered tools to one system" />
         <div className="compare">
           <table className="compare-table">
-            <caption className="sr-only">Working without one system, compared with the FEN1 way</caption>
+            <caption className="sr-only">Working without an integrated system, compared with the FEN1 way</caption>
             <thead>
               <tr>
                 <th scope="col">Area</th>
-                <th scope="col">Without one system</th>
-                <th scope="col">The FEN1 way</th>
+                <th scope="col">Without an Integrated System</th>
+                <th scope="col">The FEN1 Way</th>
               </tr>
             </thead>
             <tbody>
@@ -24,8 +24,8 @@ export default function HomeCompare() {
                     <span className="tech about-n">{p.n}</span>
                     {p.name}
                   </th>
-                  <td data-label="Without one system">{p.issue}</td>
-                  <td data-label="The FEN1 way">
+                  <td data-label="Without an Integrated System">{p.issue}</td>
+                  <td data-label="The FEN1 Way">
                     <strong>{PRINCIPLES[i].title}</strong>
                     <span>{PRINCIPLES[i].text}</span>
                   </td>

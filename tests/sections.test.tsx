@@ -227,8 +227,8 @@ describe("AboutSection", () => {
 
   it("Home sets the six problems against the six FEN1 answers as a table, one row each, below the window drawing", () => {
     render(<Page />);
-    const table = screen.getByRole("table", { name: "Working without one system, compared with the FEN1 way" });
-    expect(within(table).getAllByRole("columnheader").map((h) => h.textContent)).toEqual(["Area", "Without one system", "The FEN1 way"]);
+    const table = screen.getByRole("table", { name: "Working without an integrated system, compared with the FEN1 way" });
+    expect(within(table).getAllByRole("columnheader").map((h) => h.textContent)).toEqual(["Area", "Without an Integrated System", "The FEN1 Way"]);
     const rows = within(table).getAllByRole("row").slice(1);
     expect(rows).toHaveLength(PROBLEMS.length);
     expect(PRINCIPLES).toHaveLength(PROBLEMS.length);

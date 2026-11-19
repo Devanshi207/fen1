@@ -23,7 +23,6 @@ export const CONTACT_WIZARD: WizardConfig = {
   steps: [
     { key: "topic", question: "What would you like to do?", options: TOPIC_OPTIONS },
     { key: "business", question: "What do you make or install?", options: BUSINESS_OPTIONS },
-    { key: "size", question: "How big is your team?", options: SIZE_OPTIONS },
     { key: "interest", question: (a) => INTEREST_QUESTION[topicOf(a)], help: "Pick as many as you like.", options: INTEREST_OPTIONS, multi: true, exclusive: NOT_SURE },
     // a meeting also asks when: the team confirms the exact time
     { key: "day", question: "Which day suits you?", options: MEETING_DAY_OPTIONS, show: (a) => topicOf(a) === "meeting" },

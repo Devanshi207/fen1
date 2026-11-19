@@ -19,10 +19,23 @@ export interface Note {
 
 /** Why FEN1: the four reasons. */
 export const WHY_FEN1: Note[] = [
-  { name: "Speed", text: "A quotation, a cutting list and a purchase order all start from data already in the system. Teams spend their time checking work, not copying it between files." },
-  { name: "Simplicity", text: "Each person sees only the modules their role needs, in the order the work happens. New people learn one flow, not twelve tools." },
-  { name: "Performance", text: "Dashboards, production tracking and reports show where each job stands and where it is stuck. Decisions are made from the record, not from memory." },
-  { name: "Industry expertise", text: "FEN1 is built from the trade, not bent from a general system, so each screen asks what a window, door or façade job really asks. Nothing has to be translated from another trade." },
+  { name: "Speed", text: "Quotations, cutting lists and purchase orders are generated using information already available in the system. This eliminates repetitive data entry, reduces manual effort and allows your team to focus on getting the work done efficiently and accurately." },
+  { name: "Simplicity", text: "Each team member has access to the modules and information relevant to their role. Workflows follow a logical sequence, making everyday tasks easier to manage and helping new employees learn the system quickly." },
+  { name: "Performance", text: "Real-time dashboards, production tracking and comprehensive reports provide clear visibility into the progress of every job. Identify delays, monitor operations and make informed decisions using accurate, up-to-date information." },
+  { name: "Industry Expertise", text: "FEN1 is specifically designed for the window, door and façade industry. Its features and workflows reflect the actual requirements of the trade, rather than adapting generic business software to industry-specific processes. Every function is developed with a clear understanding of how the industry operates." },
+];
+
+/** About, after the four reasons. */
+export const WHY_CLOSING = {
+  title: "One Platform. Every Process. Complete Control.",
+  text: "FEN1 connects your people, processes and operations through one integrated platform, helping your business improve efficiency, maintain control and achieve better results.",
+};
+
+/** About, under the heading: the product in a few lines (the Home page carries the same description, with the three promises). */
+export const ABOUT_INTRO = [
+  "From the first enquiry to final handover, FEN1 connects every stage of a project through one integrated job record, bringing estimation, design, procurement, production, inventory, dispatch and installation together in a seamless workflow.",
+  "One Project. One Connected Workflow. Complete Control.",
+  "FEN1 by Kyozon: Technology Designed Around Your Industry.",
 ];
 
 /** About: the director's profile, from the company's own material. No name or photo is given, so none is shown. */

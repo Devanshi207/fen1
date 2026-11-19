@@ -1,4 +1,4 @@
-import { ABOUT_INSIDE, DIRECTOR, WHY_FEN1 } from "@/data/erpContent";
+import { ABOUT_INSIDE, ABOUT_INTRO, DIRECTOR, WHY_CLOSING, WHY_FEN1 } from "@/data/erpContent";
 import ModuleNotes from "./ModuleNotes";
 import SectionHead from "./SectionHead";
 
@@ -7,8 +7,8 @@ export default function AboutSection() {
   return (
     <section id="about" data-section="about" className="page-sec sec-lavender">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead title="Built around how fenestration work runs">
-          FEN1 is a Kyozon ERP product made for the fenestration industry. One job record runs from the first enquiry to final handover.
+        <SectionHead title="Built for Fenestration. Designed for Better Business." more={ABOUT_INTRO}>
+          FEN1 is a purpose-built ERP solution by Kyozon, designed specifically for the window, door and façade industry.
         </SectionHead>
 
         <div className="about-director">
@@ -25,8 +25,12 @@ export default function AboutSection() {
         </div>
 
         <div className="about-why">
-          <p className="sol-label tech">Why FEN1</p>
+          <h3 className="sol-label tech">Why Choose FEN1?</h3>
           <ModuleNotes notes={WHY_FEN1} cols={4} />
+          <p className="why-closing">
+            <strong>{WHY_CLOSING.title}</strong>
+            <span>{WHY_CLOSING.text}</span>
+          </p>
         </div>
       </div>
     </section>

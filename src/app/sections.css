@@ -5,7 +5,7 @@
 
 /* Clicking a link scrolls to a part of the page. The part has its own space above its first line (--pad), so the stop
    point is worked out from it: the first line lands a little under the header, not a screenful below it. */
-[data-section] { --pad: clamp(4rem, 9vw, 7rem); scroll-margin-top: calc(4.4rem - var(--pad) + 1.25rem); }
+[data-section] { --pad: clamp(2rem, 4.5vw, 3.5rem); scroll-margin-top: calc(4.4rem - var(--pad) + 1.25rem); }
 /* a page of its own starts a little under the header (the main area already clears the header's height), not a screenful below it */
 #solutions, #about, #training, #careers, #contact { --pad: clamp(1.5rem, 3vw, 2.5rem); }
 #home { scroll-margin-top: 5rem; }
@@ -14,7 +14,7 @@
 .page-sec { position: relative; padding-block: var(--pad); border-top: 1px solid var(--line); }
 .page-sec-alt { background: var(--surface); }
 
-.sec-head { display: grid; gap: 0.75rem; max-width: 44rem; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+.sec-head { display: grid; gap: 0.75rem; max-width: 44rem; margin-bottom: clamp(1.25rem, 3vw, 2rem); }
 .sec-title { font-size: clamp(1.9rem, 4vw, 3rem); line-height: 1.08; letter-spacing: -0.02em; color: var(--ink); }
 .sec-lede { font-size: 1rem; line-height: 1.6; color: var(--muted); }
 .sol-label { margin: 0 0 0.5rem; font-size: 0.75rem; letter-spacing: 0.01em; color: var(--muted); }
@@ -260,11 +260,23 @@
 .sol-mods .note { padding: 1rem 0 1rem; }
 .sol-mods .note-name { font-size: 1rem; }
 .sol-mods .note-text { font-size: 0.875rem; margin-top: 0.25rem; }
-.about-inside, .career-build { margin-top: clamp(2.5rem, 6vw, 4rem); display: grid; gap: 1rem; }
+.about-inside, .career-build { margin-top: clamp(1.5rem, 4vw, 2.5rem); display: grid; gap: 1rem; }
 .train-text { margin: 0.75rem 0 0; font-size: 0.875rem; line-height: 1.6; color: var(--muted); }
 .sol-common { display: grid; gap: 1rem; margin-bottom: clamp(2rem, 5vw, 3rem); }
-.about-why { margin-top: clamp(2rem, 5vw, 3rem); display: grid; gap: 1rem; }
+.about-why { margin-top: clamp(1.5rem, 4vw, 2.5rem); display: grid; gap: 1rem; }
 .about-director { margin-top: clamp(2.5rem, 6vw, 4rem); display: grid; gap: 1rem; }
 .about-director-title { margin: 0; font-size: clamp(1.5rem, 2.8vw, 2.25rem); font-weight: 500; letter-spacing: -0.02em; color: var(--ink); }
 .about-director-intro { margin: 0; max-width: 46rem; font-size: 1.125rem; line-height: 1.6; color: var(--muted); }
 .about-quote { margin: 0.5rem 0 0; padding: 0 0 0 1.25rem; border-left: 2px solid var(--accent); max-width: 46rem; font-family: var(--font-display); font-size: 1.25rem; line-height: 1.5; font-weight: 400; color: var(--ink); }
+
+.sec-lede-more { margin-top: 0.75rem; }
+.home-promises { list-style: none; margin: clamp(1.5rem, 4vw, 2.5rem) 0 0; padding: 0; display: grid; gap: 1.25rem 2rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.home-promises li { display: grid; gap: 0.25rem; padding-top: 1rem; border-top: 1px solid var(--line-strong); font-size: 1rem; line-height: 1.55; color: var(--muted); }
+.home-promises strong { font-weight: 500; color: var(--ink); }
+.why-closing { margin: 0.5rem 0 0; padding-top: 1rem; border-top: 1px solid var(--line-strong); display: grid; gap: 0.25rem; font-size: 1rem; line-height: 1.55; color: var(--muted); max-width: 48rem; }
+.why-closing strong { font-weight: 500; color: var(--ink); }
+.contact-direct { list-style: none; margin: 0; padding: 1.25rem 0 0; border-top: 1px solid var(--line-strong); display: grid; gap: 0.75rem; }
+.contact-direct li { display: grid; gap: 0.125rem; font-size: 1rem; }
+.contact-direct span { font-size: 0.75rem; color: var(--muted); }
+.contact-direct a { color: var(--ink); font-weight: 500; overflow-wrap: anywhere; }
+.contact-direct a:hover { color: var(--accent); }

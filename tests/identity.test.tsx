@@ -18,7 +18,7 @@ describe("hero", () => {
     render(<Page />);
     const h1 = screen.getByRole("heading", { level: 1 });
     expect(h1).toHaveAccessibleName("Engineering the business behind every window");
-    expect(screen.getByText("FEN1 is an ERP product under Kyozon, built for aluminium windows, doors, façades, curtain walls and glass systems.")).toBeInTheDocument();
+    expect(screen.getByText("FEN1 is a purpose-built ERP solution by Kyozon, designed specifically for the window, door and façade industry.")).toBeInTheDocument();
   });
 
   it("sets the second line of the headline in the solid brand blue, with no period and no gradient text", () => {
