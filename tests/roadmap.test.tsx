@@ -7,7 +7,7 @@ import Workflow, { PHASES, STEP_SVH } from "@/components/Workflow";
 import { ROADMAP_STAGES } from "@/data/roadmap";
 import { STAGE_SCREENS } from "@/data/stageScreens";
 
-const css = () => readFileSync(join("src", "app", "motion.css"), "utf8");
+const css = () => readFileSync(join("src", "app", "motion.css"), "utf8").split(String.fromCharCode(13)).join("");
 const rule = (selector: string) => new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} \\{[^}]*\\}`).exec(css())![0];
 
 /** A stand-in IntersectionObserver that lets a test say which marker is crossing the middle of the screen. */
@@ -99,6 +99,28 @@ describe("Workflow (scroll-driven)", () => {
     const first = big();
     await user.click(within(dlg).getByRole("button", { name: "Screen 3 of 3" }));
     expect(big()).not.toBe(first);
+  });
+
+  it("on a phone, a fast flick still shows every stage on the way, one after another, and gives each stage more scrolling", () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("matchMedia", (q: string) => ({ matches: q.includes("760px"), media: q, addEventListener() {}, removeEventListener() {} }));
+    try {
+      const io = stubObserver();
+      render(<Workflow />);
+      const seen: string[] = [];
+      const note = () => seen.push(document.querySelector(".wf3-title")!.textContent ?? "");
+      note();
+      io.cross(4); // one flick crosses five markers at once
+      note();
+      for (let i = 0; i < 6; i++) {
+        act(() => { vi.advanceTimersByTime(140); });
+        note();
+      }
+      expect(seen.filter((t, i) => t !== seen[i - 1])).toEqual([0, 1, 2, 3, 4].map((i) => ROADMAP_STAGES[i].title));
+    } finally {
+      vi.useRealTimers();
+    }
+    expect(css()).toMatch(/@media \(max-width: 760px\) \{\s*[^@]*\.wf3-track \{ --step: 4\dsvh !important; \}/);
   });
 
   it("never captures the scroll: no listeners, no wheel handling, no scrolling by script", () => {

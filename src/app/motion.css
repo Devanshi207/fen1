@@ -142,6 +142,8 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
    room: the main one across the width and the other two side by side under it, none of them cropped (the screens are 16:10) */
 .wf-m, .wf-tap { display: none; }
 @media (max-width: 760px) {
+  /* each stage gets more scrolling, so a flick of the finger does not run past several (!important: the track sets its own --step) */
+  .wf3-track { --step: 42svh !important; }
   .wf2-phases, .wf2-rail, .wf-lede { display: none; }
   .wf-m { display: grid; gap: 0.5rem; }
   .wf-m-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }

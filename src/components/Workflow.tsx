@@ -73,10 +73,28 @@ export default function Workflow() {
     const box = markers.current;
     const track = trackRef.current;
     if (!box || typeof IntersectionObserver === "undefined") return;
+    // on a phone a flick of the finger crosses several markers in a moment, so the panel walks to the stage one step at a time
+    // (every stage is shown, none is skipped); on a larger screen it goes straight there
+    const phone = typeof window.matchMedia === "function" && window.matchMedia("(max-width: 760px)").matches;
+    let want = 0;
+    let shown = 0;
+    let walker: ReturnType<typeof setTimeout> | null = null;
+    const stepOnce = () => {
+      walker = null;
+      if (shown === want) return;
+      shown += Math.sign(want - shown);
+      setActive(shown);
+      if (shown !== want) walker = setTimeout(stepOnce, 140);
+    };
+    const go = (i: number) => {
+      if (!phone) return setActive(i);
+      want = i;
+      if (!walker) stepOnce();
+    };
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
-          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.i));
+          if (e.isIntersecting) go(Number((e.target as HTMLElement).dataset.i));
         }
       },
       { rootMargin: "-50% 0px -50% 0px" }
@@ -88,12 +106,13 @@ export default function Workflow() {
       ? new IntersectionObserver((entries) => {
           for (const e of entries) {
             if (e.isIntersecting) continue;
-            setActive(e.boundingClientRect.bottom <= 0 ? ROADMAP_STAGES.length - 1 : 0);
+            go(e.boundingClientRect.bottom <= 0 ? ROADMAP_STAGES.length - 1 : 0);
           }
         })
       : null;
     if (track) edge?.observe(track);
     return () => {
+      if (walker) clearTimeout(walker);
       io.disconnect();
       edge?.disconnect();
     };
