@@ -180,11 +180,11 @@ describe("each thing is said on one page only", () => {
     expect(screen.queryByRole("table")).toBeNull();
   });
 
-  it("Careers has a 'What you would work on' part before the application", () => {
+  it("Careers has a 'What you would work on' part, and no application form until a role is applied for", () => {
     render(<CareersSection />);
     const work = document.querySelector(".career-build")!;
     expect(work).toHaveTextContent("What you would work on");
     expect(work.querySelectorAll(".note")).toHaveLength(CAREERS_WORK.length);
-    expect(work.compareDocumentPosition(document.querySelector(".career-apply")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(document.querySelector(".career-apply")).toBeNull();
   });
 });

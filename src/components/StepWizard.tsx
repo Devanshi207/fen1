@@ -4,9 +4,20 @@ import { useEffect, useId, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, CheckCircle2 } from "lucide-react";
 import type { StepOption } from "@/data/enquirySteps";
 import type { EnquiryKind } from "@/lib/enquiry";
+import { RESUME_ACCEPT, RESUME_HINT, resumeProblem, type ResumeUpload } from "@/lib/resume";
 import { submitEnquiry, type SubmitState } from "@/lib/submitEnquiry";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** A chosen file as base64, for the JSON the form posts. */
+function toUpload(file: File): Promise<ResumeUpload> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(reader.error);
+    reader.onload = () => resolve({ name: file.name, data: String(reader.result).split(",")[1] ?? "" });
+    reader.readAsDataURL(file);
+  });
+}
 /** A single answer moves on by itself after this long, so the choice is seen before the next question appears. */
 const ADVANCE_MS = 260;
 
@@ -31,7 +42,7 @@ export interface WizardStep {
 export interface DetailField {
   key: string;
   label: string;
-  type: "text" | "email" | "tel" | "area";
+  type: "text" | "email" | "tel" | "area" | "file";
   auto?: string;
   /** What to say when it is left empty. A field with none is not checked. */
   missing?: string;
@@ -43,6 +54,8 @@ export interface WizardConfig {
   /** The option questions, in order. The last question, who to reply to, is added after them. */
   steps: WizardStep[];
   fields: DetailField[];
+  /** The heading over the details form (default "Where can we reach you?") */
+  title?: string;
   kind: (answers: Answers) => EnquiryKind;
   submitLabel: (answers: Answers) => string;
   done: (answers: Answers) => { title: string; text: string };
@@ -104,6 +117,7 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
   const last = steps.length; // the details question comes after the option questions
   const total = steps.length + 1;
   const [details, setDetails] = useState<Record<string, string>>({});
+  const [files, setFiles] = useState<Record<string, File>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<SubmitState>("idle");
   const [trap, setTrap] = useState("");
@@ -168,6 +182,16 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
     e.preventDefault();
     const found: Record<string, string> = {};
     for (const f of fields) {
+      if (f.type === "file") {
+        const file = files[f.key];
+        if (!file) {
+          if (f.missing) found[f.key] = f.missing;
+        } else {
+          const problem = resumeProblem(file.name, file.size);
+          if (problem) found[f.key] = problem;
+        }
+        continue;
+      }
       const value = (details[f.key] ?? "").trim();
       if (f.missing && !value) found[f.key] = f.missing;
       else if (f.type === "email" && value && !EMAIL.test(value)) found[f.key] = "Please enter a valid email";
@@ -176,7 +200,15 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
     if (Object.keys(found).length > 0) return;
 
     setStatus("sending");
-    const ok = await submitEnquiry(config.kind(answers), config.payload(answers, details), trap);
+    const file = Object.values(files)[0];
+    let resume: ResumeUpload | undefined;
+    try {
+      resume = file ? await toUpload(file) : undefined;
+    } catch {
+      setStatus("error");
+      return;
+    }
+    const ok = await submitEnquiry(config.kind(answers), config.payload(answers, details), trap, resume);
     setStatus(ok ? "sent" : "error");
   };
 
@@ -184,6 +216,7 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
     moved.current = true;
     setAnswers({});
     setDetails({});
+    setFiles({});
     setErrors({});
     setStatus("idle");
     setStep(0);
@@ -211,19 +244,23 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
   }
 
   const current = steps[step];
-  const question = current ? (typeof current.question === "function" ? current.question(answers) : current.question) : "Where can we reach you?";
+  const question = current ? (typeof current.question === "function" ? current.question(answers) : current.question) : (config.title ?? "Where can we reach you?");
 
   return (
     <div className="wiz">
       {config.intro && <p className="wiz-intro">{config.intro}</p>}
-      <p className="wiz-kicker tech">
-        Question {step + 1} of {total}
-      </p>
-      <div className="wiz-progress" style={{ gridTemplateColumns: `repeat(${total}, 1fr)` }} aria-hidden="true">
-        {Array.from({ length: total }, (_, i) => (
-          <span key={i} className={i < step ? "is-done" : i === step ? "is-now" : ""} />
-        ))}
-      </div>
+      {total > 1 && (
+        <>
+          <p className="wiz-kicker tech">
+            Question {step + 1} of {total}
+          </p>
+          <div className="wiz-progress" style={{ gridTemplateColumns: `repeat(${total}, 1fr)` }} aria-hidden="true">
+            {Array.from({ length: total }, (_, i) => (
+              <span key={i} className={i < step ? "is-done" : i === step ? "is-now" : ""} />
+            ))}
+          </div>
+        </>
+      )}
 
       {/* keyed by step, so each question enters afresh */}
       <div key={step} className="wiz-step">
@@ -283,7 +320,7 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
           <form onSubmit={send} noValidate className="wiz-form">
             <div className="wiz-grid">
               {fields
-                .filter((f) => f.type !== "area")
+                .filter((f) => f.type !== "area" && f.type !== "file")
                 .map((f) => (
                   <div key={f.key} className="wiz-field">
                     <label htmlFor={`wiz-${f.key}`}>{f.label}</label>
@@ -304,6 +341,36 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
                   </div>
                 ))}
             </div>
+            {fields
+              .filter((f) => f.type === "file")
+              .map((f) => (
+                <div key={f.key} className="wiz-field">
+                  <label htmlFor={`wiz-${f.key}`}>
+                    {f.label} <span className="wiz-hint">{RESUME_HINT}</span>
+                  </label>
+                  <input
+                    id={`wiz-${f.key}`}
+                    type="file"
+                    accept={RESUME_ACCEPT}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      setFiles((all) => {
+                        const rest = { ...all };
+                        if (file) rest[f.key] = file;
+                        else delete rest[f.key];
+                        return rest;
+                      });
+                    }}
+                    aria-invalid={errors[f.key] ? true : undefined}
+                    aria-describedby={errors[f.key] ? `wiz-${f.key}-err` : undefined}
+                  />
+                  {errors[f.key] && (
+                    <p id={`wiz-${f.key}-err`} role="alert" className="wiz-error">
+                      {errors[f.key]}
+                    </p>
+                  )}
+                </div>
+              ))}
             {fields
               .filter((f) => f.type === "area")
               .map((f) => (

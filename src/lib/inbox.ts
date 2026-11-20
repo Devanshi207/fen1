@@ -1,4 +1,5 @@
 import type { Enquiry, EnquiryKind } from "@/lib/enquiry";
+import type { ResumeUpload } from "@/lib/resume";
 import type { Store } from "@/lib/store";
 
 export type EnquiryStatus = "new" | "handled";
@@ -18,8 +19,10 @@ export const KIND_LABEL: Record<EnquiryKind, string> = {
   meeting: "Meeting request",
 };
 
-export async function saveEnquiry(store: Store, data: Enquiry, now = new Date()): Promise<StoredEnquiry> {
-  const saved: StoredEnquiry = { ...data, id: crypto.randomUUID(), receivedAt: now.toISOString(), status: "new" };
+export async function saveEnquiry(store: Store, data: Enquiry, now = new Date(), resume?: ResumeUpload | null): Promise<StoredEnquiry> {
+  const saved: StoredEnquiry = { ...data, details: resume ? { ...data.details, resume: resume.name } : data.details, id: crypto.randomUUID(), receivedAt: now.toISOString(), status: "new" };
+  // the file first: an application never points at a resume that was not kept
+  if (resume) await store.put("resumes", saved.id, { name: resume.name, data: resume.data });
   await store.put("enquiries", saved.id, saved as unknown as Record<string, unknown>);
   return saved;
 }

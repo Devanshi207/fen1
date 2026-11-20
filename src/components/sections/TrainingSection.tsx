@@ -8,7 +8,7 @@ export default function TrainingSection() {
       <span id="roles" className="sec-anchor" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead title="Training by role">
-          Each team is trained on the modules it works in, following the same workflow from enquiry to handover.
+          Each team is trained on the modules it uses, following the same workflow from enquiry to handover.
         </SectionHead>
         <div className="train-grid">
           {TRACKS.map((t) => (

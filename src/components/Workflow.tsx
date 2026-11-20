@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ROADMAP_STAGES } from "@/data/roadmap";
 import { STAGE_SCREENS } from "@/data/stageScreens";
 import StageDialog from "@/components/StageDialog";
@@ -67,6 +68,15 @@ export default function Workflow() {
   const stage = ROADMAP_STAGES[active];
   const phase = PHASES.find((p) => active >= p.from && active <= p.to) ?? PHASES[0];
 
+  // Previous and next: the page scrolls (smoothly) until that stage's marker is in the middle of the screen, so the panel, the
+  // scroll position and the arrows always agree. Only a click does this; the scroll itself is never taken over.
+  const move = (to: number) => {
+    const el = markers.current?.querySelector(`[data-i="${Math.max(0, Math.min(total - 1, to))}"]`);
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    window.scrollBy({ top: r.top + r.height / 2 - window.innerHeight / 2, behavior: "smooth" });
+  };
+
   // the stage whose marker is crossing the middle of the screen is the one to show, in both directions: scrolling down walks
   // through 1 to 13, and coming back up from the next section walks through 13 to 1 before leaving the block at the top.
   useEffect(() => {
@@ -125,7 +135,16 @@ export default function Workflow() {
           <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 wf3-inner">
             <div className="wf-head" aria-hidden="true">
               <p className="wf3-heading">From enquiry to handover</p>
-              <p className="wf-lede">{total} stages on one job record. Each stage starts from what the one before it recorded.</p>
+              <p className="wf-lede">{total} stages on one job record. Each stage begins with what the previous stage recorded.</p>
+            </div>
+
+            <div className="wf3-nav">
+              <button type="button" className="wf3-arrow" aria-label="Previous stage" disabled={active === 0} onClick={() => move(active - 1)}>
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              </button>
+              <button type="button" className="wf3-arrow" aria-label="Next stage" disabled={active === total - 1} onClick={() => move(active + 1)}>
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </button>
             </div>
 
             {/* phones: one line for where you are, and a bar of 13 segments, instead of the row of 13 numbered circles */}
@@ -139,7 +158,7 @@ export default function Workflow() {
               </div>
               <div className="wf-m-bar">
                 {ROADMAP_STAGES.map((s, i) => (
-                  <span key={s.step} className={i < active ? "is-done" : i === active ? "is-now" : ""} />
+                  <span key={s.step} className={i < active ? "is-done" : i === active ? "is-now" : ""} onClick={() => move(i)} />
                 ))}
               </div>
             </div>
@@ -157,7 +176,9 @@ export default function Workflow() {
               <ol className="wf2-nodes">
                 {ROADMAP_STAGES.map((s, i) => (
                   <li key={s.step}>
-                    <span className={`wf2-node tech ${i === active ? "is-active" : ""} ${i < active ? "is-done" : ""}`}>{s.step}</span>
+                    <span className={`wf2-node tech ${i === active ? "is-active" : ""} ${i < active ? "is-done" : ""}`} onClick={() => move(i)}>
+                      {s.step}
+                    </span>
                   </li>
                 ))}
               </ol>

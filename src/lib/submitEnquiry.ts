@@ -1,4 +1,5 @@
 import type { EnquiryKind } from "@/lib/enquiry";
+import type { ResumeUpload } from "@/lib/resume";
 
 export type SubmitState = "idle" | "sending" | "sent" | "error";
 
@@ -7,14 +8,16 @@ export async function submitEnquiry(
   kind: EnquiryKind,
   fields: { name: string; company: string; email: string; phone: string; message: string } & Record<string, string>,
   /** The hidden spam-trap field: people never fill it in, bots do (see /api/enquiry) */
-  trap = ""
+  trap = "",
+  /** A resume to keep with a job application */
+  resume?: ResumeUpload
 ): Promise<boolean> {
   const { name, company, email, phone, message, ...details } = fields;
   try {
     const res = await fetch("/api/enquiry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ kind, name, company, email, phone, message, details, website: trap }),
+      body: JSON.stringify({ kind, name, company, email, phone, message, details, website: trap, ...(resume ? { resume } : {}) }),
     });
     return res.ok;
   } catch {

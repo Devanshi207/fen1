@@ -109,7 +109,6 @@ export default function Footer() {
             </span>
             <ul className="space-y-1.5 text-xs">
               <li><Link href="/training" className="hover:text-[#1E2B45] transition-colors">Training</Link></li>
-              <li><Link href="/training#roles" className="hover:text-[#1E2B45] transition-colors">Role-based training</Link></li>
               <li><Link href="/about" className="hover:text-[#1E2B45] transition-colors">Platform philosophy</Link></li>
               <li><Link href="/contact#question" className="hover:text-[#1E2B45] transition-colors">Technical support</Link></li>
             </ul>
@@ -122,7 +121,6 @@ export default function Footer() {
             </span>
             <ul className="space-y-1.5 text-xs">
               <li><Link href="/about" className="hover:text-[#1E2B45] transition-colors">About FEN1</Link></li>
-              <li><Link href="/careers" className="hover:text-[#1E2B45] transition-colors">Careers</Link></li>
               <li className="pt-2 text-[13px] text-[#0067C0] font-medium">Legal</li>
               <li><button type="button" onClick={() => setLegal("privacy")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Privacy policy</button></li>
               <li><button type="button" onClick={() => setLegal("terms")} className="text-xs hover:text-[#1E2B45] transition-colors cursor-pointer">Terms of service</button></li>

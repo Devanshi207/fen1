@@ -43,8 +43,9 @@ describe("Workflow (scroll-driven)", () => {
     render(<Workflow />);
     expect(document.querySelector("#roadmap a, #roadmap [role='tab'], #roadmap [tabindex]")).toBeNull();
     const buttons = [...document.querySelectorAll("#roadmap button")];
-    expect(buttons).toHaveLength(3);
-    expect(buttons.every((b) => b.classList.contains("wf3-shot"))).toBe(true);
+    expect(buttons.filter((b) => b.classList.contains("wf3-shot"))).toHaveLength(3);
+    // the other two are the Previous and Next stage arrows
+    expect(buttons.filter((b) => !b.classList.contains("wf3-shot")).map((b) => b.getAttribute("aria-label"))).toEqual(["Previous stage", "Next stage"]);
   });
 
   it("opens the stage's details when a screen is clicked, with its description, module and record", async () => {
@@ -123,9 +124,28 @@ describe("Workflow (scroll-driven)", () => {
     expect(css()).toMatch(/@media \(max-width: 760px\) \{\s*[^@]*\.wf3-track \{ --step: 4\dsvh !important; \}/);
   });
 
-  it("never captures the scroll: no listeners, no wheel handling, no scrolling by script", () => {
+  it("never captures the scroll: no listeners, no wheel handling; the page only scrolls (once, smoothly) when an arrow is clicked", () => {
     const src = readFileSync(join("src", "components", "Workflow.tsx"), "utf8");
     expect(src).not.toMatch(/addEventListener|onWheel|wheel|preventDefault|scrollTo|scrollIntoView|setInterval/);
+    expect(src.match(/scrollBy/g)).toHaveLength(1);
+  });
+
+  it("has Previous and Next arrows that scroll the page to the stage before or after, and are off at the ends", async () => {
+    const scrollBy = vi.fn();
+    vi.stubGlobal("scrollBy", scrollBy);
+    window.scrollBy = scrollBy;
+    const io = stubObserver();
+    const user = userEvent.setup();
+    render(<Workflow />);
+    const prev = screen.getByRole("button", { name: "Previous stage" });
+    const next = screen.getByRole("button", { name: "Next stage" });
+    expect(prev).toBeDisabled();
+    expect(next).toBeEnabled();
+    await user.click(next);
+    expect(scrollBy).toHaveBeenCalledWith(expect.objectContaining({ behavior: "smooth" }));
+    io.cross(ROADMAP_STAGES.length - 1);
+    expect(next).toBeDisabled();
+    expect(prev).toBeEnabled();
   });
 
   it("is a tall block with one panel held in place while you scroll, about a quarter of a screen per stage", () => {

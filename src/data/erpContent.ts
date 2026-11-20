@@ -55,29 +55,29 @@ export const DIRECTOR = {
 /** Solutions: how each industry uses its own modules, by industry id (see data/solutions.ts). */
 export const SOLUTION_MODULES: Record<string, Note[]> = {
   "windows-doors": [
-    { name: "Profile optimisation and cutting lists", text: "Profile lengths are optimised against the stock bars to keep off-cuts down. The approved cutting list goes to the saws, so operators are not re-typing sizes." },
-    { name: "Material calculation", text: "Aluminium, glass, hardware, finish and locks are calculated for every opening from the product masters. The result becomes the material take-off that purchase works from." },
-    { name: "Machining, assembly and packaging", text: "Job cards carry each unit through machining, assembly and packing, with its status updated from the floor. Production tracking shows where each job stands." },
+    { name: "Profile optimisation and cutting lists", text: "Profile lengths are optimised against the stock bars to keep off-cuts to a minimum. The approved cutting list goes straight to the saws, so operators do not have to retype sizes." },
+    { name: "Material calculation", text: "Aluminium, glass, hardware, finish and locks are calculated for every opening from the product masters. The result becomes the material take-off that purchasing works from." },
+    { name: "Machining, assembly and packaging", text: "Job cards carry each unit through machining, assembly and packing, and its status is updated from the shop floor. Production tracking shows where every job stands." },
     { name: "Dealer logins", text: "Dealers and dealer heads sign in with their own access to CRM, survey, design and planning. Their enquiries and quotations stay on the same job record as the factory's." },
   ],
   "glass-railing": [
-    { name: "Site measurement", text: "Each run, level and fixing point is recorded on site, with photos and a survey report. The sizes go to design without being typed again." },
-    { name: "Glass calculation", text: "Glass panel sizes are calculated from the measured runs, with the fixings and hardware worked out from the same sizes. The result feeds the material take-off." },
-    { name: "Vendor enquiry and quotation comparison", text: "Glass and hardware are enquired with vendors and the quotations compared side by side. The order is placed against the chosen one, and goods are received against it." },
+    { name: "Site measurement", text: "Each run, level and fixing point is recorded on site, along with photos and a survey report. The sizes pass to design without being typed again." },
+    { name: "Glass calculation", text: "Glass panel sizes are calculated from the measured runs, and the fixings and hardware are worked out from the same sizes. The result feeds the material take-off." },
+    { name: "Vendor enquiry and quotation comparison", text: "Glass and hardware enquiries go to vendors, and their quotations are compared side by side. The order is placed with the chosen vendor, and goods are received against it." },
     { name: "Installation and handover", text: "Installation is scheduled run by run, with site progress and issues logged. A snag list and client sign-off close the job." },
   ],
   "curtain-wall": [
-    { name: "Material take-off", text: "The take-off is generated for the whole curtain wall, and the material requirement is approved before purchasing starts. It keeps unitised, semi-unitised and stick-built work on the same footing." },
-    { name: "Work orders and schedule", text: "Production and installation work orders are scheduled with a priority and a status. The schedule is tracked against the programme on site." },
-    { name: "Material request, receipt and issue", text: "Site requests material, receipts are recorded as it arrives, and issues are logged against the job. Every movement is kept against the project." },
-    { name: "Packing and delivery", text: "Packing lists and delivery challans go with every dispatch. Each load is followed until it reaches site." },
+    { name: "Material take-off", text: "The take-off is generated for the whole curtain wall, and the material requirement is approved before purchasing starts. This keeps unitised, semi-unitised and stick-built work on the same footing." },
+    { name: "Work orders and schedule", text: "Production and installation work orders are scheduled with a priority and a status. The schedule is tracked against the site programme." },
+    { name: "Material request, receipt and issue", text: "The site requests material, receipts are recorded as it arrives, and issues are logged against the job. Every movement is recorded against the project." },
+    { name: "Packing and delivery", text: "Packing lists and delivery challans go out with every dispatch. Each load is followed until it reaches the site." },
   ],
 };
 
 /** Solutions, above the industry tabs: what comes with every solution, which no industry tab says. */
 export const SOLUTIONS_INCLUDED: Note[] = [
-  { name: "Estimates you can explain", text: "Costs are built from the profile, glass, hardware and finish masters, with the profit margin set once. Every revision is kept, so a price can always be explained." },
-  { name: "Quality at every stage", text: "Material is checked on arrival, in process and at the end. A failed check goes to rework with the action recorded." },
+  { name: "Estimates you can explain", text: "Costs are built from the profile, glass, hardware and finish masters, with the profit margin set once. Every revision is kept, so any price can be explained." },
+  { name: "Quality at every stage", text: "Material is checked on arrival, during processing and at the end. A failed check goes to rework, and the action taken is recorded." },
 ];
 
 /** About: the foundations underneath the modules. */
@@ -91,8 +91,8 @@ export const ABOUT_INSIDE: Note[] = [
 
 /** Careers: the product areas people would build and support. */
 export const CAREERS_WORK: Note[] = [
-  { name: "Calculation and cutting logic", text: "Profile optimisation, glass and material calculation, the take-off and the cutting list carry the trade's rules in code. It is where fabrication knowledge changes the product most." },
-  { name: "Site and shop-floor screens", text: "Survey, measurement, job cards, dispatch and installation are used by people at a saw or on a site. They have to be quick and plain." },
-  { name: "Buying and stock flows", text: "Purchase requests, vendor quotation comparison, goods receipt and the stock ledger have to agree with each other. Small mistakes here show up as shortages on the job." },
-  { name: "Accounts and tax rules", text: "Invoices, receivables, payables, project accounting and bank reconciliation follow the jobs. Getting the rules right means finance can trust the numbers." },
+  { name: "Calculation and cutting logic", text: "Profile optimisation, glass and material calculation, the take-off and the cutting list all carry the trade's rules in code. This is where fabrication knowledge improves the product most." },
+  { name: "Site and shop-floor screens", text: "Survey, measurement, job cards, dispatch and installation are used by people at a saw or on a site. These screens must be quick and simple." },
+  { name: "Buying and stock flows", text: "Purchase requests, vendor quotation comparison, goods receipt and the stock ledger must all agree with one another. Small mistakes here show up as shortages on the job." },
+  { name: "Accounts and tax rules", text: "Invoices, receivables, payables, project accounting and bank reconciliation follow the jobs. When the rules are right, finance can trust the numbers." },
 ];

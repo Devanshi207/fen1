@@ -201,3 +201,16 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
   .hero-seq,   .kinetic-inner { animation: fade-in 0.5s linear backwards; animation-delay: 0ms; }
   .intro-logo { animation-name: fade-in; animation-duration: 0.5s; }
 }
+
+/* Previous and next stage: top right of the pinned panel; on phones a row of their own under the heading */
+.wf3-inner { position: relative; }
+.wf3-nav { position: absolute; top: 0; right: clamp(1rem, 3vw, 2rem); display: flex; gap: 0.5rem; z-index: 2; }
+.wf3-arrow { display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border: 1px solid var(--line-strong); border-radius: 9999px; background: var(--card); color: var(--ink); cursor: pointer; transition: border-color 0.2s var(--ease), color 0.2s var(--ease); }
+.wf3-arrow:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.wf3-arrow:disabled { opacity: 0.35; cursor: default; }
+@media (max-width: 760px) { .wf3-nav { position: static; justify-self: end; margin-block: -0.25rem; } .wf3-arrow { width: 2.25rem; height: 2.25rem; } }
+
+/* the numbered circles (wide screens) and the bar segments (phones) can be pressed to go to that stage; the bar segments get a taller touch area */
+.wf2-node { cursor: pointer; }
+.wf-m-bar span { position: relative; cursor: pointer; }
+.wf-m-bar span::before { content: ""; position: absolute; inset: -0.875rem 0; }

@@ -17,7 +17,7 @@ describe("how to reach the team", () => {
     for (const name of ["Contact us", "Request a demo", "Book a meeting", "+91 93276 68052", "info@kyozon.in"]) expect(Array.from(contact.querySelectorAll("a")).map((a) => a.textContent)).toContain(name);
     for (const name of ["Request a demo", "Book a meeting"]) expect(Array.from(contact.querySelectorAll("a")).map((a) => a.textContent)).toContain(name);
     const about = col("About us");
-    expect(Array.from(about.querySelectorAll("a")).map((a) => a.textContent)).toEqual(["About FEN1", "Careers"]);
+    expect(Array.from(about.querySelectorAll("a")).map((a) => a.textContent)).toEqual(["About FEN1"]);
     expect(screen.queryByText("Company")).toBeNull();
   });
 });

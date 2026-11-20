@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import StepWizard from "@/components/StepWizard";
-import { careersWizard } from "@/lib/wizards";
+import { useEffect, useState } from "react";
 import { CAREERS_WORK } from "@/data/erpContent";
 import ModuleNotes from "./ModuleNotes";
 import OpenRoles, { loadOpenRoles, type OpenRole } from "./OpenRoles";
@@ -17,50 +15,43 @@ import SectionHead from "./SectionHead";
 const PATHS = [
   {
     title: "From the trade",
-    text: "You have estimated, cut, assembled, glazed or installed. You know how a job really runs, and what a system gets wrong when it has never seen a workshop or a site.",
+    text: "You have estimated, cut, assembled, glazed or installed. You know how a job really runs, and what goes wrong in a system built by people who have never seen a workshop or a site.",
     roles: "Estimators · Fabrication and production planners · Glaziers and installers · Site supervisors · Quality inspectors",
   },
   {
     title: "From software",
-    text: "You build, roll out or support business software and want to work on a product used on real shop floors, not just in an office.",
+    text: "You build, roll out or support business software, and you want to work on a product used on real shop floors, not only in an office.",
     roles: "Product engineering · Implementation · Customer support · Training · Sales and partnerships",
   },
   {
     title: "Starting out",
-    text: "A workshop apprenticeship, a glazing course or a first job: tell us where you are. The industry has always grown its people from the bottom up.",
+    text: "A workshop apprenticeship, a glazing course or a first job: tell us where you are starting from. The industry has always grown its people from the ground up.",
     roles: "Apprentices · Trainees · Graduates",
   },
 ];
 
-const STEPS = ["Answer a few quick questions", "We read it and get back to you if there is a fit", "A conversation about the work, not a quiz"];
-
 export default function CareersSection() {
   const [roles, setRoles] = useState<OpenRole[]>([]);
-  const [role, setRole] = useState<OpenRole | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     let live = true;
-    loadOpenRoles().then((list) => live && setRoles(list));
+    loadOpenRoles().then((list) => {
+      if (!live) return;
+      setRoles(list);
+      setLoaded(true);
+    });
     return () => {
       live = false;
     };
   }, []);
 
-  const wizard = useMemo(() => careersWizard(role?.title), [role]);
-
-  const apply = (r: OpenRole) => {
-    setRole(r);
-    document.getElementById("apply")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
     <section id="careers" data-section="careers" className="page-sec page-sec-alt sec-violet">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHead title="Work where software meets the shop floor">
-          FEN1 is built for the people who make windows, glass and aluminium work. We want to hear from them, and from people who build good software.
+          FEN1 is built for the people who make windows, glass and aluminium products. We want to hear from them, and from people who build good software.
         </SectionHead>
-
-        <OpenRoles roles={roles} onApply={apply} />
 
         <div className="paths">
           {PATHS.map((p) => (
@@ -77,22 +68,9 @@ export default function CareersSection() {
           <ModuleNotes notes={CAREERS_WORK} cols={2} />
         </div>
 
-        <div className="career-apply">
-          <div className="career-side">
-            <p className="sol-label tech">How it works</p>
-            <ol className="career-steps">
-              {STEPS.map((s, i) => (
-                <li key={s}>
-                  <span className="tech about-n">{String(i + 1).padStart(2, "0")}</span>
-                  <span>{s}</span>
-                </li>
-              ))}
-            </ol>
-            <p className="career-note">{roles.length > 0 ? "Do not see a fit? Send your details anyway and we will get in touch when one does." : "No roles are listed here right now. Send your details and we will get in touch when one fits."}</p>
-          </div>
-          <div className="career-form" id="apply">
-            <StepWizard key={role?.id ?? "general"} config={wizard} />
-          </div>
+        <div className="career-openings">
+          <OpenRoles roles={roles} />
+          {loaded && roles.length === 0 && <p className="career-note">No openings right now. Please check back soon.</p>}
         </div>
       </div>
     </section>

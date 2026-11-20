@@ -1,16 +1,13 @@
 import type { Answers, DetailField, WizardConfig } from "@/components/StepWizard";
-import { CAREER_AREAS, TOPICS, type Topic } from "@/data/enquiryForms";
+import { TOPICS, type Topic } from "@/data/enquiryForms";
 import {
   BUSINESS_OPTIONS,
-  EXPERIENCE_OPTIONS,
   INTEREST_OPTIONS,
   INTEREST_QUESTION,
   MEETING_DAY_OPTIONS,
   MEETING_TIME_OPTIONS,
   NOT_SURE,
-  NOW_OPTIONS,
   SIZE_OPTIONS,
-  START_OPTIONS,
   TOPIC_OPTIONS,
 } from "@/data/enquirySteps";
 import { topicFromLocation } from "@/lib/topic";
@@ -97,35 +94,29 @@ const CAREER_FIELDS: DetailField[] = [
   { key: "email", label: "Email", type: "email", auto: "email", missing: "Please enter your email" },
   { key: "phone", label: "Phone", type: "tel", auto: "tel", missing: "Please enter your phone number" },
   { key: "location", label: "Where are you based?", type: "text", auto: "address-level2", missing: "Please enter where you are based" },
+  { key: "resume", label: "Your resume", type: "file", missing: "Please attach your resume" },
 ];
 
 /**
- * The job application: where the person could help (left out when they are applying for a listed role, which already says),
- * their experience, what they do now, when they could start, and who to reply to. Sent as a "careers" enquiry; no company is asked for.
+ * The job application: just the person's details, no questions to click through. When they apply for a listed role it says which.
+ * Sent as a "careers" enquiry; no company is asked for.
  */
 export function careersWizard(roleTitle?: string): WizardConfig {
   return {
     intro: roleTitle ? `Applying for: ${roleTitle}` : undefined,
-    steps: [
-      ...(roleTitle ? [] : [{ key: "area", question: "Where could you help?", options: CAREER_AREAS.map((value) => ({ value })), other: "Which area?" }]),
-      { key: "experience", question: "How much experience do you have?", options: EXPERIENCE_OPTIONS },
-      { key: "now", question: "What do you do now?", options: NOW_OPTIONS, other: "What do you do?" },
-      { key: "start", question: "When could you start?", options: START_OPTIONS },
-    ],
+    steps: [],
+    title: "Your details",
     fields: CAREER_FIELDS,
     kind: () => "careers",
     submitLabel: () => "Send my application",
-    done: () => ({ title: "Application sent", text: "We have your details. If there is a role that fits, we will get in touch." }),
-    payload: (a, d) => ({
+    done: () => ({ title: "Application sent", text: "We have your details and your resume. If your profile fits the role, we will get in touch." }),
+    payload: (_a, d) => ({
       name: d.name ?? "",
       company: "",
       email: d.email ?? "",
       phone: d.phone ?? "",
       message: "",
-      ...(roleTitle ? { role: roleTitle } : { area: first(a, "area") }),
-      experience: first(a, "experience"),
-      currentWork: first(a, "now"),
-      canStart: first(a, "start"),
+      ...(roleTitle ? { role: roleTitle } : {}),
       location: d.location ?? "",
     }),
   };

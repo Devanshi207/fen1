@@ -46,19 +46,6 @@ export const INTEREST_QUESTION: Record<Topic, string> = {
   question: "What is your question about?",
 };
 
-/** The job application: where the person could help (the same areas the admin tags roles with), then a few more clicks. */
-export const EXPERIENCE_OPTIONS: StepOption[] = [
-  { value: "Just starting out" },
-  { value: "1 to 3 years" },
-  { value: "3 to 7 years" },
-  { value: "7 to 15 years" },
-  { value: "More than 15 years" },
-];
-
-export const NOW_OPTIONS: StepOption[] = [{ value: "Working in the trade" }, { value: "Working in software" }, { value: "Studying or training" }, { value: "Between jobs" }];
-
-export const START_OPTIONS: StepOption[] = [{ value: "Right away" }, { value: "Within a month" }, { value: "In one to three months" }, { value: "Just looking for now" }];
-
 /** A meeting request: a day and a time of day that suit the visitor. The team confirms the exact time; nothing is booked on a calendar. */
 export const MEETING_DAY_OPTIONS: StepOption[] = [
   { value: "Monday or Tuesday" },

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import ApplySection from "@/components/sections/ApplySection";
 import CareersSection from "@/components/sections/CareersSection";
 import OpenRoles, { loadOpenRoles, type OpenRole } from "@/components/sections/OpenRoles";
 
@@ -30,37 +31,51 @@ describe("loadOpenRoles", () => {
 
 describe("OpenRoles", () => {
   it("renders nothing without roles", () => {
-    const { container } = render(<OpenRoles roles={[]} onApply={() => {}} />);
+    const { container } = render(<OpenRoles roles={[]} />);
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("lists a role with its details in the open, and applies with the role", async () => {
+  it("lists a role with its details in the open, and Apply is a link to that role's own application page", async () => {
     const user = userEvent.setup();
-    const onApply = vi.fn();
-    render(<OpenRoles roles={[role]} onApply={onApply} />);
+    render(<OpenRoles roles={[role]} />);
     expect(screen.getByRole("heading", { name: role.title })).toBeInTheDocument();
     expect(screen.getByText("Estimating · Pune · Full-time")).toBeInTheDocument();
     expect(screen.queryByText("First paragraph.")).toBeNull();
     await user.click(screen.getByRole("button", { name: "Read more" }));
     expect(screen.getByText("First paragraph.")).toBeInTheDocument();
     expect(screen.getByText("Second paragraph.")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /apply/i }));
-    expect(onApply).toHaveBeenCalledWith(role);
+    expect(screen.getByRole("link", { name: /apply/i })).toHaveAttribute("href", "/careers/apply?role=r1");
   });
 });
 
 describe("Careers with published roles", () => {
-  it("shows the roles, then starts the application for that role when one is applied for", async () => {
-    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+  it("lists the roles with an Apply link and no form on the page", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [role] }) }));
-    const user = userEvent.setup();
     render(<CareersSection />);
     expect(await screen.findByRole("heading", { name: role.title })).toBeInTheDocument();
-    expect(screen.queryByText(/No roles are listed here right now/)).toBeNull();
-    await user.click(screen.getByRole("button", { name: /apply/i }));
-    await waitFor(() => expect(screen.getByText(`Applying for: ${role.title}`)).toBeInTheDocument());
-    expect(screen.getByText("Question 1 of 4")).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Where could you help?" })).toBeNull();
-    expect(screen.getByRole("heading", { level: 2, name: "How much experience do you have?" })).toBeInTheDocument();
+    expect(screen.queryByText(/No openings right now/)).toBeNull();
+    expect(screen.getByRole("link", { name: /apply/i })).toHaveAttribute("href", "/careers/apply?role=r1");
+    expect(screen.queryByLabelText(/your name/i)).toBeNull();
+  });
+});
+
+describe("The apply page", () => {
+  it("opens the form for the opening named in the address, across the page", async () => {
+    window.history.replaceState(null, "", "/careers/apply?role=r1");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [role] }) }));
+    render(<ApplySection />);
+    expect(await screen.findByRole("heading", { level: 1, name: `Apply for ${role.title}` })).toBeInTheDocument();
+    expect(screen.getByText(`Applying for: ${role.title}`)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /all openings/i })).toHaveAttribute("href", "/careers");
+    expect(screen.queryByText(/Question \d of \d/)).toBeNull();
+    expect(document.querySelector(".apply-form .wiz")).not.toBeNull();
+  });
+
+  it("says so when the opening is unknown or has been closed", async () => {
+    window.history.replaceState(null, "", "/careers/apply?role=gone");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [role] }) }));
+    render(<ApplySection />);
+    expect(await screen.findByRole("heading", { name: "This opening is no longer available" })).toBeInTheDocument();
+    expect(screen.queryByLabelText(/your name/i)).toBeNull();
   });
 });

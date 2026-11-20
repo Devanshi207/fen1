@@ -246,5 +246,5 @@ Photographs are card-sized, like the small captioned images on a trade software 
 ## Demo QR code, "Other" answers, wide Solutions panels
 
 - The Contact page shows a QR code (drawn as SVG by `qrcode-generator`, no outside service) that opens `/book`. The address comes from `NEXT_PUBLIC_SITE_URL` if set, otherwise from the address the site is being viewed at, so set `NEXT_PUBLIC_SITE_URL` in production if the code is shown on a screen that is not the public address. The booking is a request: the team confirms the exact slot, nothing is written to a calendar.
-- A wizard question can set `other: "label"` to add an "Other" choice that opens a box to write your own answer. The Careers application uses it on "Where could you help?" and "What do you do now?"; the answer is sent as `Other: what they wrote`.
+- A wizard question can set `other: "label"` to add an "Other" choice that opens a box to write your own answer. No form uses it at the moment (the Careers application is now only the person's details, with no questions); an answer is sent as `Other: what they wrote`.
 - On Solutions each industry opens as one wide panel with no photograph: the problem and the answer side by side, the job as a row of steps, the modules in four columns and the benefits in a row.

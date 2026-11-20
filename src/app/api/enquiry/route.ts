@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { validateEnquiry, type Enquiry } from "@/lib/enquiry";
 import { saveEnquiry } from "@/lib/inbox";
+import { readResume } from "@/lib/resume";
 import { getStore } from "@/lib/store";
 
 /**
@@ -34,10 +35,15 @@ export async function POST(request: Request) {
   }
 
   const data: Enquiry = result.data;
+  // a resume comes with a job application only; it is kept in the store, and the webhook is told its file name
+  const rawResume = (body as { resume?: unknown }).resume;
+  const resume = data.kind === "careers" && rawResume !== undefined ? readResume(rawResume) : null;
+  if (data.kind === "careers" && rawResume !== undefined && !resume) return NextResponse.json({ error: "invalid", fields: { resume: "Please attach a PDF or Word file under 700 KB" } }, { status: 422 });
+  if (resume && !store) return NextResponse.json({ error: "not_configured" }, { status: 503 });
   const attempts: Promise<boolean>[] = [];
   if (store) {
     attempts.push(
-      saveEnquiry(store, data).then(
+      saveEnquiry(store, data, new Date(), resume).then(
         () => true,
         () => false
       )
@@ -48,7 +54,7 @@ export async function POST(request: Request) {
       fetch(webhook, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, receivedAt: new Date().toISOString() }),
+        body: JSON.stringify({ ...data, details: resume ? { ...data.details, resume: resume.name } : data.details, receivedAt: new Date().toISOString() }),
       }).then(
         (r) => r.ok,
         () => false

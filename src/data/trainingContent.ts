@@ -3,7 +3,7 @@ export const TRACKS = [
     num: "01",
     title: "Sales & Estimation",
     team: "Sales, estimators and management",
-    text: "Log each enquiry against a customer account, follow it up and prepare the cost estimate. Revise the quotation, get it approved and turn the accepted one into a sales order.",
+    text: "Log each enquiry against a customer account, follow it up and prepare the cost estimate. Revise the quotation, get it approved and convert the accepted quotation into a sales order.",
   },
   {
     num: "02",
@@ -15,19 +15,19 @@ export const TRACKS = [
     num: "03",
     title: "Purchase & Store",
     team: "Purchase and store teams",
-    text: "Raise purchase requests, compare vendor quotations and place the orders. Record goods received, then keep opening stock, stock in and out, and the ledger correct.",
+    text: "Raise purchase requests, compare vendor quotations and place orders. Record the goods received, and keep opening stock, stock movements and the ledger accurate.",
   },
   {
     num: "04",
     title: "Production & QC",
     team: "Production managers, machine operators and QC",
-    text: "Plan production, issue job cards and track machining, assembly and packing. Record each quality check and any rework as the work goes through.",
+    text: "Plan production, issue job cards and track machining, assembly and packing. Record every quality check and any rework as the job moves through production.",
   },
   {
     num: "05",
     title: "Installation & Handover",
     team: "Site teams and project managers",
-    text: "Plan dispatch with packing lists and delivery challans, then follow each load to site. Update installation progress and issues, clear the snag list and collect client sign-off.",
+    text: "Plan dispatch with packing lists and delivery challans, then follow each load to the site. Update installation progress and issues, clear the snag list and collect client sign-off.",
   },
   {
     num: "06",

@@ -312,7 +312,7 @@ function Enquiries({ onExpired }: { onExpired: () => void }) {
                       {Object.entries(r.details).map(([k, v]) => (
                         <div key={k}>
                           <dt>{k}</dt>
-                          <dd>{v}</dd>
+                          <dd>{k === "resume" && r.kind === "careers" ? <a href={`/api/admin/enquiries/${r.id}/resume`}>Download {v}</a> : v}</dd>
                         </div>
                       ))}
                     </dl>

@@ -22,5 +22,6 @@ export async function DELETE(request: Request, { params }: Ctx) {
   const gate = await admit(request);
   if ("response" in gate) return gate.response;
   const { id } = await params;
+  await gate.store.del("resumes", id);
   return (await gate.store.del("enquiries", id)) ? json({ ok: true }) : json({ error: "not_found" }, 404);
 }

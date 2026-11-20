@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import RequestDemoPage from "@/components/sections/ContactSection";
+import ApplySection from "@/components/sections/ApplySection";
 import CareersSection from "@/components/sections/CareersSection";
 import { resolveTopic, topicFromLocation, topicHref } from "@/lib/topic";
 import nextConfig from "../next.config";
@@ -318,107 +319,84 @@ describe("Contact and demo are one form", () => {
   });
 });
 
-/** Walks the job application's option questions (no role chosen): area, experience, what they do now, when they could start. */
-async function reachApplicantDetails(user: User) {
-  await answer(user, "Training", "How much experience do you have?");
-  await answer(user, "3 to 7 years", "What do you do now?");
-  await answer(user, "Working in the trade", "When could you start?");
-  await answer(user, "Within a month", "Where can we reach you?");
+const ROLE = { id: "r1", title: "Estimator", area: "Estimating, production or site experience", location: "Pune", type: "Full-time", summary: "Price window and door jobs.", details: "" };
+
+/** Opens the apply page for the one published role. */
+async function applyForRole(user: User, fetchMock: ReturnType<typeof vi.fn>) {
+  window.history.replaceState(null, "", "/careers/apply?role=r1");
+  vi.stubGlobal("fetch", fetchMock);
+  render(<ApplySection />);
+  await screen.findByLabelText(/your name/i);
+  void user;
 }
 
 describe("Job application", () => {
-  it("is five short questions answered by clicking, with no company asked for and nothing called optional", async () => {
+  it("shows only the openings at first: no form, no steps, no quiz", async () => {
     window.HTMLElement.prototype.scrollIntoView = vi.fn();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [] }) }));
-    const user = userEvent.setup();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [ROLE] }) }));
     render(<CareersSection />);
-    const within1 = (name: RegExp | string) => screen.getByRole("heading", { level: 2, name });
-    expect(within1("Where could you help?")).toBeInTheDocument();
-    expect(screen.getByText("Question 1 of 5")).toBeInTheDocument();
-    await reachApplicantDetails(user);
-    expect(screen.getByText("Question 5 of 5")).toBeInTheDocument();
-    expect(screen.queryByLabelText(/^company$/i)).toBeNull();
-    expect(screen.queryByText(/optional/i)).toBeNull();
-    for (const label of [/your name/i, /^email$/i, /^phone$/i, /where are you based/i]) expect(screen.getByLabelText(label)).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Estimator" })).toBeInTheDocument();
+    expect(screen.queryByLabelText(/your name/i)).toBeNull();
+    expect(screen.queryByText("How it works")).toBeNull();
+    expect(screen.queryByRole("radio")).toBeNull();
+    expect(screen.queryByText(/Question \d of \d/)).toBeNull();
   });
 
-  it("checks every detail, then sends the application tagged as careers, with the clicked answers", async () => {
-    const fetchMock = vi.fn().mockImplementation(async (url: string) => (url === "/api/jobs" ? { ok: true, json: async () => ({ jobs: [] }) } : { ok: true }));
-    vi.stubGlobal("fetch", fetchMock);
+  it("the apply page has the form for the role: details and a resume, no company, nothing called optional", async () => {
     const user = userEvent.setup();
-    render(<CareersSection />);
-    await reachApplicantDetails(user);
+    await applyForRole(user, vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [ROLE] }) }));
+    expect(screen.getByText("Applying for: Estimator")).toBeInTheDocument();
+    expect(screen.queryByLabelText(/^company$/i)).toBeNull();
+    expect(screen.queryByText(/optional/i)).toBeNull();
+    for (const label of [/your name/i, /^email$/i, /^phone$/i, /where are you based/i, /your resume/i]) expect(screen.getByLabelText(label)).toBeInTheDocument();
+  });
+
+  it("checks every detail and the resume, then sends the application with the file, tagged as careers", async () => {
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => (url === "/api/jobs" ? { ok: true, json: async () => ({ jobs: [ROLE] }) } : { ok: true }));
+    const user = userEvent.setup({ applyAccept: false });
+    await applyForRole(user, fetchMock);
     await user.click(screen.getByRole("button", { name: /send my application/i }));
-    for (const m of ["Please enter your name", "Please enter your email", "Please enter your phone number", "Please enter where you are based"]) expect(screen.getByText(m)).toBeInTheDocument();
+    for (const m of ["Please enter your name", "Please enter your email", "Please enter your phone number", "Please enter where you are based", "Please attach your resume"]) expect(screen.getByText(m)).toBeInTheDocument();
+
+    await user.upload(screen.getByLabelText(/your resume/i), new File(["x"], "cv.exe", { type: "application/octet-stream" }));
+    await user.click(screen.getByRole("button", { name: /send my application/i }));
+    expect(screen.getByText("Please attach a PDF or Word file")).toBeInTheDocument();
 
     await user.type(screen.getByLabelText(/your name/i), "Dev Patel");
     await user.type(screen.getByLabelText(/^email$/i), "dev@example.com");
     await user.type(screen.getByLabelText(/^phone$/i), "12345");
     await user.type(screen.getByLabelText(/where are you based/i), "Pune");
+    await user.upload(screen.getByLabelText(/your resume/i), new File(["hello"], "Dev Patel CV.pdf", { type: "application/pdf" }));
     await user.click(screen.getByRole("button", { name: /send my application/i }));
 
     await waitFor(() => expect(fetchMock.mock.calls.some((c) => c[0] === "/api/enquiry")).toBe(true));
     const sent = fetchMock.mock.calls.filter((c) => c[0] === "/api/enquiry");
     expect(sent).toHaveLength(1);
     const body = JSON.parse(sent[0][1].body);
-    expect(body.website).toBe("");
     expect(body.kind).toBe("careers");
     expect(body.name).toBe("Dev Patel");
     expect(body.company).toBe("");
-    expect(body.details).toMatchObject({ area: "Training", experience: "3 to 7 years", currentWork: "Working in the trade", canStart: "Within a month", location: "Pune" });
+    expect(body.details).toMatchObject({ role: "Estimator", location: "Pune" });
+    expect(body.resume).toEqual({ name: "Dev Patel CV.pdf", data: btoa("hello") });
     expect(await screen.findByRole("heading", { level: 2, name: "Application sent" })).toBeInTheDocument();
   });
 
-  it("offers 'Other' on the area and 'what do you do now' questions, opens a box to write your own, and sends what was written", async () => {
-    const fetchMock = vi.fn().mockImplementation(async (url: string) => (url === "/api/jobs" ? { ok: true, json: async () => ({ jobs: [] }) } : { ok: true }));
-    vi.stubGlobal("fetch", fetchMock);
-    const user = userEvent.setup();
-    render(<CareersSection />);
-    expect(screen.queryByLabelText("Which area?")).toBeNull();
-    await user.click(screen.getByRole("radio", { name: /^Other/ }));
-    const box = screen.getByLabelText("Which area?");
-    expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
-    await user.type(box, "Glass design");
-    expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
-    await user.click(screen.getByRole("button", { name: "Continue" }));
-    expect(await screen.findByText("Question 2 of 5")).toBeInTheDocument();
-    await user.click(screen.getByRole("radio", { name: "7 to 15 years" }));
-    await screen.findByText("Question 3 of 5");
-    await user.click(screen.getByRole("radio", { name: /^Other/ }));
-    await user.type(screen.getByLabelText("What do you do?"), "Run my own shop{Enter}");
-    await screen.findByText("Question 4 of 5");
-    await user.click(screen.getByRole("radio", { name: "Right away" }));
-    await screen.findByText("Question 5 of 5");
-    await user.type(screen.getByLabelText(/your name/i), "Dev Patel");
-    await user.type(screen.getByLabelText(/^email$/i), "dev@example.com");
-    await user.type(screen.getByLabelText(/^phone$/i), "12345");
-    await user.type(screen.getByLabelText(/where are you based/i), "Pune");
-    await user.click(screen.getByRole("button", { name: /send my application/i }));
-    await waitFor(() => expect(fetchMock.mock.calls.some((c) => c[0] === "/api/enquiry")).toBe(true));
-    const body = JSON.parse(fetchMock.mock.calls.filter((c) => c[0] === "/api/enquiry")[0][1].body);
-    expect(body.details).toMatchObject({ area: "Other: Glass design", currentWork: "Other: Run my own shop" });
-  });
-
-  it("does not advertise vacancies it does not have", () => {
+  it("does not show a form or advertise vacancies when there are no openings", async () => {
     window.HTMLElement.prototype.scrollIntoView = vi.fn();
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [] }) }));
     render(<CareersSection />);
-    expect(screen.getByText(/No roles are listed here right now/)).toBeInTheDocument();
+    expect(await screen.findByText("No openings right now. Please check back soon.")).toBeInTheDocument();
+    expect(screen.queryByLabelText(/your name/i)).toBeNull();
   });
 });
 
 describe("Applying for a listed role", () => {
-  it("leaves out the 'where could you help' question, says which role it is for, and sends the role instead of an area", async () => {
+  it("has no questions: it says which role it is for and sends the role with the details", async () => {
     const { careersWizard } = await import("@/lib/wizards");
-    const general = careersWizard();
     const forRole = careersWizard("Estimator");
-    expect(general.steps.map((s) => s.key)).toEqual(["area", "experience", "now", "start"]);
-    expect(forRole.steps.map((s) => s.key)).toEqual(["experience", "now", "start"]);
+    expect(forRole.steps).toEqual([]);
     expect(forRole.intro).toBe("Applying for: Estimator");
     const details = { name: "A", email: "a@b.co", phone: "1", location: "X" };
     expect(forRole.payload({}, details)).toMatchObject({ role: "Estimator" });
-    expect(forRole.payload({}, details)).not.toHaveProperty("area");
-    expect(general.payload({ area: ["Training"] }, details)).toMatchObject({ area: "Training" });
-    expect(general.payload({}, details)).not.toHaveProperty("role");
   });
 });

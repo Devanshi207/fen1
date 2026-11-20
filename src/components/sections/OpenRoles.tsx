@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 /** A job opening as the public endpoint returns it (see /api/jobs). */
@@ -29,9 +30,9 @@ export async function loadOpenRoles(): Promise<OpenRole[]> {
 
 /**
  * The job openings, as plain rows: title, where and what kind, a one-line summary, the full description opened in place,
- * and an Apply button that fills in the form below. Renders nothing at all until there is at least one open role.
+ * and an Apply link to the application page. Renders nothing at all until there is at least one open role.
  */
-export default function OpenRoles({ roles, onApply }: { roles: OpenRole[]; onApply: (role: OpenRole) => void }) {
+export default function OpenRoles({ roles }: { roles: OpenRole[] }) {
   const [open, setOpen] = useState<string | null>(null);
   // a role the admin has since closed no longer keeps its details open
   const shown = roles.some((r) => r.id === open) ? open : null;
@@ -58,10 +59,10 @@ export default function OpenRoles({ roles, onApply }: { roles: OpenRole[]; onApp
                       {expanded ? "Hide details" : "Read more"}
                     </button>
                   )}
-                  <button type="button" className="role-apply" onClick={() => onApply(r)}>
+                  <Link href={`/careers/apply?role=${encodeURIComponent(r.id)}`} className="role-apply">
                     <span>Apply</span>
                     <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                  </button>
+                  </Link>
                 </div>
               </div>
               {expanded && (
