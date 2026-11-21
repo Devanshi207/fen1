@@ -292,6 +292,12 @@ describe("editorial audit of the whole page", () => {
     expect(motion.replace(/\.bau-track \{[^}]*\}/, "")).not.toMatch(/animation:[^;]*\binfinite\b/);
   });
 
+  it("leaves the 728 x 90 BAU banner out on phones and shows it from tablet width up", () => {
+    const motion = readFileSync(join("src", "app", "motion.css"), "utf8");
+    expect(motion).toMatch(/\.bau-strip \{ display: none;/);
+    expect(motion).toMatch(/@media \(min-width: 768px\) \{ \.bau-strip \{ display: block; \} \}/);
+  });
+
   it("runs one line of the BAU 2027 details across the Home page without stopping, announced once", () => {
     render(<Page />);
     const line = screen.getByRole("group", { name: /BAU 2027: 11 to 15 January 2027/ });

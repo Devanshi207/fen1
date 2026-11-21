@@ -222,8 +222,10 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 @media (min-width: 1024px) { .bau { justify-self: end; } }
 .bau-video { display: block; width: 100%; aspect-ratio: 1 / 1; border-radius: 0.5rem; object-fit: cover; }
 
-/* the BAU banner under the hero text: its own size, never stretched, and never wider than the column */
-.bau-strip { display: block; width: 100%; max-width: 728px; }
+/* the BAU banner (a 728 x 90 leaderboard) under the hero text: left out on phones, where it would shrink to a strip nobody can read
+   (the video and the line below carry the same details there); from tablets up it is its own size, never stretched */
+.bau-strip { display: none; width: 100%; max-width: 728px; }
+@media (min-width: 768px) { .bau-strip { display: block; } }
 .bau-strip img { display: block; width: 100%; height: auto; border-radius: 0.25rem; }
 
 /* ---------- the BAU 2027 line that runs across the page without stopping ---------- */
