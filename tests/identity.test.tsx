@@ -36,18 +36,19 @@ describe("hero", () => {
     expect(hero.querySelector("h1")!.compareDocumentPosition(hero.querySelector("p")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it("has no enquiry, demo or explore button: the only link in the hero is the BAU 2027 banner, which opens the exhibitor page", () => {
+  it("has a Book a slot link and the BAU 2027 banner link in the hero, and no enquiry, demo or explore button", () => {
     render(<Page />);
     const hero = document.getElementById("intro")!;
     expect(hero.querySelectorAll("button")).toHaveLength(0);
-    const links = hero.querySelectorAll("a");
-    expect(links).toHaveLength(1);
-    expect(links[0]).toHaveAttribute("href", "https://exhibitors.bau-muenchen.com/company/1559458");
-    expect(links[0]).toHaveAttribute("target", "_blank");
-    expect(links[0].getAttribute("rel")).toContain("noopener");
+    const links = [...hero.querySelectorAll("a")];
+    expect(links).toHaveLength(2);
+    expect(within(hero).getByRole("link", { name: "Book a slot" })).toHaveAttribute("href", "/book");
+    const banner = links.find((l) => l.getAttribute("target") === "_blank")!;
+    expect(banner).toHaveAttribute("href", "https://exhibitors.bau-muenchen.com/company/1559458");
+    expect(banner.getAttribute("rel")).toContain("noopener");
     expect(within(hero).queryByText(/make an enquiry|request a demo|explore the platform/i)).toBeNull();
     // the banner sits under the text, and is the fair's own picture at its own size
-    expect(hero.querySelector("p")!.compareDocumentPosition(links[0]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(hero.querySelector("p")!.compareDocumentPosition(banner) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(within(hero).getByRole("img", { name: /BAU 2027/ })).toHaveAttribute("width", "728");
   });
 

@@ -64,6 +64,10 @@ export interface WizardConfig {
   kind: (answers: Answers) => EnquiryKind;
   submitLabel: (answers: Answers) => string;
   done: (answers: Answers) => { title: string; text: string };
+  /** Where the form is posted (default /api/enquiry) */
+  endpoint?: string;
+  /** Called when the server says the slot asked for was taken just before: the page goes back to choosing one */
+  onConflict?: () => void;
   /** What is sent: the typed details plus whatever the answers add */
   payload: (answers: Answers, details: Record<string, string>) => Parameters<typeof submitEnquiry>[1];
   /** Opens the form with answers already made, e.g. from a link. Called once the form is on the page; returns its cleanup. */
@@ -215,8 +219,8 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
       setStatus("error");
       return;
     }
-    const ok = await submitEnquiry(config.kind(answers), config.payload(answers, filled), trap, resume);
-    setStatus(ok ? "sent" : "error");
+    const ok = await submitEnquiry(config.kind(answers), config.payload(answers, filled), trap, resume, config.endpoint);
+    setStatus(ok === true ? "sent" : ok === "conflict" ? "conflict" : "error");
   };
 
   const again = () => {
@@ -406,6 +410,14 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
               </label>
             </div>
 
+            {status === "conflict" && (
+              <p role="alert" className="wiz-failed">
+                Sorry, that time was just booked by someone else.{" "}
+                <button type="button" className="wiz-link" onClick={() => config.onConflict?.()}>
+                  Choose another time
+                </button>
+              </p>
+            )}
             {status === "error" && (
               <p role="alert" className="wiz-failed">
                 Your message could not be sent. Please try again in a moment.

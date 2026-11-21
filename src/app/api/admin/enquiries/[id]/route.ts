@@ -23,5 +23,8 @@ export async function DELETE(request: Request, { params }: Ctx) {
   if ("response" in gate) return gate.response;
   const { id } = await params;
   await gate.store.del("resumes", id);
+  const record = await gate.store.get("enquiries", id);
+  const slot = record && asEnquiry(record)?.details.slot;
+  if (slot) await gate.store.del("bookings", slot); // a deleted booking gives its slot back
   return (await gate.store.del("enquiries", id)) ? json({ ok: true }) : json({ error: "not_found" }, 404);
 }

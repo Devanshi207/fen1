@@ -9,7 +9,7 @@ import path from "node:path";
  * With neither (a deployed site without a database) getStore() returns null and callers say so; nothing pretends to save.
  * Each record is saved on its own (a Redis hash field), so two enquiries arriving together cannot overwrite each other.
  */
-export type Collection = "jobs" | "enquiries" | "settings" | "resumes";
+export type Collection = "jobs" | "enquiries" | "settings" | "resumes" | "bookings";
 export type Record_ = Record<string, unknown>;
 
 export interface Store {
@@ -17,6 +17,8 @@ export interface Store {
   all(collection: Collection): Promise<Record_[]>;
   get(collection: Collection, id: string): Promise<Record_ | null>;
   put(collection: Collection, id: string, value: Record_): Promise<void>;
+  /** Saves the record only if the id is free. True when it was saved, false when someone already holds it (two people cannot get one slot). */
+  putIfAbsent(collection: Collection, id: string, value: Record_): Promise<boolean>;
   del(collection: Collection, id: string): Promise<boolean>;
 }
 
@@ -59,6 +61,9 @@ function redisStore(url: string, token: string): Store {
     async put(c, id, value) {
       await run(["HSET", key(c), id, JSON.stringify(value)]);
     },
+    async putIfAbsent(c, id, value) {
+      return Number(await run(["HSETNX", key(c), id, JSON.stringify(value)])) === 1;
+    },
     async del(c, id) {
       return Number(await run(["HDEL", key(c), id])) > 0;
     },
@@ -74,9 +79,9 @@ function fileStore(file: string): Store {
   async function read(): Promise<FileData> {
     try {
       const data = JSON.parse(await fs.readFile(file, "utf8")) as Partial<FileData>;
-      return { jobs: data.jobs ?? {}, enquiries: data.enquiries ?? {}, settings: data.settings ?? {}, resumes: data.resumes ?? {} };
+      return { jobs: data.jobs ?? {}, enquiries: data.enquiries ?? {}, settings: data.settings ?? {}, resumes: data.resumes ?? {}, bookings: data.bookings ?? {} };
     } catch {
-      return { jobs: {}, enquiries: {}, settings: {}, resumes: {} };
+      return { jobs: {}, enquiries: {}, settings: {}, resumes: {}, bookings: {} };
     }
   }
   function change<T>(fn: (data: FileData) => T): Promise<T> {
@@ -105,6 +110,13 @@ function fileStore(file: string): Store {
         d[c][id] = value;
       });
     },
+    async putIfAbsent(c, id, value) {
+      return change((d) => {
+        if (id in d[c]) return false;
+        d[c][id] = value;
+        return true;
+      });
+    },
     async del(c, id) {
       return change((d) => {
         const had = id in d[c];
@@ -115,16 +127,24 @@ function fileStore(file: string): Store {
   };
 }
 
+/** One store per file for the whole process, so every request goes through the same write queue (two requests at once cannot clash). */
+const fileStores = new Map<string, Store>();
+function sharedFileStore(file: string): Store {
+  let store = fileStores.get(file);
+  if (!store) fileStores.set(file, (store = fileStore(file)));
+  return store;
+}
+
 /** The configured store, or null when the site has nowhere it can save to. */
 export function getStore(): Store | null {
   const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (url && token) return redisStore(url, token);
   const file = process.env.FEN1_DATA_FILE;
-  if (file) return fileStore(file);
+  if (file) return sharedFileStore(file);
   // Vercel's disk is read-only, so a file cannot be used there
   if (process.env.VERCEL) return null;
-  return fileStore(path.join(process.cwd(), ".data", "fen1.json"));
+  return sharedFileStore(path.join(process.cwd(), ".data", "fen1.json"));
 }
 
 export { redisStore as _redisStoreForTests, fileStore as _fileStoreForTests };

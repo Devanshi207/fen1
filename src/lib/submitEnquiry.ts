@@ -1,25 +1,26 @@
 import type { EnquiryKind } from "@/lib/enquiry";
 import type { ResumeUpload } from "@/lib/resume";
 
-export type SubmitState = "idle" | "sending" | "sent" | "error";
+export type SubmitState = "idle" | "sending" | "sent" | "error" | "conflict";
 
-/** Posts a form to /api/enquiry. Resolves true only when the server confirms delivery. */
+/** Posts a form to /api/enquiry (or the address given). Resolves true only when the server confirms delivery, and "conflict" when the slot asked for was taken. */
 export async function submitEnquiry(
   kind: EnquiryKind,
   fields: { name: string; company: string; email: string; phone: string; message: string } & Record<string, string>,
   /** The hidden spam-trap field: people never fill it in, bots do (see /api/enquiry) */
   trap = "",
   /** A resume to keep with a job application */
-  resume?: ResumeUpload
-): Promise<boolean> {
+  resume?: ResumeUpload,
+  endpoint = "/api/enquiry"
+): Promise<boolean | "conflict"> {
   const { name, company, email, phone, message, ...details } = fields;
   try {
-    const res = await fetch("/api/enquiry", {
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ kind, name, company, email, phone, message, details, website: trap, ...(resume ? { resume } : {}) }),
     });
-    return res.ok;
+    return res.status === 409 ? "conflict" : res.ok;
   } catch {
     return false;
   }

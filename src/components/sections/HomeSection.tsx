@@ -1,4 +1,5 @@
 import KineticHeading from "@/components/KineticHeading";
+import Link from "next/link";
 import BauBanner from "@/components/BauBanner";
 import BauBannerImage from "@/components/BauBannerImage";
 import BauTicker from "@/components/BauTicker";
@@ -16,6 +17,11 @@ export default function HomeSection() {
             <p className="hero-seq text-base lg:text-lg text-[#55637A] max-w-xl leading-relaxed" style={{ ["--hs" as string]: "620ms" }}>
               FEN1 is a purpose-built ERP solution designed specifically for the window, door and façade industry.
             </p>
+            <div className="hero-seq" style={{ ["--hs" as string]: "760ms" }}>
+              <Link href="/book" className="inline-flex items-center justify-center rounded-lg bg-[#0067C0] px-6 py-3 text-base font-medium text-white">
+                Book a slot
+              </Link>
+            </div>
             <BauBannerImage />
           </div>
           <BauBanner />

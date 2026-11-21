@@ -54,7 +54,8 @@ Copy `.env.example` to `.env.local` and set:
 | `/training`     | Training by role |
 | `/careers`      | Careers: open roles and the job application |
 | `/contact`      | Contact us: the enquiry, with a demo, a question or a meeting request |
-| `/book`        | Reached by scanning the QR code on the Contact page: a day, a time and the visitor's details, sent as a demo request marked `source: QR code`. Not indexed, not in the menu |
+| `/book`        | A calendar and a time, then the visitor's details: the slot is kept for them (see `/api/booking`). Reached by the QR code and the Book a slot buttons on Home and Contact. Not indexed, not in the menu |
+| `/api/booking`  | `GET` lists the slots already taken; `POST` books one: the slot is reserved first (only one booking can hold it; a second gets 409), then a demo request naming the date and time goes to the admin inbox. Deleting that request in the admin gives the slot back. When SMTP is set up (`SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`; see `.env.example`) it also emails the team (`ADMIN_NOTIFY_EMAIL`, default info@kyozon.in) and the visitor; a mail that fails never undoes the booking |
 | `/api/enquiry`  | Receives the demo, question and careers forms; saves them to the admin inbox and forwards them to `ENQUIRY_WEBHOOK_URL` |
 | `/api/jobs`     | The open job openings, for the Careers section (public) |
 | `/admin`        | Password-protected: the enquiry inbox and job openings (not linked from the site, not indexed) |
@@ -245,6 +246,6 @@ Photographs are card-sized, like the small captioned images on a trade software 
 
 ## Demo QR code, "Other" answers, wide Solutions panels
 
-- The Contact page shows a QR code (drawn as SVG by `qrcode-generator`, no outside service) that opens `/book`. The address comes from `NEXT_PUBLIC_SITE_URL` if set, otherwise from the address the site is being viewed at, so set `NEXT_PUBLIC_SITE_URL` in production if the code is shown on a screen that is not the public address. The booking is a request: the team confirms the exact slot, nothing is written to a calendar.
+- The Contact page shows a QR code (drawn as SVG by `qrcode-generator`, no outside service) that opens `/book`. The address comes from `NEXT_PUBLIC_SITE_URL` if set, otherwise from the address the site is being viewed at, so set `NEXT_PUBLIC_SITE_URL` in production if the code is shown on a screen that is not the public address. The booking is saved on the site (the slot is held in the database, so it needs Upstash Redis on Vercel); nothing is written to an outside calendar. The days and times offered (Monday to Friday, 10:00 to 16:00 in the listed times, from tomorrow for 60 days, labelled IST) are set in one place, `src/lib/slots.ts`.
 - A wizard question can set `other: "label"` to add an "Other" choice that opens a box to write your own answer. No form uses it at the moment (the Careers application is now only the person's details, with no questions); an answer is sent as `Other: what they wrote`.
 - On Solutions each industry opens as one wide panel with no photograph: the problem and the answer side by side, the job as a row of steps, the modules in four columns and the benefits in a row.

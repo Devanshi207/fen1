@@ -10,6 +10,7 @@ import {
   SIZE_OPTIONS,
   TOPIC_OPTIONS,
 } from "@/data/enquirySteps";
+import { SLOT_ZONE, formatDate, slotId } from "@/lib/slots";
 import { topicFromLocation } from "@/lib/topic";
 
 const first = (a: Answers, key: string) => a[key]?.[0] ?? "";
@@ -60,34 +61,36 @@ export const CONTACT_WIZARD: WizardConfig = {
 };
 
 /**
- * The demo slot a visitor books after scanning the QR code on the Contact page: a day, a time, what they make or install, their
- * team size and who to reply to. It is sent as a demo request; the team confirms the exact time, so nothing is booked on a calendar.
+ * What comes after the calendar on the booking page: what they make or install, their team size and who to reply to. The slot
+ * they chose is sent with it to /api/booking, which keeps that slot for them (nobody else can take it) and files a demo request.
  */
-export const BOOK_WIZARD: WizardConfig = {
-  intro: "Book a FEN1 demo",
-  steps: [
-    { key: "day", question: "Which day suits you?", options: MEETING_DAY_OPTIONS },
-    { key: "time", question: "What time of day?", help: "We will confirm the exact time by email or phone.", options: MEETING_TIME_OPTIONS },
-    { key: "business", question: "What do you make or install?", options: BUSINESS_OPTIONS, other: "What do you make or install?", otherLabel: "Something else" },
-    { key: "size", question: "How big is your team?", options: SIZE_OPTIONS },
-  ],
-  fields: CONTACT_WIZARD.fields,
-  kind: () => "demo",
-  submitLabel: () => "Book my demo slot",
-  done: () => ({ title: "Demo slot requested", text: "We have your preferred day and time. The team will confirm the exact slot by email or phone." }),
-  payload: (a, d) => ({
-    name: d.name ?? "",
-    company: d.company ?? "",
-    email: d.email ?? "",
-    phone: d.phone ?? "",
-    message: d.message ?? "",
-    industry: first(a, "business"),
-    companySize: first(a, "size"),
-    preferredDay: first(a, "day"),
-    preferredTime: first(a, "time"),
-    source: "QR code",
-  }),
-};
+export function bookWizard(slot: { date: string; time: string }, onConflict: () => void): WizardConfig {
+  const when = `${formatDate(slot.date)}, ${slot.time} ${SLOT_ZONE}`;
+  return {
+    intro: `Your slot: ${when}`,
+    steps: [
+      { key: "business", question: "What do you make or install?", options: BUSINESS_OPTIONS, other: "What do you make or install?", otherLabel: "Something else" },
+      { key: "size", question: "How big is your team?", options: SIZE_OPTIONS },
+    ],
+    fields: CONTACT_WIZARD.fields,
+    endpoint: "/api/booking",
+    onConflict,
+    kind: () => "demo",
+    submitLabel: () => "Book this slot",
+    done: () => ({ title: "Your slot is booked", text: `Your demo slot is saved: ${when}. The team has your details and will be in touch to confirm.` }),
+    payload: (a, d) => ({
+      name: d.name ?? "",
+      company: d.company ?? "",
+      email: d.email ?? "",
+      phone: d.phone ?? "",
+      message: d.message ?? "",
+      industry: first(a, "business"),
+      companySize: first(a, "size"),
+      slot: slotId(slot.date, slot.time),
+      source: "Calendar booking",
+    }),
+  };
+}
 
 /** The application form: who they are, how to reach them, and what they work with today (software and ERP). */
 function careerFields(): DetailField[] {
