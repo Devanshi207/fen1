@@ -5,7 +5,6 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import Page from "@/app/(site)/page";
 import SolutionsSection from "@/components/sections/SolutionsSection";
-import CareersSection from "@/components/sections/CareersSection";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
 import { SOLUTION_PHOTOS } from "@/data/gallery";
 
@@ -41,15 +40,6 @@ describe("numbering and type details", () => {
   it("writes numbers as plain 01, 02, never as 01 / 05", () => {
     render(<Page />);
     expect(document.body.textContent).not.toMatch(/\b\d{2}\s*\/\s*\d{2}\b/);
-  });
-
-  it("sets the careers role lines in the body font, not the technical mono face", () => {
-    render(<CareersSection />);
-    const roles = document.querySelectorAll(".path-roles");
-    expect(roles.length).toBeGreaterThan(0);
-    roles.forEach((r) => expect(r).not.toHaveClass("tech"));
-    const css = readFileSync(join("src", "app", "sections.css"), "utf8");
-    expect(/\.path-roles \{[^}]*\}/.exec(css)![0]).not.toMatch(/letter-spacing|font-mono|--font-tech/);
   });
 
   it("has no oversized numeral in the workflow", () => {

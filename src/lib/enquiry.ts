@@ -16,7 +16,7 @@ export type EnquiryResult =
   | { ok: false; errors: Record<string, string> };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MAX = { short: 200, message: 4000 };
+const MAX = { short: 200, detail: 600, message: 4000 };
 
 function text(value: unknown, max: number): string {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
@@ -46,7 +46,7 @@ export function validateEnquiry(input: unknown): EnquiryResult {
   const rawDetails = raw.details;
   if (typeof rawDetails === "object" && rawDetails !== null) {
     for (const [k, v] of Object.entries(rawDetails as Record<string, unknown>).slice(0, 20)) {
-      const value = text(v, MAX.short);
+      const value = text(v, MAX.detail);
       if (value) details[k.slice(0, 60)] = value;
     }
   }

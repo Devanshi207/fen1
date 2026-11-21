@@ -1,5 +1,6 @@
 import KineticHeading from "@/components/KineticHeading";
 import Link from "next/link";
+import BauBanner from "@/components/BauBanner";
 import HomeCompare from "./HomeCompare";
 import HomeIntro from "./HomeIntro";
 
@@ -8,7 +9,7 @@ export default function HomeSection() {
   return (
     <section id="home" data-section="home">
       <div id="intro" className="hero-bg relative overflow-hidden flex items-center pt-6 pb-12 lg:pt-8 lg:pb-14">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 hero-split">
           <div className="max-w-3xl space-y-6 text-left" data-no-reveal>
             <KineticHeading text={"Engineering the business\n~behind every window"} className="text-4xl sm:text-5xl lg:text-[clamp(2.5rem,4vw,3.75rem)] text-[#1E2B45] tracking-tight leading-[1.08] [--k0:240ms]" />
             <p className="hero-seq text-base lg:text-lg text-[#55637A] max-w-xl leading-relaxed" style={{ ["--hs" as string]: "620ms" }}>
@@ -20,6 +21,7 @@ export default function HomeSection() {
               </Link>
             </div>
           </div>
+          <BauBanner />
         </div>
       </div>
 

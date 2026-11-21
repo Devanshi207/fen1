@@ -214,3 +214,10 @@ html[data-intro] header, html[data-intro] main * { animation-play-state: paused;
 .wf2-node { cursor: pointer; }
 .wf-m-bar span { position: relative; cursor: pointer; }
 .wf-m-bar span::before { content: ""; position: absolute; inset: -0.875rem 0; }
+
+/* ---------- BAU 2027 video, right of the home headline ---------- */
+.hero-split { display: grid; gap: 2rem; align-items: center; }
+@media (min-width: 1024px) { .hero-split { grid-template-columns: minmax(0, 1fr) 22rem; gap: 3rem; } }
+.bau { justify-self: start; width: min(100%, 22rem); }
+@media (min-width: 1024px) { .bau { justify-self: end; } }
+.bau-video { display: block; width: 100%; aspect-ratio: 1 / 1; border-radius: 0.5rem; object-fit: cover; }

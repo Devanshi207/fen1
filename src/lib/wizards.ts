@@ -19,7 +19,7 @@ const topicOf = (a: Answers): Topic => TOPIC_OPTIONS.find((o) => o.value === fir
 export const CONTACT_WIZARD: WizardConfig = {
   steps: [
     { key: "topic", question: "What would you like to do?", options: TOPIC_OPTIONS },
-    { key: "business", question: "What do you make or install?", options: BUSINESS_OPTIONS },
+    { key: "business", question: "What do you make or install?", options: BUSINESS_OPTIONS, other: "What do you make or install?", otherLabel: "Something else" },
     { key: "interest", question: (a) => INTEREST_QUESTION[topicOf(a)], help: "Pick as many as you like.", options: INTEREST_OPTIONS, multi: true, exclusive: NOT_SURE },
     // a meeting also asks when: the team confirms the exact time
     { key: "day", question: "Which day suits you?", options: MEETING_DAY_OPTIONS, show: (a) => topicOf(a) === "meeting" },
@@ -68,7 +68,7 @@ export const BOOK_WIZARD: WizardConfig = {
   steps: [
     { key: "day", question: "Which day suits you?", options: MEETING_DAY_OPTIONS },
     { key: "time", question: "What time of day?", help: "We will confirm the exact time by email or phone.", options: MEETING_TIME_OPTIONS },
-    { key: "business", question: "What do you make or install?", options: BUSINESS_OPTIONS },
+    { key: "business", question: "What do you make or install?", options: BUSINESS_OPTIONS, other: "What do you make or install?", otherLabel: "Something else" },
     { key: "size", question: "How big is your team?", options: SIZE_OPTIONS },
   ],
   fields: CONTACT_WIZARD.fields,
@@ -89,24 +89,31 @@ export const BOOK_WIZARD: WizardConfig = {
   }),
 };
 
-const CAREER_FIELDS: DetailField[] = [
-  { key: "name", label: "Your name", type: "text", auto: "name", missing: "Please enter your name" },
-  { key: "email", label: "Email", type: "email", auto: "email", missing: "Please enter your email" },
-  { key: "phone", label: "Phone", type: "tel", auto: "tel", missing: "Please enter your phone number" },
-  { key: "location", label: "Where are you based?", type: "text", auto: "address-level2", missing: "Please enter where you are based" },
-  { key: "resume", label: "Your resume", type: "file", missing: "Please attach your resume" },
-];
+/** The application form: who they are, how to reach them, and what they work with today (software and ERP). */
+function careerFields(): DetailField[] {
+  return [
+    { key: "name", label: "Full name", type: "text", auto: "name", placeholder: "Enter your name", missing: "Please enter your name" },
+    { key: "email", label: "Email address", type: "email", auto: "email", placeholder: "Enter your email", missing: "Please enter your email" },
+    { key: "phone", label: "Mobile number", type: "tel", auto: "tel", placeholder: "Enter your mobile number", missing: "Please enter your mobile number" },
+    { key: "experience", label: "Years of experience", type: "text", placeholder: "e.g. 3 years" },
+    { key: "software", label: "Software you use today", type: "text", placeholder: "e.g. Excel, Tally, AutoCAD" },
+    { key: "erp", label: "ERP you use or have used", type: "text", placeholder: "ERP name and modules" },
+    { key: "operations", label: "Your present operations", type: "area", placeholder: "What your business or role covers today, for example windows, doors, curtain wall, glass railing, dealers" },
+    { key: "message", label: "Tell us about yourself", type: "area", placeholder: "A brief introduction..." },
+    { key: "resume", label: "Your resume", type: "file", missing: "Please attach your resume" },
+  ];
+}
 
 /**
- * The job application: just the person's details, no questions to click through. When they apply for a listed role it says which.
- * Sent as a "careers" enquiry; no company is asked for.
+ * The application for a listed role (its own page, /careers/apply): the form above, saying which role it is for.
+ * No questions to click through. Sent as a "careers" enquiry; no company is asked for.
  */
-export function careersWizard(roleTitle?: string): WizardConfig {
+export function careersWizard(roleTitle: string): WizardConfig {
   return {
-    intro: roleTitle ? `Applying for: ${roleTitle}` : undefined,
+    intro: `Applying for: ${roleTitle}`,
     steps: [],
     title: "Your details",
-    fields: CAREER_FIELDS,
+    fields: careerFields(),
     kind: () => "careers",
     submitLabel: () => "Send my application",
     done: () => ({ title: "Application sent", text: "We have your details and your resume. If your profile fits the role, we will get in touch." }),
@@ -115,9 +122,12 @@ export function careersWizard(roleTitle?: string): WizardConfig {
       company: "",
       email: d.email ?? "",
       phone: d.phone ?? "",
-      message: "",
-      ...(roleTitle ? { role: roleTitle } : {}),
-      location: d.location ?? "",
+      message: d.message ?? "",
+      role: roleTitle,
+      experience: d.experience ?? "",
+      software: d.software ?? "",
+      erp: d.erp ?? "",
+      operations: d.operations ?? "",
     }),
   };
 }

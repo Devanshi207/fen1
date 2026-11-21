@@ -3,7 +3,7 @@ import CareersSection from "@/components/sections/CareersSection";
 
 export const metadata: Metadata = {
   title: "Careers",
-  description: "Work where software meets the shop floor: roles from the trade and from software, and how to apply.",
+  description: "Build the future of fenestration with Kyozon: areas where we love to meet talent, who should connect with us, and the current openings.",
 };
 
 export default function Page() {

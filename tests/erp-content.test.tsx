@@ -8,7 +8,7 @@ import SolutionsSection from "@/components/sections/SolutionsSection";
 import TrainingSection from "@/components/sections/TrainingSection";
 import AboutSection from "@/components/sections/AboutSection";
 import CareersSection from "@/components/sections/CareersSection";
-import { ABOUT_INSIDE, CAREERS_WORK, DIRECTOR, SOLUTIONS_INCLUDED, SOLUTION_MODULES, WHY_FEN1, type Note } from "@/data/erpContent";
+import { ABOUT_INSIDE, DIRECTOR, SOLUTIONS_INCLUDED, SOLUTION_MODULES, WHY_FEN1, type Note } from "@/data/erpContent";
 import { INDUSTRY_SOLUTIONS } from "@/data/solutions";
 import { TRACKS } from "@/data/trainingContent";
 import { CLOSING, PRINCIPLES, PROBLEMS } from "@/data/aboutContent";
@@ -21,7 +21,6 @@ const GROUPS: [string, Note[]][] = [
   ["About: why FEN1", WHY_FEN1],
   ["About: the director", DIRECTOR.notes],
   ["About: underneath the modules", ABOUT_INSIDE],
-  ["Careers", CAREERS_WORK],
   ["Solutions: included in every solution", SOLUTIONS_INCLUDED],
   ...Object.entries(SOLUTION_MODULES).map(([id, notes]): [string, Note[]] => [`Solutions: ${id}`, notes]),
 ];
@@ -34,7 +33,6 @@ function everyText(): [string, string][] {
     ["about director intro", DIRECTOR.intro],
     ["about director quote", DIRECTOR.quote],
     ...ABOUT_INSIDE.map((n): [string, string] => [`about inside: ${n.name}`, n.text]),
-    ...CAREERS_WORK.map((n): [string, string] => [`careers: ${n.name}`, n.text]),
     ...SOLUTIONS_INCLUDED.map((n): [string, string] => [`solutions included: ${n.name}`, n.text]),
     ...Object.entries(SOLUTION_MODULES).flatMap(([id, ns]) => ns.map((n): [string, string] => [`${id} module: ${n.name}`, n.text])),
     ...INDUSTRY_SOLUTIONS.flatMap((i): [string, string][] => [[`${i.id} challenge`, i.challenge], [`${i.id} summary`, i.solutionSummary], ...i.keyBenefits.map((b, k): [string, string] => [`${i.id} benefit ${k}`, b])]),
@@ -99,14 +97,14 @@ describe("the notes on the pages", () => {
   });
 
   it("uses the site's wording and makes no claim it cannot back: no tax-system acronyms, no hype, and no figure except the director's years", () => {
-    const rest = JSON.stringify([SOLUTION_MODULES, SOLUTIONS_INCLUDED, ABOUT_INSIDE, CAREERS_WORK, TRACKS.map((t) => t.text), PRINCIPLES, PROBLEMS, CLOSING]);
+    const rest = JSON.stringify([SOLUTION_MODULES, SOLUTIONS_INCLUDED, ABOUT_INSIDE, TRACKS.map((t) => t.text), PRINCIPLES, PROBLEMS, CLOSING]);
     const everything = JSON.stringify([rest, DIRECTOR]);
     expect(everything).not.toMatch(/\bGST\b|\bHSN\b|\bSAC\b|accorr/i);
     expect(everything).not.toMatch(/cutting-edge|revolution|empower|unlock|next-generation|world-class|state-of-the-art|unified|powerful|best-in-class|leading/i);
     expect(everything).not.toMatch(/\d+(\.\d+)?\s?%|\b\d{2,}\+/);
     const noBrand = (t: string) => t.replace(/fen1/gi, "");
     // the only figures: the director's "over 25 years", and the problems' own numbering 01 to 06
-    expect([...noBrand(JSON.stringify([SOLUTION_MODULES, SOLUTIONS_INCLUDED, ABOUT_INSIDE, CAREERS_WORK, TRACKS.map((t) => t.text), PRINCIPLES, CLOSING, WHY_FEN1])).matchAll(/\d+/g)].map((m) => m[0])).toEqual([]);
+    expect([...noBrand(JSON.stringify([SOLUTION_MODULES, SOLUTIONS_INCLUDED, ABOUT_INSIDE, TRACKS.map((t) => t.text), PRINCIPLES, CLOSING, WHY_FEN1])).matchAll(/\d+/g)].map((m) => m[0])).toEqual([]);
     expect([...noBrand(JSON.stringify(DIRECTOR)).matchAll(/\d+/g)].map((m) => m[0])).toEqual(["25"]);
   });
 
@@ -180,11 +178,17 @@ describe("each thing is said on one page only", () => {
     expect(screen.queryByRole("table")).toBeNull();
   });
 
-  it("Careers has a 'What you would work on' part, and no application form until a role is applied for", () => {
+  it("Careers has the invitation, the areas and who should connect, and no form on the page: the form is on the apply page", () => {
     render(<CareersSection />);
-    const work = document.querySelector(".career-build")!;
-    expect(work).toHaveTextContent("What you would work on");
-    expect(work.querySelectorAll(".note")).toHaveLength(CAREERS_WORK.length);
+    expect(screen.getByRole("heading", { level: 2, name: "Build the Future of Fenestration With Us." })).toBeInTheDocument();
+    const lists = [...document.querySelectorAll(".career-list")];
+    expect(lists).toHaveLength(2);
+    expect(lists[0].querySelectorAll("li")).toHaveLength(6);
+    expect(lists[1].querySelectorAll("li")).toHaveLength(5);
+    expect(screen.queryByText(/not currently open positions/)).toBeNull();
+    expect(screen.queryByText(/immediate opening/)).toBeNull();
     expect(document.querySelector(".career-apply")).toBeNull();
+    expect(document.querySelector("form")).toBeNull();
+    expect(screen.queryByText("Submit Your Profile")).toBeNull();
   });
 });

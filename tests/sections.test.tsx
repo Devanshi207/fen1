@@ -266,9 +266,9 @@ describe("AboutSection", () => {
 });
 
 describe("Careers research is applied honestly", () => {
-  const src = readFileSync(join("src", "components", "sections", "CareersSection.tsx"), "utf8");
-  it("covers the trade's own roles and the software side, and early careers", () => {
-    for (const word of ["Estimators", "Glaziers and installers", "Product engineering", "Apprentices"]) expect(src).toContain(word);
+  const src = readFileSync(join("src", "components", "sections", "CareersSection.tsx"), "utf8") + readFileSync(join("src", "data", "careersContent.ts"), "utf8");
+  it("covers the fenestration experts and the software side, and fresh graduates", () => {
+    for (const word of ["Fenestration Industry Experts", "Software Development & Technology", "Fresh graduates"]) expect(src).toContain(word);
   });
   it("lists no invented vacancies, salaries or benefits", () => {
     expect(src).not.toMatch(/salary|per annum|\$\d|£\d|₹\d|health insurance|stock option|remote-first/i);
@@ -289,6 +289,18 @@ describe("editorial audit of the whole page", () => {
     expect(document.querySelector(".wordband, .hero-slide, .figures, .hero-frame-slide")).toBeNull();
     const motion = readFileSync(join("src", "app", "motion.css"), "utf8") + readFileSync(join("src", "app", "globals.css"), "utf8");
     expect(motion).not.toMatch(/animation:[^;]*\binfinite\b/);
+  });
+
+  it("shows a short video of the official BAU 2027 banner beside the Home headline: silent, looping, with a poster, and no looping CSS animation", () => {
+    render(<Page />);
+    const video = screen.getByLabelText(/We are participating in BAU 2027, 11 to 15 January 2027, Messe München, Hall B4, Stand 527/) as HTMLVideoElement;
+    expect(video.tagName).toBe("VIDEO");
+    expect(video.muted).toBe(true);
+    expect(video.loop).toBe(true);
+    expect(video.getAttribute("poster")).toBe("/video/bau-2027-official-poster-1080.jpg");
+    expect(video.querySelector("source")).toHaveAttribute("src", "/video/bau-2027-story-web-720.mp4");
+    expect(video.closest(".hero-split")).not.toBeNull();
+    for (const f of ["bau-2027-story-web-720.mp4", "bau-2027-official-poster-1080.jpg"]) expect(existsSync(join("public", "video", f))).toBe(true);
   });
 
   it("uses the same one-line, sentence-case style for every button label", () => {

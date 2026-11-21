@@ -88,6 +88,27 @@ describe("The enquiry, one question at a time", () => {
     expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
   });
 
+  it("lets the visitor write what else they make or install, under 'Something else', and sends what they wrote", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<RequestDemoPage />);
+    await answer(user, "I have a question", "What do you make or install?");
+    await user.click(radio("Something else"));
+    const box = screen.getByLabelText("What do you make or install?", { selector: "input" });
+    expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+    await user.type(box, "Shopfronts and glass partitions");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await question("What is your question about?");
+    await user.click(screen.getByRole("checkbox", { name: "Estimation and quotes" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await question("Where can we reach you?");
+    await fillDetails(user);
+    await user.click(screen.getByRole("button", { name: /send question/i }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).details).toMatchObject({ industry: "Other: Shopfronts and glass partitions" });
+  });
+
   it("asks what the question is about instead of what to see when the visitor has a question", async () => {
     const user = userEvent.setup();
     render(<RequestDemoPage />);
@@ -326,20 +347,18 @@ async function applyForRole(user: User, fetchMock: ReturnType<typeof vi.fn>) {
   window.history.replaceState(null, "", "/careers/apply?role=r1");
   vi.stubGlobal("fetch", fetchMock);
   render(<ApplySection />);
-  await screen.findByLabelText(/your name/i);
+  await screen.findByLabelText(/full name/i);
   void user;
 }
 
 describe("Job application", () => {
-  it("shows only the openings at first: no form, no steps, no quiz", async () => {
-    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+  it("has no form on the Careers page, only the openings: the form is on each opening's apply page", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [ROLE] }) }));
     render(<CareersSection />);
     expect(await screen.findByRole("heading", { name: "Estimator" })).toBeInTheDocument();
-    expect(screen.queryByLabelText(/your name/i)).toBeNull();
-    expect(screen.queryByText("How it works")).toBeNull();
+    expect(document.querySelector("form")).toBeNull();
+    expect(screen.queryByText("Submit Your Profile")).toBeNull();
     expect(screen.queryByRole("radio")).toBeNull();
-    expect(screen.queryByText(/Question \d of \d/)).toBeNull();
   });
 
   it("the apply page has the form for the role: details and a resume, no company, nothing called optional", async () => {
@@ -348,7 +367,8 @@ describe("Job application", () => {
     expect(screen.getByText("Applying for: Estimator")).toBeInTheDocument();
     expect(screen.queryByLabelText(/^company$/i)).toBeNull();
     expect(screen.queryByText(/optional/i)).toBeNull();
-    for (const label of [/your name/i, /^email$/i, /^phone$/i, /where are you based/i, /your resume/i]) expect(screen.getByLabelText(label)).toBeInTheDocument();
+    for (const label of [/full name/i, /email address/i, /mobile number/i, /software you use today/i, /erp you use or have used/i, /your resume/i]) expect(screen.getByLabelText(label)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/area of interest/i)).toBeNull();
   });
 
   it("checks every detail and the resume, then sends the application with the file, tagged as careers", async () => {
@@ -356,16 +376,20 @@ describe("Job application", () => {
     const user = userEvent.setup({ applyAccept: false });
     await applyForRole(user, fetchMock);
     await user.click(screen.getByRole("button", { name: /send my application/i }));
-    for (const m of ["Please enter your name", "Please enter your email", "Please enter your phone number", "Please enter where you are based", "Please attach your resume"]) expect(screen.getByText(m)).toBeInTheDocument();
+    for (const m of ["Please enter your name", "Please enter your email", "Please enter your mobile number", "Please attach your resume"]) expect(screen.getByText(m)).toBeInTheDocument();
 
     await user.upload(screen.getByLabelText(/your resume/i), new File(["x"], "cv.exe", { type: "application/octet-stream" }));
     await user.click(screen.getByRole("button", { name: /send my application/i }));
     expect(screen.getByText("Please attach a PDF or Word file")).toBeInTheDocument();
 
-    await user.type(screen.getByLabelText(/your name/i), "Dev Patel");
-    await user.type(screen.getByLabelText(/^email$/i), "dev@example.com");
-    await user.type(screen.getByLabelText(/^phone$/i), "12345");
-    await user.type(screen.getByLabelText(/where are you based/i), "Pune");
+    await user.type(screen.getByLabelText(/full name/i), "Dev Patel");
+    await user.type(screen.getByLabelText(/email address/i), "dev@example.com");
+    await user.type(screen.getByLabelText(/mobile number/i), "12345");
+    await user.type(screen.getByLabelText(/years of experience/i), "8 years");
+    await user.type(screen.getByLabelText(/software you use today/i), "Excel and AutoCAD");
+    await user.type(screen.getByLabelText(/erp you use or have used/i), "SAP Business One, sales and stock");
+    await user.type(screen.getByLabelText(/your present operations/i), "Aluminium windows and doors, 40 staff");
+    await user.type(screen.getByLabelText(/tell us about yourself/i), "Production planner");
     await user.upload(screen.getByLabelText(/your resume/i), new File(["hello"], "Dev Patel CV.pdf", { type: "application/pdf" }));
     await user.click(screen.getByRole("button", { name: /send my application/i }));
 
@@ -376,17 +400,18 @@ describe("Job application", () => {
     expect(body.kind).toBe("careers");
     expect(body.name).toBe("Dev Patel");
     expect(body.company).toBe("");
-    expect(body.details).toMatchObject({ role: "Estimator", location: "Pune" });
+    expect(body.message).toBe("Production planner");
+    expect(body.details).toMatchObject({ role: "Estimator", experience: "8 years", software: "Excel and AutoCAD", erp: "SAP Business One, sales and stock", operations: "Aluminium windows and doors, 40 staff" });
     expect(body.resume).toEqual({ name: "Dev Patel CV.pdf", data: btoa("hello") });
     expect(await screen.findByRole("heading", { level: 2, name: "Application sent" })).toBeInTheDocument();
   });
 
-  it("does not show a form or advertise vacancies when there are no openings", async () => {
-    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+  it("lists no openings, and says nothing about vacancies, when the admin has published none", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ jobs: [] }) }));
     render(<CareersSection />);
-    expect(await screen.findByText("No openings right now. Please check back soon.")).toBeInTheDocument();
-    expect(screen.queryByLabelText(/your name/i)).toBeNull();
+    expect(screen.queryByText("Open roles")).toBeNull();
+    expect(screen.queryByText(/not currently open positions/)).toBeNull();
+    expect(document.querySelector("form")).toBeNull();
   });
 });
 
@@ -396,7 +421,7 @@ describe("Applying for a listed role", () => {
     const forRole = careersWizard("Estimator");
     expect(forRole.steps).toEqual([]);
     expect(forRole.intro).toBe("Applying for: Estimator");
-    const details = { name: "A", email: "a@b.co", phone: "1", location: "X" };
+    const details = { name: "A", email: "a@b.co", phone: "1" };
     expect(forRole.payload({}, details)).toMatchObject({ role: "Estimator" });
   });
 });

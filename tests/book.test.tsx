@@ -14,6 +14,16 @@ describe("the demo QR code", () => {
     expect(screen.getByRole("heading", { level: 2, name: "Book a demo from your phone" })).toBeInTheDocument();
   });
 
+  it("has a Book a slot link right under the code, so a phone can open the booking page with one tap", () => {
+    render(<ContactPage />);
+    const link = screen.getByRole("link", { name: "Book a slot" });
+    expect(link).toHaveAttribute("href", "/book");
+    const left = link.closest(".qr-left")!;
+    expect(left.querySelector(".qr-box")).not.toBeNull();
+    // the link comes after the code
+    expect(left.querySelector(".qr-box")!.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it("encodes the booking address: the same address gives the same code, a different one a different code", async () => {
     const { unmount } = render(<ContactPage />);
     const a = (await screen.findByRole("img", { name: /QR code/ })).querySelector("path")!.getAttribute("d");
@@ -23,6 +33,13 @@ describe("the demo QR code", () => {
     const b = (await screen.findByRole("img", { name: /QR code/ })).querySelector("path")!.getAttribute("d");
     delete process.env.NEXT_PUBLIC_SITE_URL;
     expect(b).not.toBe(a);
+  });
+});
+
+describe("the team size question", () => {
+  it("offers 'Prefer not to say' for visitors who would rather not disclose it", async () => {
+    const { SIZE_OPTIONS } = await import("@/data/enquirySteps");
+    expect(SIZE_OPTIONS.map((o) => o.value)).toContain("Prefer not to say");
   });
 });
 

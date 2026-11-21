@@ -35,6 +35,8 @@ export interface WizardStep {
   exclusive?: string;
   /** Adds an "Other" choice that opens a box to write your own answer (the label above the box). Single-answer questions only. */
   other?: string;
+  /** What the extra choice is called (default "Other"), e.g. "Something else" */
+  otherLabel?: string;
   /** Asked only when this is true for the answers so far (a meeting asks for a day and a time; a demo does not) */
   show?: (answers: Answers) => boolean;
 }
@@ -42,7 +44,10 @@ export interface WizardStep {
 export interface DetailField {
   key: string;
   label: string;
-  type: "text" | "email" | "tel" | "area" | "file";
+  type: "text" | "email" | "tel" | "area" | "file" | "select";
+  /** For a select: the choices (the first is chosen at the start) */
+  options?: string[];
+  placeholder?: string;
   auto?: string;
   /** What to say when it is left empty. A field with none is not checked. */
   missing?: string;
@@ -117,6 +122,7 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
   const last = steps.length; // the details question comes after the option questions
   const total = steps.length + 1;
   const [details, setDetails] = useState<Record<string, string>>({});
+  const selectDefaults = Object.fromEntries(fields.filter((f) => f.type === "select" && f.options?.length).map((f) => [f.key, f.options![0]]));
   const [files, setFiles] = useState<Record<string, File>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<SubmitState>("idle");
@@ -181,6 +187,7 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
   const send = async (e: React.FormEvent) => {
     e.preventDefault();
     const found: Record<string, string> = {};
+    const filled: Record<string, string> = { ...selectDefaults, ...details };
     for (const f of fields) {
       if (f.type === "file") {
         const file = files[f.key];
@@ -208,7 +215,7 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
       setStatus("error");
       return;
     }
-    const ok = await submitEnquiry(config.kind(answers), config.payload(answers, details), trap, resume);
+    const ok = await submitEnquiry(config.kind(answers), config.payload(answers, filled), trap, resume);
     setStatus(ok ? "sent" : "error");
   };
 
@@ -273,10 +280,10 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
             {current.help && <p className="wiz-help">{current.help}</p>}
             <Options
               label={question}
-              options={current.other ? [...current.options, { value: OTHER, hint: "Not in the list? Write your own" }] : current.options}
-              selected={(answers[current.key] ?? []).map((v) => (isOther(v) ? OTHER : v))}
+              options={current.other ? [...current.options, { value: current.otherLabel ?? OTHER, hint: "Not in the list? Write your own" }] : current.options}
+              selected={(answers[current.key] ?? []).map((v) => (isOther(v) ? (current.otherLabel ?? OTHER) : v))}
               multi={current.multi}
-              onPick={(value) => (value === OTHER && current.other ? pickOther(current.key) : current.multi ? toggle(current, value) : pick(current.key, value))}
+              onPick={(value) => (value === (current.otherLabel ?? OTHER) && current.other ? pickOther(current.key) : current.multi ? toggle(current, value) : pick(current.key, value))}
             />
             {current.other && isOther(answers[current.key]?.[0]) && (
               <div className="wiz-field wiz-other">
@@ -324,15 +331,26 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
                 .map((f) => (
                   <div key={f.key} className="wiz-field">
                     <label htmlFor={`wiz-${f.key}`}>{f.label}</label>
-                    <input
-                      id={`wiz-${f.key}`}
-                      type={f.type}
-                      autoComplete={f.auto}
-                      value={details[f.key] ?? ""}
-                      onChange={(e) => setDetails((d) => ({ ...d, [f.key]: e.target.value }))}
-                      aria-invalid={errors[f.key] ? true : undefined}
-                      aria-describedby={errors[f.key] ? `wiz-${f.key}-err` : undefined}
-                    />
+                    {f.type === "select" ? (
+                      <select id={`wiz-${f.key}`} value={details[f.key] ?? f.options?.[0] ?? ""} onChange={(e) => setDetails((d) => ({ ...d, [f.key]: e.target.value }))}>
+                        {f.options?.map((o) => (
+                          <option key={o} value={o}>
+                            {o}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        id={`wiz-${f.key}`}
+                        type={f.type}
+                        autoComplete={f.auto}
+                        placeholder={f.placeholder}
+                        value={details[f.key] ?? ""}
+                        onChange={(e) => setDetails((d) => ({ ...d, [f.key]: e.target.value }))}
+                        aria-invalid={errors[f.key] ? true : undefined}
+                        aria-describedby={errors[f.key] ? `wiz-${f.key}-err` : undefined}
+                      />
+                    )}
                     {errors[f.key] && (
                       <p id={`wiz-${f.key}-err`} role="alert" className="wiz-error">
                         {errors[f.key]}
@@ -376,7 +394,7 @@ export default function StepWizard({ config }: { config: WizardConfig }) {
               .map((f) => (
                 <div key={f.key} className="wiz-field">
                   <label htmlFor={`wiz-${f.key}`}>{f.label}</label>
-                  <textarea id={`wiz-${f.key}`} rows={3} value={details[f.key] ?? ""} onChange={(e) => setDetails((d) => ({ ...d, [f.key]: e.target.value }))} />
+                  <textarea id={`wiz-${f.key}`} rows={3} placeholder={f.placeholder} value={details[f.key] ?? ""} onChange={(e) => setDetails((d) => ({ ...d, [f.key]: e.target.value }))} />
                 </div>
               ))}
 

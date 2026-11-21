@@ -18,7 +18,6 @@ export const BUSINESS_OPTIONS: StepOption[] = [
   { value: "Glass railing" },
   { value: "Curtain wall", hint: "Unitised, semi-unitised or stick-built" },
   { value: "More than one of these" },
-  { value: "Something else" },
 ];
 
 export const SIZE_OPTIONS: StepOption[] = [
@@ -27,6 +26,7 @@ export const SIZE_OPTIONS: StepOption[] = [
   { value: "50 to 200 people" },
   { value: "200 to 500 people" },
   { value: "More than 500 people" },
+  { value: "Prefer not to say" },
 ];
 
 /** What the visitor wants to see (demo) or ask about (question). They can pick several; "Not sure yet" stands alone. */

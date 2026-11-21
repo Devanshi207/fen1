@@ -8,7 +8,6 @@
  *  - About: why FEN1 (speed, simplicity, performance and industry expertise), the director's profile and the foundations
  *    underneath the modules
  *  - Training: what each role does day to day (data/trainingContent.ts)
- *  - Careers: the product areas people would build and support
  * Nothing here states a figure, a vendor or a claim the ERP does not back up. The one figure, over 25 years, is the director's
  * experience as given by the company.
  */
@@ -87,12 +86,4 @@ export const ABOUT_INSIDE: Note[] = [
   { name: "Approvals", text: "Quotations, designs and material requirements are approved before the next team picks them up. The record shows what was approved." },
   { name: "Documents", text: "CRM, survey, design, production, logistics and quality each keep their documents against the job. Drawings, reports and certificates are found where the work was done." },
   { name: "Dashboards and reports", text: "Every area has its own dashboard and its own reports. Management has one view across all of them." },
-];
-
-/** Careers: the product areas people would build and support. */
-export const CAREERS_WORK: Note[] = [
-  { name: "Calculation and cutting logic", text: "Profile optimisation, glass and material calculation, the take-off and the cutting list all carry the trade's rules in code. This is where fabrication knowledge improves the product most." },
-  { name: "Site and shop-floor screens", text: "Survey, measurement, job cards, dispatch and installation are used by people at a saw or on a site. These screens must be quick and simple." },
-  { name: "Buying and stock flows", text: "Purchase requests, vendor quotation comparison, goods receipt and the stock ledger must all agree with one another. Small mistakes here show up as shortages on the job." },
-  { name: "Accounts and tax rules", text: "Invoices, receivables, payables, project accounting and bank reconciliation follow the jobs. When the rules are right, finance can trust the numbers." },
 ];

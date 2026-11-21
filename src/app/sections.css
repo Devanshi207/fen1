@@ -298,3 +298,21 @@
 .apply-form .wiz { min-height: 0; max-width: none; }
 @media (min-width: 900px) { .apply-form .wiz-grid { grid-template-columns: 1fr 1fr 1fr; } }
 .apply-missing-link { margin-top: 1rem; display: inline-flex; }
+
+.career-lists { display: grid; gap: 2rem; }
+@media (min-width: 900px) { .career-lists { grid-template-columns: 1fr 1fr; column-gap: 4rem; } }
+.career-list { border-top: 1px solid var(--line-strong); padding-top: 1.25rem; }
+.career-list-title { display: flex; gap: 0.75rem; align-items: baseline; margin: 0 0 0.75rem; font-size: 1.25rem; letter-spacing: -0.01em; color: var(--ink); }
+.career-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.career-list li { padding-left: 1.25rem; position: relative; font-size: 1rem; line-height: 1.55; color: var(--ink); }
+.career-list li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 0.4rem; height: 0.4rem; border-radius: 9999px; background: var(--accent); }
+.career-profile { margin-top: clamp(2rem, 5vw, 3rem); display: grid; gap: 1rem; }
+.career-profile .career-form { max-width: none; }
+@media (min-width: 900px) { .career-profile .wiz-grid { grid-template-columns: 1fr 1fr 1fr; } }
+.wiz-field select { width: 100%; padding: 0.75rem; border: 1px solid var(--line-strong); border-radius: 0.4rem; background: var(--card); color: var(--ink); font-size: 1rem; outline: none; }
+.wiz-field select:focus { border-color: var(--blue); box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 15%, transparent); }
+.wiz-field input::placeholder, .wiz-field textarea::placeholder { color: var(--muted); opacity: 0.8; }
+
+.qr-left { display: grid; gap: 0.5rem; justify-items: stretch; }
+.qr-link { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: 0.5rem 0.75rem; border-radius: 0.4rem; background: var(--accent); color: #fff; font-size: 0.9375rem; font-weight: 500; text-align: center; }
+.qr-link:hover { background: var(--accent-strong); }
