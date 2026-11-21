@@ -49,10 +49,10 @@ export const CLOSING = {
 
 /** Home, under the hero: what FEN1 is (the About page opens with the same description). */
 export const HOME_INTRO = [
-  "FEN1 is a fenestration Business Management Platform solution by Kyozon, designed specifically for the window, door and façade industry.",
+  "FEN1 is a fenestration Business Management Platform solution, designed specifically for the window, door and façade industry.",
   "From the first enquiry to final handover, FEN1 connects every stage of a project through one integrated job record, bringing estimation, design, procurement, production, inventory, dispatch and installation together in a seamless workflow.",
   "One Project. One Connected Workflow. Complete Control.",
-  "FEN1 by Kyozon: Technology Designed Around Your Industry.",
+  "FEN1: Technology Designed Around Your Industry.",
 ];
 
 /** Home: the three promises under the description. */

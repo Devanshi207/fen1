@@ -7,9 +7,6 @@ import Page from "@/app/(site)/page";
 import SolutionsSection from "@/components/sections/SolutionsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import KineticHeading from "@/components/KineticHeading";
-import ModuleList from "@/components/ModuleList";
-import { MODULE_ICONS } from "@/components/moduleIcons";
-import { FEN1_MODULES } from "@/data/modules";
 
 const css = (name: string) => readFileSync(join("src", "app", name), "utf8");
 
@@ -18,7 +15,7 @@ describe("hero", () => {
     render(<Page />);
     const h1 = screen.getByRole("heading", { level: 1 });
     expect(h1).toHaveAccessibleName("Engineering the business behind every window");
-    expect(screen.getByText("FEN1 is a purpose-built ERP solution by Kyozon, designed specifically for the window, door and façade industry.")).toBeInTheDocument();
+    expect(screen.getByText("FEN1 is a purpose-built ERP solution designed specifically for the window, door and façade industry.")).toBeInTheDocument();
   });
 
   it("sets the second line of the headline in the solid brand blue, with no period and no gradient text", () => {
@@ -39,13 +36,24 @@ describe("hero", () => {
     expect(hero.querySelector("h1")!.compareDocumentPosition(hero.querySelector("p")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it("has one button, to enquire: the header links reach every page, and no demo or explore buttons come back", () => {
+  it("has no enquiry, demo or explore button: the only link in the hero is the BAU 2027 banner, which opens the exhibitor page", () => {
     render(<Page />);
     const hero = document.getElementById("intro")!;
-    const controls = hero.querySelectorAll("a, button");
-    expect(controls).toHaveLength(1);
-    expect(within(hero).getByRole("link", { name: "Make an enquiry" })).toHaveAttribute("href", "/contact");
-    expect(within(hero).queryByText(/request a demo|explore the platform/i)).toBeNull();
+    expect(hero.querySelectorAll("button")).toHaveLength(0);
+    const links = hero.querySelectorAll("a");
+    expect(links).toHaveLength(1);
+    expect(links[0]).toHaveAttribute("href", "https://exhibitors.bau-muenchen.com/company/1559458");
+    expect(links[0]).toHaveAttribute("target", "_blank");
+    expect(links[0].getAttribute("rel")).toContain("noopener");
+    expect(within(hero).queryByText(/make an enquiry|request a demo|explore the platform/i)).toBeNull();
+    // the banner sits under the text, and is the fair's own picture at its own size
+    expect(hero.querySelector("p")!.compareDocumentPosition(links[0]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(within(hero).getByRole("img", { name: /BAU 2027/ })).toHaveAttribute("width", "728");
+  });
+
+  it("names Kyozon in the footer only: no 'by Kyozon' anywhere else on the Home page", () => {
+    render(<Page />);
+    expect(document.body.textContent).not.toMatch(/by Kyozon/i);
   });
 
   it("has a plain white background, and the hero has no photo", () => {
@@ -97,18 +105,6 @@ describe("section identities", () => {
       fills.add((document.querySelector(".sol-body") as HTMLElement).style.getPropertyValue("--tone-fill"));
     }
     expect(fills.size).toBe(1);
-  });
-});
-
-describe("module groups", () => {
-  it("colours each module's icon by its group, with a legend that names the groups", () => {
-    render(<ModuleList modules={FEN1_MODULES} icons={MODULE_ICONS} />);
-    const legend = screen.getByRole("list", { name: "Module groups" });
-    const groups = [...new Set(FEN1_MODULES.map((m) => m.category))];
-    expect(within(legend).getAllByRole("listitem")).toHaveLength(groups.length);
-    const tileGroups = [...document.querySelectorAll(".mod-tile")].map((t) => t.getAttribute("data-cat"));
-    for (const g of groups) expect(tileGroups).toContain(g);
-    for (const g of groups) expect(css("sections.css")).toContain(`[data-cat="${g}"]`);
   });
 });
 

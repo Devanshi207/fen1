@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     template: "%s | FEN1",
   },
   description:
-    "FEN1 is a purpose-built ERP solution by Kyozon, designed specifically for the window, door and façade industry.",
+    "FEN1 is a purpose-built ERP solution designed specifically for the window, door and façade industry.",
   keywords: [
     "FEN1",
     "Fen1 ERP",

@@ -34,7 +34,7 @@ export const WHY_CLOSING = {
 export const ABOUT_INTRO = [
   "From the first enquiry to final handover, FEN1 connects every stage of a project through one integrated job record, bringing estimation, design, procurement, production, inventory, dispatch and installation together in a seamless workflow.",
   "One Project. One Connected Workflow. Complete Control.",
-  "FEN1 by Kyozon: Technology Designed Around Your Industry.",
+  "FEN1: Technology Designed Around Your Industry.",
 ];
 
 /** About: the director's profile, from the company's own material. No name or photo is given, so none is shown. */

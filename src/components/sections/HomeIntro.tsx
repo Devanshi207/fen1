@@ -6,7 +6,7 @@ export default function HomeIntro() {
   return (
     <div id="what-is-fen1" className="page-sec">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHead title="FEN1 by Kyozon" more={HOME_INTRO.slice(1)}>
+        <SectionHead title="What is FEN1?" more={HOME_INTRO.slice(1)}>
           {HOME_INTRO[0]}
         </SectionHead>
         <ul className="home-promises">

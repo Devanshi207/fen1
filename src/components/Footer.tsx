@@ -86,7 +86,7 @@ export default function Footer() {
               <Image src="/brand/fen1-logo-2.png" alt="FEN1" width={1996} height={803} sizes="140px" className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-[#55637A] max-w-sm leading-relaxed">
-              A purpose-built ERP solution by Kyozon for the fenestration industry.
+              A purpose-built ERP solution for the fenestration industry.
             </p>
           </div>
 
@@ -146,6 +146,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#55637A]">
           <span>© {new Date().getFullYear()} FEN1 SYSTEMS. All rights reserved.</span>
+          <span>FEN1 by Kyozon</span>
         </div>
       </div>
       {legal && <LegalDialog id={legal} onClose={close} />}

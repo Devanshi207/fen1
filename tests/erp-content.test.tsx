@@ -127,8 +127,8 @@ describe("each thing is said on one page only", () => {
     expect(document.getElementById("covers")).toBeNull();
     expect(document.querySelector(".notes")).toBeNull();
     const hero = document.getElementById("intro")!;
-    expect(hero.querySelectorAll("a, button")).toHaveLength(1);
-    expect(within(hero).getByRole("link", { name: "Make an enquiry" })).toHaveAttribute("href", "/contact");
+    expect(hero.querySelectorAll("button")).toHaveLength(0);
+    expect(within(hero).queryByRole("link", { name: "Make an enquiry" })).toBeNull();
   });
 
   it("Solutions: what every solution includes above the tabs, each industry's own modules inside its panel, and nothing else about the modules", async () => {

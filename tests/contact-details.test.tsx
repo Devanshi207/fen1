@@ -20,4 +20,9 @@ describe("how to reach the team", () => {
     expect(Array.from(about.querySelectorAll("a")).map((a) => a.textContent)).toEqual(["About FEN1"]);
     expect(screen.queryByText("Company")).toBeNull();
   });
+
+  it("names Kyozon in the footer, as 'FEN1 by Kyozon'", () => {
+    render(<Footer />);
+    expect(screen.getByText("FEN1 by Kyozon")).toBeInTheDocument();
+  });
 });

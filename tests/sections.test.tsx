@@ -288,7 +288,21 @@ describe("editorial audit of the whole page", () => {
     render(<Page />);
     expect(document.querySelector(".wordband, .hero-slide, .figures, .hero-frame-slide")).toBeNull();
     const motion = readFileSync(join("src", "app", "motion.css"), "utf8") + readFileSync(join("src", "app", "globals.css"), "utf8");
-    expect(motion).not.toMatch(/animation:[^;]*\binfinite\b/);
+    // the one deliberate loop: the BAU 2027 line that runs across the Home page
+    expect(motion.replace(/\.bau-track \{[^}]*\}/, "")).not.toMatch(/animation:[^;]*\binfinite\b/);
+  });
+
+  it("runs one line of the BAU 2027 details across the Home page without stopping, announced once", () => {
+    render(<Page />);
+    const line = screen.getByRole("group", { name: /BAU 2027: 11 to 15 January 2027/ });
+    const lists = line.querySelectorAll(".bau-track ul");
+    expect(lists).toHaveLength(2);
+    expect(line.querySelector(".bau-track")).toHaveAttribute("aria-hidden", "true");
+    expect(lists[0].textContent).toBe(lists[1].textContent);
+    expect(lists[0].textContent).toContain("Hall B4, Stand 527");
+    const motion = readFileSync(join("src", "app", "motion.css"), "utf8");
+    expect(motion).toMatch(/\.bau-track \{[^}]*animation: bau-run [^;]*linear infinite/);
+    expect(motion).not.toMatch(/\.bau-track \{ animation: none/);
   });
 
   it("shows a short video of the official BAU 2027 banner beside the Home headline: silent, looping, with a poster, and no looping CSS animation", () => {

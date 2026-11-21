@@ -46,3 +46,7 @@ quotation-site-prompt.md
 
 # local admin data (job openings and enquiries saved during development)
 .data/
+
+# files made for downloading and social media, not part of the website
+/bau-assets/
+/downloads/

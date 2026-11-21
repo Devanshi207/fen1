@@ -117,8 +117,6 @@
   .compare-table td:last-child { padding-bottom: 0; }
 }
 .about-n { min-width: 1.6rem; padding-top: 0.25rem; font-size: 0.75rem; color: var(--accent); }
-.about-list strong { display: block; font-weight: 500; font-size: 1rem; color: var(--ink); }
-.about-sub { display: block; margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.55; color: var(--muted); }
 
 .train-grid { display: grid; grid-template-columns: 1fr; column-gap: 3rem; }
 @media (min-width: 700px) { .train-grid { grid-template-columns: 1fr 1fr; } }
@@ -127,15 +125,8 @@
 .train-n { margin: 0; font-size: 0.75rem; color: var(--accent); }
 .train-title { margin: 0.25rem 0 0; font-size: 1.25rem; letter-spacing: -0.01em; color: var(--ink); }
 .train-team { margin: 0.25rem 0 0; font-size: 0.8125rem; color: var(--muted); }
-.train-topics { margin: 0.75rem 0 0; font-size: 0.875rem; line-height: 1.7; color: var(--ink); }
 
 /* ---------- Careers ---------- */
-.paths { display: grid; }
-@media (min-width: 900px) { .paths { grid-template-columns: repeat(3, 1fr); column-gap: 3rem; } }
-.path { padding: 1.5rem 0 1.5rem; border-top: 1px solid var(--line-strong); }
-.path-title { margin: 0; font-size: 1.25rem; letter-spacing: -0.01em; color: var(--ink); }
-.path-text { margin: 0.5rem 0 0; font-size: 0.875rem; line-height: 1.65; color: var(--muted); }
-.path-roles { margin: 1rem 0 0; font-size: 0.875rem; line-height: 1.7; color: var(--ink); }
 .roles { margin-bottom: clamp(2.5rem, 6vw, 4rem); }
 .roles-list { list-style: none; margin: 0; padding: 0; }
 .role { padding: 1.25rem 0; border-top: 1px solid var(--line-strong); }
@@ -153,12 +144,7 @@
 .role-apply:hover { background: var(--accent-strong); }
 .role-details { margin-top: 1rem; max-width: 44rem; display: grid; gap: 0.75rem; font-size: 0.875rem; line-height: 1.7; color: var(--ink); animation: panel-in 0.4s var(--ease) both; }
 .role-details p { margin: 0; }
-.career-apply { margin-top: clamp(2.5rem, 6vw, 4rem); display: grid; gap: 2.25rem; }
-@media (min-width: 900px) { .career-apply { grid-template-columns: 5fr 6fr; gap: 4.5rem; align-items: start; } }
-.career-steps { list-style: none; margin: 0; padding: 0; }
-.career-steps li { display: flex; gap: 1rem; padding: 0.75rem 0; border-top: 1px solid var(--line-strong); font-size: 1rem; color: var(--ink); }
 .career-note { margin: 1.25rem 0 0; font-size: 0.875rem; line-height: 1.6; color: var(--muted); }
-.career-form { padding: clamp(1.2rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: 0.5rem; background: var(--card); }
 
 /* ---------- Contact: an ordinary two-column block; nothing pinned, cropped or pushed against an edge ---------- */
 .contact-grid { display: grid; gap: 2.5rem; }
@@ -224,24 +210,10 @@
 /* a page of its own: the section fills the screen under the header, and the header's own line is the only rule above it */
 #solutions, #about, #training, #careers, #contact { min-height: calc(100svh - 5rem); border-top: 0; }
 #roadmap, #about, #careers { background: #ffffff; }
-.sec-blue, .sec-teal, .sec-lavender, .sec-violet { border-top: 1px solid var(--line); }
+.sec-teal, .sec-lavender, .sec-violet { border-top: 1px solid var(--line); }
 .sec-lavender .about-n, .sec-violet .role-meta { color: var(--accent); }
 .train-item { border-top-width: 1px; border-top-color: var(--line-strong); }
 .train-n { color: var(--accent); }
-
-/* module groups: the colour of an icon is its group */
-.mod-legend { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin: 0 0 1.5rem; padding: 0; font-size: 0.8125rem; color: var(--muted); }
-.mod-legend li { display: inline-flex; align-items: center; gap: 0.5rem; }
-.mod-legend i { width: 0.6rem; height: 0.6rem; border-radius: 9999px; background: var(--tone-fill); }
-[data-cat="BUSINESS"] { --tone-fill: var(--blue); --tone-text: var(--accent); }
-[data-cat="OPERATIONS"] { --tone-fill: var(--blue-deep); --tone-text: var(--blue-deep); }
-[data-cat="SUPPLY CHAIN"] { --tone-fill: var(--green); --tone-text: var(--accent); }
-[data-cat="FINANCE & PEOPLE"] { --tone-fill: #7c8aa5; --tone-text: var(--muted); }
-[data-cat="ANALYTICS"] { --tone-fill: var(--amber); --tone-text: #9a6511; }
-[data-cat="SYSTEM"] { --tone-fill: #7c8aa5; --tone-text: var(--muted); }
-.mod-tile-icon { color: var(--tone-text, var(--muted)); }
-.mod-tile::before { background: var(--tone-fill, var(--blue)); }
-.mod-tile[data-active="true"] .mod-tile-num, .mod-tile[data-active="true"] .mod-tile-title, .mod-tile[data-active="true"] .mod-tile-icon { color: var(--tone-text, var(--accent)); }
 
 /* the contact section: the photo and the form, on white */
 .contact-sec { position: relative; border-top: 1px solid var(--line); }
@@ -260,7 +232,7 @@
 .sol-mods .note { padding: 1rem 0 1rem; }
 .sol-mods .note-name { font-size: 1rem; }
 .sol-mods .note-text { font-size: 0.875rem; margin-top: 0.25rem; }
-.about-inside, .career-build { margin-top: clamp(1.5rem, 4vw, 2.5rem); display: grid; gap: 1rem; }
+.about-inside { margin-top: clamp(1.5rem, 4vw, 2.5rem); display: grid; gap: 1rem; }
 .train-text { margin: 0.75rem 0 0; font-size: 0.875rem; line-height: 1.6; color: var(--muted); }
 .sol-common { display: grid; gap: 1rem; margin-bottom: clamp(2rem, 5vw, 3rem); }
 .about-why { margin-top: clamp(1.5rem, 4vw, 2.5rem); display: grid; gap: 1rem; }
@@ -281,11 +253,6 @@
 .contact-direct a { color: var(--ink); font-weight: 500; overflow-wrap: anywhere; }
 .contact-direct a:hover { color: var(--accent); }
 
-.career-apply { margin-top: 1.5rem; display: block; }
-@media (min-width: 900px) { .career-apply { display: block; } }
-.career-apply .career-form { position: relative; max-width: 40rem; }
-.career-close { position: absolute; top: 0.9rem; right: 1rem; padding: 0.25rem 0.5rem; border: 0; background: transparent; color: var(--muted); font-size: 0.875rem; cursor: pointer; }
-.career-close:hover { color: var(--accent); }
 .wiz-hint { font-weight: 400; color: var(--muted); }
 .wiz-field input[type="file"] { padding: 0.5rem; font-size: 0.9375rem; }
 
@@ -306,9 +273,6 @@
 .career-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
 .career-list li { padding-left: 1.25rem; position: relative; font-size: 1rem; line-height: 1.55; color: var(--ink); }
 .career-list li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 0.4rem; height: 0.4rem; border-radius: 9999px; background: var(--accent); }
-.career-profile { margin-top: clamp(2rem, 5vw, 3rem); display: grid; gap: 1rem; }
-.career-profile .career-form { max-width: none; }
-@media (min-width: 900px) { .career-profile .wiz-grid { grid-template-columns: 1fr 1fr 1fr; } }
 .wiz-field select { width: 100%; padding: 0.75rem; border: 1px solid var(--line-strong); border-radius: 0.4rem; background: var(--card); color: var(--ink); font-size: 1rem; outline: none; }
 .wiz-field select:focus { border-color: var(--blue); box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 15%, transparent); }
 .wiz-field input::placeholder, .wiz-field textarea::placeholder { color: var(--muted); opacity: 0.8; }
